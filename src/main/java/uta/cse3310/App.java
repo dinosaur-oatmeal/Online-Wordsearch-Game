@@ -64,7 +64,7 @@ public class App extends WebSocketServer {
 
   // All games currently underway on this server are stored in
   // the vector ActiveGames
-  private Vector<Game> ActiveGames = new Vector<Game>();
+  private Vector<WordBankGame> ActiveGames = new Vector<WordBankGame>();
 
   private int GameId = 1;
 
@@ -96,9 +96,9 @@ public class App extends WebSocketServer {
     ServerEvent E = new ServerEvent();
 
     // search for a game needing a player
-    Game G = null;
-    for (Game i : ActiveGames) {
-      if (i.Players == uta.cse3310.PlayerType.XPLAYER) {
+    WordBankGame G = null;
+    for (WordBankGame i : ActiveGames) {
+      if (i.Players == uta.cse3310.PlayerType.Player2) {
         G = i;
         System.out.println("found a match");
       }
@@ -106,18 +106,18 @@ public class App extends WebSocketServer {
 
     // No matches ? Create a new Game.
     if (G == null) {
-      G = new Game(stats);
+      G = new WordBankGame(stats);
       G.GameId = GameId;
       GameId++;
       // Add the first player
-      G.Players = PlayerType.XPLAYER;
+      G.Players = PlayerType.Player1;
       ActiveGames.add(G);
       System.out.println(" creating a new Game");
     } else {
       // join an existing game
       System.out.println(" not a new game");
-      G.Players = PlayerType.OPLAYER;
-      G.StartGame();
+      G.Players = PlayerType.Player2;
+      G.gameSession.startGame();
     }
 
     // create an event to go to only the new player
@@ -153,7 +153,7 @@ public class App extends WebSocketServer {
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
     System.out.println(conn + " has closed");
     // Retrieve the game tied to the websocket connection
-    Game G = conn.getAttachment();
+    WordBankGame G = conn.getAttachment();
     G = null;
   }
 
@@ -172,8 +172,8 @@ public class App extends WebSocketServer {
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // Get our Game Object
-    Game G = conn.getAttachment();
-    G.Update(U);
+    WordBankGame G = conn.getAttachment();
+    //G.gameSession.Update(U);
 
     // send out the game state every time
     // to everyone

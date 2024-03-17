@@ -1,11 +1,13 @@
 package uta.cse3310;
-import WordBank;
-pubic class GameSession
+
+public class GameSession
 {
+	WordBank bank = new WordBank();
 	public void startGame()
 	{
 		//will start the game
 	}
+	
 	public void charSelected(int firstLetter, int lastLetter)
 	{
 		//method of selecting characters

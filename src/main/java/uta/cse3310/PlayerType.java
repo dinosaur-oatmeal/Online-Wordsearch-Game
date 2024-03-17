@@ -1,8 +1,8 @@
 package uta.cse3310;
 
-// A player can be an X or an O
+// A player can be Player1, Player2, Player3, or Player4
 
 public enum PlayerType {
-    NOPLAYER, XPLAYER, OPLAYER
+    NOPLAYER, Player1, Player2, Player3, Player4
 }
  

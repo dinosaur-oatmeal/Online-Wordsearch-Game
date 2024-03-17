@@ -1,12 +1,29 @@
 package uta.cse3310;
 
 public class WordBankGame {
-    private String nickname;
-    private UserAuthentication userAuth;
-    private Players players;
-    private Lobby lobby;
-    private Leaderboard leaderboard;
-    private GameSession gameSession;
+    public PlayerType Players;
+    public PlayerType CurrentTurn;
+    public int GameId;
+
+    public Statistics Stats;
+    public String[] Msg;
+
+    public String nickname;
+    public UserAuthentication userAuth;
+    public Players players;
+    public Lobby lobby;
+    public Leaderboard leaderboard;
+    public GameSession gameSession;
+
+    WordBankGame(Statistics s)
+    {
+        Stats = s;
+        Players = PlayerType.Player1;
+        CurrentTurn = PlayerType.NOPLAYER;
+        Msg = new String[2];
+        Msg[0] = "Waiting for other player to join";
+        Msg[1] = "";
+    }
 
     public WordBankGame(String nickname) {
         this.nickname = nickname;
@@ -24,9 +41,5 @@ public class WordBankGame {
 
     public void tick() {
         // Advances game 
-        return 0;
     }
 }
-
-
-
