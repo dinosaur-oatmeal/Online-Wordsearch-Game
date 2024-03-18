@@ -27,11 +27,11 @@ public class WordBankGame {
 
     public WordBankGame(String nickname) {
         this.nickname = nickname;
-        this.userAuth = new UserAuthentication();
-        this.players = new Players();
-        this.lobby = new Lobby();
-        this.leaderboard = new Leaderboard();
-        this.gameSession = new GameSession();
+        this.userAuth = new UA();
+        this.players = new P();
+        this.lobby = new Lby();
+        this.leaderboard = new Lboard();
+        this.gameSession = new GS();
     }
 
     public int openSpots() {
