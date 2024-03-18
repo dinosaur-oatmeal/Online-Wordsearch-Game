@@ -9,11 +9,11 @@ public class WordBankGame {
     public String[] Msg;
 
     public String nickname;
-    public UserAuthentication userAuth;
-    public Players players;
-    public Lobby lobby;
-    public Leaderboard leaderboard;
-    public GameSession gameSession;
+    public UserAuthentication UA;
+    public Players P;
+    public Lobby Lby;
+    public Leaderboard Lboard;
+    public GameSession GS;
 
     WordBankGame(Statistics s)
     {
@@ -27,11 +27,11 @@ public class WordBankGame {
 
     public WordBankGame(String nickname) {
         this.nickname = nickname;
-        this.userAuth = new UA();
-        this.players = new P();
-        this.lobby = new Lby();
-        this.leaderboard = new Lboard();
-        this.gameSession = new GS();
+        this.UA = new UserAuthentication();
+        this.P = new Players();
+        this.Lby = new Lobby();
+        this.Lboard = new Leaderboard();
+        this.GS = new GameSession();
     }
 
     public int openSpots() {

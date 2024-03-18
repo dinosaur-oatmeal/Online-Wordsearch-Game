@@ -117,7 +117,7 @@ public class App extends WebSocketServer {
       // join an existing game
       System.out.println(" not a new game");
       G.Players = PlayerType.Player2;
-      G.gameSession.startGame();
+      G.GS.startGame();
     }
 
     // create an event to go to only the new player

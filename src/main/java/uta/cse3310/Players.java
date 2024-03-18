@@ -2,6 +2,8 @@ package uta.cse3310;
     
 public class Players {
 
+  public Statistics Stats;
+
   // Method to store player's nickname
   public void storeName(String nickname) { 
   }

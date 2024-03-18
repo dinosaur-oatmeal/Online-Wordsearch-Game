@@ -18,9 +18,9 @@ public class WordBank{
   }
   
   //Reverse a given word  
-  public String reverse(String word) {
+  public void reverse(String word) {
           // Implementation to reverse the word
-  return new StringBuilder(word).reverse().toString();
+          //StringBuilder(word).reverse().toString();
   }
   
   //Write the word diagonal
