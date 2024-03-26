@@ -1,4 +1,4 @@
-package uta.cse3310;
+//package uta.cse3310;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,19 +8,22 @@ import java.util.Random;
 public class WordBank
 {
    static int gridSize = 2500;
-   static int cellsToFill;
-   static int cellsFilled = 0;
+   static int wordsToFill;
+   static int wordsFilled = 0;
    static double diagDown, diagUp, vertUp, vertDown, horz = 0;
    static double density = 0.67;
    static Random random = new Random();
 
-   // generate Board 50*50
    public static char[][] generateGrid()
    {
-      cellsToFill = (int)(gridSize * density);
+      // amount of words for board
+      wordsToFill = (int)((gridSize * density) / 5);
+      //System.out.println(wordsToFill);
+      
+      // array with chosen words for board
       String[] words = selectWords();
       
-      // initialize board
+      // initialize board (every cell is '-')
       char[][] board = new char[50][50];
       for(int i = 0; i < 50; i++)
       {
@@ -31,36 +34,33 @@ public class WordBank
       }
       
       //System.out.println(cellsToFill);
-      int wordsTracker = 0;
       
-      while(cellsFilled < cellsToFill)
+      // loop until every cell is filled to meet density
+      while(wordsFilled < wordsToFill)
       {
          int RDVH = random.nextInt(5) + 1;
          //System.out.print(RDVH); 
+         //System.out.println(cellsFilled);
          
          switch(RDVH)
          {
             case 1:
-               diagonalDown(board, words[wordsTracker % words.length]);
+               diagonalDown(board, words[wordsFilled]);
                break;
             case 2:
-               diagonalUp(board, words[wordsTracker % words.length]);
+               diagonalUp(board, words[wordsFilled]);
                break;
             case 3:
-               verticalDown(board, words[wordsTracker % words.length]);
+               verticalDown(board, words[wordsFilled]);
                break;
             case 4:
-               verticalUp(board, words[wordsTracker % words.length]);
+               verticalUp(board, words[wordsFilled]);
                break;
             case 5:
-               horizontal(board, words[wordsTracker % words.length]);
+               horizontal(board, words[wordsFilled]);
                break;
          }
-         
-         wordsTracker++;
       }
-      
-      density = (double)cellsFilled / gridSize;
       
       //insertRandomLetters(board);
       
@@ -72,10 +72,12 @@ public class WordBank
    // select a word from the word bank
    public static String[] selectWords()
    {
-      String[] words = new String[cellsToFill / 5];
+      // initialize array to size to match density
+      String[] words = new String[wordsToFill];
+      //System.out.println(words.length);
       
       // selection of word from WordList.txt
-      try(BufferedReader reader = new BufferedReader(new FileReader("C:/Users/maber/OneDrive/Documents/Programming/Programming C/3310 Fundamentals of Software Engineering/cse3310_sp24_group_13/src/main/java/uta/cse3310/WordList.txt")))
+      try(BufferedReader reader = new BufferedReader(new FileReader("C:/Users/maber/Documents/Programming/OOP 2338/WordList.txt")))
       {
          for(int i = 0; i < words.length; i++)
          {
@@ -87,8 +89,7 @@ public class WordBank
          
          return words;
       }
-     
-      // print error message if opening the file fails
+      
       catch(IOException e)
       {
          e.printStackTrace();
@@ -133,8 +134,9 @@ public class WordBank
                board[row + i][column + i] = word.charAt(i);
             }
             
-            cellsFilled += word.length();
-            diagDown += word.length();
+            // add to variables for statistics
+            wordsFilled++;
+            diagDown++;
          }
          
          break;
@@ -176,8 +178,9 @@ public class WordBank
                board[row + 4 - i][column + i] = word.charAt(i);
             }
             
-            cellsFilled += word.length();
-            diagUp += word.length();
+            // add to variables for statistics
+            wordsFilled++;
+            diagUp++;
          }
          
          break;
@@ -219,8 +222,9 @@ public class WordBank
                board[row + i][column] = word.charAt(i);
             }
             
-            cellsFilled += word.length();
-            vertDown += word.length();
+            // add to variables for statistics
+            wordsFilled++;
+            vertDown++;
          }
             
          break;
@@ -262,8 +266,9 @@ public class WordBank
                board[row + i][column] = word.charAt(4 - i);
             }
             
-            cellsFilled += word.length();
-            vertUp += word.length();
+            // add to variables for statistics
+            wordsFilled++;
+            vertUp++;
          }
             
          break;
@@ -305,8 +310,9 @@ public class WordBank
                board[row][column + i] = word.charAt(i);
             }
             
-            cellsFilled += word.length();
-            horz += word.length();
+            // add to variables for statistics
+            wordsFilled++;
+            horz++;
          }
             
          break;
@@ -333,31 +339,34 @@ public class WordBank
    }
 
    // checks the board to make sure stats are valid
+   // regenerates grid of stats aren't valid
    public static void checkBoard(char[][] board)
    {
-      diagDown = diagDown / cellsFilled;
-      diagUp = diagUp / cellsFilled;
-      vertDown = vertDown / cellsFilled;
-      vertUp = vertUp / cellsFilled;
-      horz = horz / cellsFilled;
+      density = (double)(wordsFilled * 5) / gridSize;
+      diagDown = diagDown / wordsFilled;
+      diagUp = diagUp / wordsFilled;
+      vertDown = vertDown / wordsFilled;
+      vertUp = vertUp / wordsFilled;
+      horz = horz / wordsFilled;
       
-      if(diagDown < 0.15 || diagUp < 0.15 ||
+      if(density < 0.6 || diagDown < 0.15 || diagUp < 0.15 ||
       vertDown < 0.15 || vertUp < 0.15 || horz < 0.15)
       {
+         density = 0.67;
          diagDown = 0;
          diagUp = 0;
          vertUp = 0;
          vertDown = 0;
          horz = 0;
-         cellsFilled = 0;
+         wordsFilled = 0;
          
          generateGrid();
       }
    }
 
-   // store board info
+   // print board statistics
    public static void statistics()
-   {  
+   {   
       System.out.printf("Density: %.2f\n", density);
       System.out.printf("Diagonal Down: %.2f\n", diagDown);
       System.out.printf("Diagonal Up: %.2f\n", diagUp);
