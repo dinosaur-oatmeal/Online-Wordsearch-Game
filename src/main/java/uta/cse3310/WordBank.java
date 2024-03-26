@@ -18,6 +18,7 @@ public class WordBank
    public static char[][] generateGrid()
    {
       cellsToFill = (int)(gridSize * density);
+      String[] words = selectWords();
       
       // initialize board
       char[][] board = new char[50][50];
@@ -30,33 +31,33 @@ public class WordBank
       }
       
       //System.out.println(cellsToFill);
+      int wordsTracker = 0;
       
       while(cellsFilled < cellsToFill)
       {
-         String wordToInsert = selectWord();
-         //System.out.println(wordToInsert);
-         
          int RDVH = random.nextInt(5) + 1;
          //System.out.print(RDVH); 
          
          switch(RDVH)
          {
             case 1:
-               diagonalDown(board, wordToInsert);
+               diagonalDown(board, words[wordsTracker % words.length]);
                break;
             case 2:
-               diagonalUp(board, wordToInsert);
+               diagonalUp(board, words[wordsTracker % words.length]);
                break;
             case 3:
-               verticalDown(board, wordToInsert);
+               verticalDown(board, words[wordsTracker % words.length]);
                break;
             case 4:
-               verticalUp(board, wordToInsert);
+               verticalUp(board, words[wordsTracker % words.length]);
                break;
             case 5:
-               horizontal(board, wordToInsert);
+               horizontal(board, words[wordsTracker % words.length]);
                break;
          }
+         
+         wordsTracker++;
       }
       
       density = (double)cellsFilled / gridSize;
@@ -69,28 +70,22 @@ public class WordBank
    }
   
    // select a word from the word bank
-   public static String selectWord()
+   public static String[] selectWords()
    {
-      // find random line number
-      int totalLine = 700;
-      int chosenLine = random.nextInt(totalLine) + 1;
-    
+      String[] words = new String[cellsToFill / 5];
+      
       // selection of word from WordList.txt
       try(BufferedReader reader = new BufferedReader(new FileReader("C:/Users/maber/OneDrive/Documents/Programming/Programming C/3310 Fundamentals of Software Engineering/cse3310_sp24_group_13/src/main/java/uta/cse3310/WordList.txt")))
       {
-         String line = reader.readLine();
-         int currentLine = 0;
-         while(line != null)
+         for(int i = 0; i < words.length; i++)
          {
-            currentLine++;
-            if(currentLine == chosenLine)
-            {
+            String line = reader.readLine();
+
                // all words are 5 letters
-               return line;
-            }
-            
-            line = reader.readLine();
+               words[i] = line;
          }
+         
+         return words;
       }
      
       // print error message if opening the file fails
@@ -98,8 +93,9 @@ public class WordBank
       {
          e.printStackTrace();
       }
-    
-      return "ERROR";
+      
+      words[0] = "ERROR";
+      return words;
    }
   
    // write the word diagonally down
@@ -368,5 +364,22 @@ public class WordBank
       System.out.printf("Vertical Down: %.2f\n", vertDown);
       System.out.printf("Vertical Up: %.2f\n", vertUp);
       System.out.printf("Horizontal: %.2f\n", horz);
+   }
+   
+   // debugging outputs
+   public static void main(String args[])
+   {
+      char[][] bank = generateGrid();
+      statistics();
+      
+      for(int i = 0; i < 50; i++)
+      {
+         for(int j = 0; j < 50; j++)
+         {
+            System.out.print(bank[i][j] + " ");
+         }
+         
+         System.out.print("\n");
+      }
    }
 }
