@@ -1,5 +1,6 @@
 //package uta.cse3310;
 
+import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,6 +14,9 @@ public class WordBank
    static double diagDown, diagUp, vertUp, vertDown, horz = 0;
    static double density = 0.67;
    static Random random = new Random();
+   
+   // arraylist that will store word locations
+   static List<WordLocation> locations = new ArrayList<>();
 
    public static char[][] generateGrid()
    {
@@ -77,7 +81,7 @@ public class WordBank
       //System.out.println(words.length);
       
       // selection of word from WordList.txt
-      try(BufferedReader reader = new BufferedReader(new FileReader("C:/Users/maber/Documents/Programming/OOP 2338/WordList.txt")))
+      try(BufferedReader reader = new BufferedReader(new FileReader("WordList.txt")))
       {
          for(int i = 0; i < words.length; i++)
          {
@@ -134,6 +138,8 @@ public class WordBank
                board[row + i][column + i] = word.charAt(i);
             }
             
+            locations.add(new WordLocation(row, column, row + 4, column + 4));
+            
             // add to variables for statistics
             wordsFilled++;
             diagDown++;
@@ -177,6 +183,8 @@ public class WordBank
             {
                board[row + 4 - i][column + i] = word.charAt(i);
             }
+            
+            locations.add(new WordLocation(row + 4, column, row, column + 4));
             
             // add to variables for statistics
             wordsFilled++;
@@ -222,6 +230,8 @@ public class WordBank
                board[row + i][column] = word.charAt(i);
             }
             
+            locations.add(new WordLocation(row, column, row + 4, column));
+            
             // add to variables for statistics
             wordsFilled++;
             vertDown++;
@@ -266,6 +276,8 @@ public class WordBank
                board[row + i][column] = word.charAt(4 - i);
             }
             
+            locations.add(new WordLocation(row, column, row + 4, column));
+            
             // add to variables for statistics
             wordsFilled++;
             vertUp++;
@@ -309,6 +321,8 @@ public class WordBank
             {
                board[row][column + i] = word.charAt(i);
             }
+            
+            locations.add(new WordLocation(row, column, row, column + 4));
             
             // add to variables for statistics
             wordsFilled++;
@@ -390,5 +404,11 @@ public class WordBank
          
          System.out.print("\n");
       }
+      
+      /*
+      for (WordLocation location : locations)
+      {
+         System.out.println(location);
+      }*/
    }
 }
