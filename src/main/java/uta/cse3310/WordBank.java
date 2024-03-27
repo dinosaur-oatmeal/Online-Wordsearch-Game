@@ -66,7 +66,7 @@ public class WordBank
          }
       }
       
-      //insertRandomLetters(board);
+      insertRandomLetters(board);
       
       checkBoard(board);
       
@@ -75,20 +75,43 @@ public class WordBank
   
    // select a word from the word bank
    public static String[] selectWords()
-   {
-      // initialize array to size to match density
+   {      
+      // read entire file into ArrayList to quickly grab locations
+      ArrayList<String> inputFile = new ArrayList<>();
+         
+      // sselection of random words
       String[] words = new String[wordsToFill];
-      //System.out.println(words.length);
+      String line;
+         
+      // track line locations of selected words in inputFile
+      HashSet<Integer> locations = new HashSet<>();
+      int lineNumber, j = 0;
       
-      // selection of word from WordList.txt
+      // open file
       try(BufferedReader reader = new BufferedReader(new FileReader("WordList.txt")))
       {
-         for(int i = 0; i < words.length; i++)
+         // dump file content into list to be easily searched
+         while((line = reader.readLine()) != null)
          {
-            String line = reader.readLine();
-
+            inputFile.add(line);
+         }
+         
+         // loop for every position in words output array
+         while(j < wordsToFill)
+         {
+            lineNumber = random.nextInt(700);
+            
+            // avoid selecting double words
+            if(!locations.contains(lineNumber))
+            {
                // all words are 5 letters
-               words[i] = line;
+               line = inputFile.get(lineNumber);
+               words[j] = line;
+               //System.out.println(words[j]);
+               
+               locations.add(lineNumber);
+               j++;
+            }
          }
          
          return words;
@@ -406,9 +429,10 @@ public class WordBank
       }
       
       /*
-      for (WordLocation location : locations)
+      for(WordLocation location : locations)
       {
          System.out.println(location);
-      }*/
+      }
+      */
    }
 }

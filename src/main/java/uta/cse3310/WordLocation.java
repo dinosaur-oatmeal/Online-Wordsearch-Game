@@ -1,3 +1,5 @@
+//package uta.cse3310;
+
 public class WordLocation
 {
    private int startRow;
@@ -14,21 +16,10 @@ public class WordLocation
    }
    
    // find equality of objects (coordinates)
-   @Override
-   public boolean equals(Object o)
+   public boolean equals(int startRow, int startColumn, int endRow, int endColumn)
    {
-      if(this == o)
-      {
-         return true;
-      }
-       
-      if(o == null || getClass() != o.getClass())
-      {
-         return false;
-      }
-      
-      WordLocation that = (WordLocation) o;
-      return startRow == that.startRow && startColumn == that.startColumn && endRow == that.endRow && endColumn == that.endColumn;
+      return this.startRow == startRow && this.startColumn == startColumn &&
+      this.endRow == endRow && this.endColumn == endColumn;
    }
    
    // toString for debugging
