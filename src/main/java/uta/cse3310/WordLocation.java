@@ -1,4 +1,4 @@
-//package uta.cse3310;
+package uta.cse3310;
 
 public class WordLocation
 {

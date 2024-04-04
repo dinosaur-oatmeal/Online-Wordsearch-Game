@@ -3,9 +3,20 @@ package uta.cse3310;
 public class GameSession
 {
 	WordBank bank = new WordBank();
+
 	public void startGame()
 	{
-		//will start the game
+		char[][] board = bank.generateGrid();
+
+		// print for debugging
+		for(int i = 0; i < 50; i++)
+		{
+			for(int j = 0; j < 50; j++)
+			{
+				System.out.print(board[i][j] + " ");
+			}
+			System.out.print("\n");
+		}
 	}
 	
 	public void charSelected(int firstLetter, int lastLetter)
@@ -13,10 +24,22 @@ public class GameSession
 		//method of selecting characters
 	}
 	
-	public int wordFound(int firstLetter, int lastLetter)
+	public boolean wordFound(int startRow, int startColumn, int endRow, int endColumn)
 	{
-		//method to return when a word is found
-		return 0;
+		// cast selected locations to a WordLocation object
+		WordLocation selectedLocation = new WordLocation(startRow, startColumn, endRow, endColumn);
+		
+		// loop through ArrayList of location structures
+		for(int i = 0; i < bank.locations.size(); i++)
+		{
+			// see if data is the same
+			if(bank.locations.equals(selectedLocation))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}	
 	public void wordColor()
 	{

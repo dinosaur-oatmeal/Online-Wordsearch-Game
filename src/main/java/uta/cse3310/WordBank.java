@@ -1,4 +1,4 @@
-//package uta.cse3310;
+package uta.cse3310;
 
 import java.util.*;
 import java.io.BufferedReader;
@@ -66,7 +66,7 @@ public class WordBank
          }
       }
       
-      insertRandomLetters(board);
+      //insertRandomLetters(board);
       
       checkBoard(board);
       
@@ -410,29 +410,5 @@ public class WordBank
       System.out.printf("Vertical Down: %.2f\n", vertDown);
       System.out.printf("Vertical Up: %.2f\n", vertUp);
       System.out.printf("Horizontal: %.2f\n", horz);
-   }
-   
-   // debugging outputs
-   public static void main(String args[])
-   {
-      char[][] bank = generateGrid();
-      statistics();
-      
-      for(int i = 0; i < 50; i++)
-      {
-         for(int j = 0; j < 50; j++)
-         {
-            System.out.print(bank[i][j] + " ");
-         }
-         
-         System.out.print("\n");
-      }
-      
-      /*
-      for(WordLocation location : locations)
-      {
-         System.out.println(location);
-      }
-      */
    }
 }
