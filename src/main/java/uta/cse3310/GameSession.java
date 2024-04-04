@@ -3,6 +3,9 @@ package uta.cse3310;
 public class GameSession
 {
 	WordBank bank = new WordBank();
+	int wordsToFill = bank.wordsToFill;
+	int wordsFilled = 0;
+	int lastRow, lastColumn = -1;
 
 	public void startGame()
 	{
@@ -19,9 +22,18 @@ public class GameSession
 		}
 	}
 	
-	public void charSelected(int firstLetter, int lastLetter)
+	public void charSelected(int row, int column)
 	{
-		//method of selecting characters
+		// see if the current character is in the same word as the last one chosen (either direction)
+		if(wordFound(lastRow, lastColumn, row, column) ||
+		wordFound(row, column, lastRow, lastColumn))
+		{
+			highlightWord();
+		}
+
+		// update last character chosen
+		lastRow = row;
+		lastColumn = column;
 	}
 	
 	public boolean wordFound(int startRow, int startColumn, int endRow, int endColumn)
@@ -35,10 +47,21 @@ public class GameSession
 			// see if data is the same
 			if(bank.locations.equals(selectedLocation))
 			{
+				// doesn't allow words to be overwritten
+				bank.locations.remove(selectedLocation);
+
+				// see if the game has ended
+				wordsFilled++;
+				if(wordsFilled == wordsToFill)
+				{
+					gameOver();
+				}
+
 				return true;
 			}
 		}
 
+		// word was not found
 		return false;
 	}	
 	public void wordColor()
@@ -49,7 +72,7 @@ public class GameSession
 	{
 		//will highlight a word the players color
 	}
-	public void gameOver(int numberOfWords)
+	public void gameOver()
 	{
 		//method to determine if the game is over
 	}
