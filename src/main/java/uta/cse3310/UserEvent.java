@@ -7,7 +7,9 @@ public class UserEvent {
     int Button; // button number from 0 to 8
 
     UserEvent() {
-
+        GameId = 0;
+        PlayerIdx = PlayerType.NOPLAYER;
+        Button = 0;
     }
 
     UserEvent(int _GameId, PlayerType _PlayerIdx, int _Button) {
