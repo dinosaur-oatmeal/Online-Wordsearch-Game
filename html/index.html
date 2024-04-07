@@ -1,51 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang = "en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WordGrid Game</title>
-<link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
-<script defer src="script.js"></script> <!-- Link to your JS file -->
-</head>
-<body>
-<!-- Phase 1: Username Entry -->
-<div id="phase1">
-  <input type="text" id="username" placeholder="Enter your username">
-  <button onclick="enterUsername()">Enter</button>
-</div>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <title>Word Search Game</title>
+    <link rel = "stylesheet" href = "style.css"> <!-- Link to CSS file-->
+    <script defer src = "script.js"></script> <!-- Link to JS file-->
 
-<!-- Phase 2: Main Menu -->
-<div id="phase2" style="display:none;">
-    <!-- Left: Players & Messages -->
-    <div class="left-panel">
-        <div id="playersList">Players Online:</div>
-        <div id="messageBoard">Message Board:</div>
-        <input type="text" id="messageInput" placeholder="Type your message">
-        <button onclick="postMessage()">Send</button>
+    <!-- style for game board -->
+    <style>
+        .game-board
+        {
+            display: grid;
+            grid-template-columns: repeat(50, 1fr);
+            grid-gap: 1px;
+        }
+
+        .game-board button
+        {
+            width: 10;
+            height: 10;
+            font-size: 5;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Phase 1: User Entry -->
+    <div id = "phase 1">
+        <input type = "text" id = "username" placeholder = "Enter your username">
+        <button onclick = "enterUsername()">Enter</button>
     </div>
 
-      
+    <script>
+        function enterUsername()
+        {
+            var usernameInput = document.getElementById('username');
+            var username = usernameInput.value.trim();
 
-  <!-- Middle: Join Buttons -->
-  <div class="join-buttons">
-    <button onclick="joinGame(2)">Join 2</button>
-    <button onclick="joinGame(3)">Join 3</button>
-    <button onclick="joinGame(4)">Join 4</button>
-  </div>
+            if(username === "")
+            {
+                alert('Please enter a username.');
+                return;
+            }
 
-  <!-- Right: Leaderboard -->
-  <div id="leaderboard">Leaderboard:</div>
-</div>
+            document.getElementById('phase 1').style.display = 'none';
+            document.getElementById('phase 2').style.display = 'block';
+        }
+    </script>
 
-<!-- Phase 3: Word Grid Game (hidden initially) -->
-<div id="phase3" style="display:none;">
-  <div class="word-grid"> <!-- Grid placeholder, actual grid to be implemented -->
-    Word Grid Game Here
-  </div>
-  <div class="stats-page">
-    Stats Here
-    <button onclick="showStats()">Show Stats</button>
-  </div>
-</div>
+    <!-- Phase 2: Main Menu -->
+    <div id = "phase 2" style = "display:none;">
+        <!-- Left: Players & Messages -->
+        <div class = "left-panel">
+            <div id = "playersList">Players Online:</div>
+            <div id = "messageBoard">Message Board:</div>
+            <input type = "test" id = "messageInput" placeholder = "Type your message">
+            <button onclick = "postMessage()">Send</button>
+        </div>
+
+        <!-- Middle: Join Buttons -->
+        <div class = "join-buttons">
+            <button onclick = "joinGame(2)">Join 2</button>
+            <button onclick = "joinGame(3)">Join 3</button>
+            <button onclick = "joinGame(4)">Join 4</button>
+        </div>
+
+        <!-- Right: Leaderboard -->
+        <div id = "leaderboard">Leaderboard:</div>
+    </div>
+
+    <script>
+        function joinGame(playerCount)
+        {
+            if(!connection || connection.readyState !== WebSocket.OPEN)
+            {
+                console.error('Failure');
+                return;
+            }
+
+            var message = {type: "joinGame", maxPlayers: playerCount};
+            connection.send(JSON.stringify(message));
+
+            document.getElementById('phase 2').style.display = 'none';
+            document.getElementById('phase 3').style.display = 'block';
+        }
+    </script>
+
+    <!-- Phase 3: Word Grid Game (initially hidden) -->
+    <div id="phase3" style = "display:none;"> <!-- for debugging -->
+        <div class = "word-grid">
+            <script>
+
+                function initializeGameBoard()
+                {
+                    const board = document.getElementById('gameBoard');
+                    for(let i = 0; i < 50; i++)
+                    {
+                        for(let j = 0; j < 50; j++)
+                        {
+                            const button = document.createElement('button');
+                            button.textContent = `${i}, ${j}`;
+                            button.onclick = function(){selectCharacter(i, j);};
+                            board.appendChild(button);
+                        }
+                    }
+                }
+        
+                function selectCharacter(row, column)
+                {
+                    console.log(`Character at ${row}, ${column} selected`);
+                }
+        
+                window.onload = initializeGameBoard;
+                var idx = -1;
+                var gameid = -1;
+                var connection = null;
+                var serverUrl;
+                serverUrl = "ws://" + window.location.hostname + ":9880";
+        
+                // Create the connection with the server
+                connection = new WebSocket(serverUrl);
+        
+                connection.onopen = function (evt) {
+                    console.log("open");
+                }
+                connection.onclose = function (evt) {
+                    console.log("close");
+                    document.getElementById("topMessage").innerHTML = "Server Offline"
+                }
+        
+                connection.onmessage = function (evt) {
+                    var msg;
+                    msg = evt.data;
+        
+                    console.log("Message received: " + msg);
+                    const obj = JSON.parse(msg);
+        
+                    if ('YouAre' in obj)
+                    {
+                        if (obj.YouAre == "PLAYER1")
+                        {
+                            idx = 0;
+                        }
+        
+                        if (obj.YouAre == "PLAYER2")
+                        {
+                            idx = 1;
+                        }
+        
+                        if (obj.YouAre == "PLAYER3")
+                        {
+                            idx = 2;
+                        }
+        
+                        else
+                        {
+                            idx = 3;
+                        }
+        
+                        gameid = obj.GameId;
+                    }
+                    else if ('CurrentTurn' in obj) {
+                        // show statistics to everyone
+                        //var t = obj.Stats;
+                        //if (t) {
+                            //document.getElementById("timeMsg").innerHTML = "elapsed time " + t.RunningTime;
+                            //document.getElementById("statMsg").innerHTML =
+                                //" in progress " + t.GamesInProgress + " XWin " + t.XWins + " OWin " + t.OWins +
+                                //" Draw " + t.Draws + " Total " + t.TotalGames;
+                        //}
+        
+                        // only pay attention to this game
+                        //if (gameid == obj.GameId)
+                        {
+                        }
+                    }
+                }
+        
+                //function buttonclick(i) {
+                    //U = new UserEvent();
+                    //U.Button = i;
+                    //if (idx == 0)
+                        //U.PlayerIdx = "XPLAYER";
+                    //else
+                        //U.PlayerIdx = "OPLAYER";
+                    //U.GameId = gameid;
+                    //connection.send(JSON.stringify(U));
+                    //console.log(JSON.stringify(U))
+                //}
+            </script>
+        </div>
+        
+        <div class = "stats-page">
+            Stats Here
+            <button onclick = "showStats()">Show Stats</button>
+        </div>
+    </div>
 </body>
 </html>
