@@ -1,3 +1,4 @@
+User
 <!DOCTYPE html>
 <html lang = "en">
 <head>
@@ -6,26 +7,6 @@
     <title>Word Search Game</title>
     <link rel = "stylesheet" href = "style.css"> <!-- Link to CSS file-->
     <script defer src = "script.js"></script> <!-- Link to JS file-->
-
-    <!-- style for game board -->
-    <style>
-        .game-board
-        {
-            display: grid;
-            grid-template-columns: repeat(50, 1fr);
-            grid-gap: 1px;
-        }
-
-        .game-board button
-        {
-            width: 10;
-            height: 10;
-            font-size: 5;
-            padding: 0;
-            margin: 0;
-        }
-    </style>
-
 </head>
 
 <body>
@@ -58,7 +39,7 @@
         <div class = "left-panel">
             <div id = "playersList">Players Online:</div>
             <div id = "messageBoard">Message Board:</div>
-            <input type = "test" id = "messageInput" placeholder = "Type your message">
+            <input type = "text" id = "messageInput" placeholder = "Type your message">
             <button onclick = "postMessage()">Send</button>
         </div>
 
@@ -76,14 +57,63 @@
     <script>
         function joinGame(playerCount)
         {
-            if(!connection || connection.readyState !== WebSocket.OPEN)
+            var idx = -1;
+            var gameid = -1;
+            class UserEvent
             {
-                console.error('Failure');
-                return;
+                Button = -1
+                PlayerIdx = 0;
+                GameId = 0;
             }
 
-            var message = {type: "joinGame", maxPlayers: playerCount};
-            connection.send(JSON.stringify(message));
+            var connection = null;
+            var serverUrl;
+            serverUrl = "ws://" + window.location.hostname + ":9880";
+            connection = new WebSocket(serverUrl);
+
+            connection.onopen = function(evt)
+            {
+                console.log("open");
+            }
+
+            connection.onclose = function(evt)
+            {
+                console.log("close");
+            }
+            
+            const ButtonStateToDisplay = new Map();
+            ButtonStateToDisplay.set("Player1", "RED");
+            ButtonStateToDisplay.set("Player2", "GREEN");
+            ButtonStateToDisplay.set("Player3", "BLUE");
+            ButtonStateToDisplay.set("Player4", "ORANGE");
+            ButtonStateToDisplay.set("NOPLAYER", "YELLOW");
+            connection.onmessage = function(evt)
+            {
+                var msg;
+                msg = evt.data;
+                console.log("Message received: " + msg);
+                const obj = JSON.parse(msg);
+
+                if('YouAre' in obj)
+                    if(obj.YouAre == "Player1")
+                    {
+                        idx = 0;
+                    }
+                    if(obj.YouAre == "Player2")
+                    {
+                        idx = 1;
+                    }
+                    if(obj.YouAre == "Player3")
+                    {
+                        idx = 2;
+                    }
+                    else
+                    {
+                        idx = 3;
+                    }
+
+                gameid = obj.GameId
+            }
 
             document.getElementById('phase 2').style.display = 'none';
             document.getElementById('phase 3').style.display = 'block';
@@ -93,17 +123,20 @@
     <!-- Phase 3: Word Grid Game (initially hidden) -->
     <div id="phase3" style = "display:none;"> <!-- for debugging -->
         <div class = "word-grid">
+            <div id = "gameBoard" class = "game-board"></div>
+
             <script>
 
-                function initializeGameBoard()
+                function initializeGameBoard(boardData)
                 {
                     const board = document.getElementById('gameBoard');
+                    board.innerHTML = '';
                     for(let i = 0; i < 50; i++)
                     {
                         for(let j = 0; j < 50; j++)
                         {
                             const button = document.createElement('button');
-                            button.textContent = `${i}, ${j}`;
+                            button.textContent = boardData[i][j];
                             button.onclick = function(){selectCharacter(i, j);};
                             board.appendChild(button);
                         }
@@ -115,83 +148,18 @@
                     console.log(`Character at ${row}, ${column} selected`);
                 }
         
-                window.onload = initializeGameBoard;
-                var idx = -1;
-                var gameid = -1;
-                var connection = null;
-                var serverUrl;
-                serverUrl = "ws://" + window.location.hostname + ":9880";
-        
-                // Create the connection with the server
-                connection = new WebSocket(serverUrl);
-        
-                connection.onopen = function (evt) {
-                    console.log("open");
-                }
-                connection.onclose = function (evt) {
-                    console.log("close");
-                    document.getElementById("topMessage").innerHTML = "Server Offline"
-                }
-        
-                connection.onmessage = function (evt) {
-                    var msg;
-                    msg = evt.data;
+                connection.onmessage = function (evt)
+                {
+                    var msg = evt.data;
         
                     console.log("Message received: " + msg);
                     const obj = JSON.parse(msg);
-        
-                    if ('YouAre' in obj)
+
+                    if(obj.type === 'boardUpdate')
                     {
-                        if (obj.YouAre == "PLAYER1")
-                        {
-                            idx = 0;
-                        }
-        
-                        if (obj.YouAre == "PLAYER2")
-                        {
-                            idx = 1;
-                        }
-        
-                        if (obj.YouAre == "PLAYER3")
-                        {
-                            idx = 2;
-                        }
-        
-                        else
-                        {
-                            idx = 3;
-                        }
-        
-                        gameid = obj.GameId;
-                    }
-                    else if ('CurrentTurn' in obj) {
-                        // show statistics to everyone
-                        //var t = obj.Stats;
-                        //if (t) {
-                            //document.getElementById("timeMsg").innerHTML = "elapsed time " + t.RunningTime;
-                            //document.getElementById("statMsg").innerHTML =
-                                //" in progress " + t.GamesInProgress + " XWin " + t.XWins + " OWin " + t.OWins +
-                                //" Draw " + t.Draws + " Total " + t.TotalGames;
-                        //}
-        
-                        // only pay attention to this game
-                        //if (gameid == obj.GameId)
-                        {
-                        }
+                        initializeGameBoard(obj.board);
                     }
                 }
-        
-                //function buttonclick(i) {
-                    //U = new UserEvent();
-                    //U.Button = i;
-                    //if (idx == 0)
-                        //U.PlayerIdx = "XPLAYER";
-                    //else
-                        //U.PlayerIdx = "OPLAYER";
-                    //U.GameId = gameid;
-                    //connection.send(JSON.stringify(U));
-                    //console.log(JSON.stringify(U))
-                //}
             </script>
         </div>
         
