@@ -2,30 +2,25 @@ package uta.cse3310;
 
 public class WordLocation
 {
-   private int startRow;
-   private int startColumn;
-   private int endRow;
-   private int endColumn;
+   public int lastLocation;
+   public int location;
 
-   public WordLocation(int startRow, int startColumn, int endRow, int endColumn)
+   public WordLocation(int lastLocation, int location)
    {
-      this.startRow = startRow;
-      this.startColumn = startColumn;
-      this.endRow = endRow;
-      this.endColumn = endColumn;
+      this.lastLocation = lastLocation;
+      this.location = location;
    }
    
    // find equality of objects (coordinates)
-   public boolean equals(int startRow, int startColumn, int endRow, int endColumn)
+   public boolean equals(int lastLocation, int location)
    {
-      return this.startRow == startRow && this.startColumn == startColumn &&
-      this.endRow == endRow && this.endColumn == endColumn;
+      return this.lastLocation == lastLocation && this.location == location;
    }
    
    // toString for debugging
    @Override
    public String toString()
    {
-      return "Start: (" + startRow + ", " + startColumn + ") End: (" + endRow + ", " + endColumn + ")";
+      return "Start: ("+ lastLocation + ") End: (" + location + ")";
    }
 }

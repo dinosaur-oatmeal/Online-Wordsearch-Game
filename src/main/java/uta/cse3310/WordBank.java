@@ -161,8 +161,9 @@ public class WordBank
                board[row + i][column + i] = word.charAt(i);
             }
             
-            locations.add(new WordLocation(row, column, row + 4, column + 4));
-            
+            int start = row * 50 + column;
+            int end = start + (4 * 50) + 4;
+            locations.add(new WordLocation(start, end));
             // add to variables for statistics
             wordsFilled++;
             diagDown++;
@@ -207,7 +208,9 @@ public class WordBank
                board[row + 4 - i][column + i] = word.charAt(i);
             }
             
-            locations.add(new WordLocation(row + 4, column, row, column + 4));
+            int start = row * 50 + column;
+            int end = start - (4 * 50);
+            locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
             wordsFilled++;
@@ -253,7 +256,9 @@ public class WordBank
                board[row + i][column] = word.charAt(i);
             }
             
-            locations.add(new WordLocation(row, column, row + 4, column));
+            int start = row * 50 + column;
+            int end = start + (4 * 50);
+            locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
             wordsFilled++;
@@ -299,7 +304,9 @@ public class WordBank
                board[row + i][column] = word.charAt(4 - i);
             }
             
-            locations.add(new WordLocation(row, column, row + 4, column));
+            int start = row * 50 + column;
+            int end = start - (4 * 50);
+            locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
             wordsFilled++;
@@ -345,7 +352,9 @@ public class WordBank
                board[row][column + i] = word.charAt(i);
             }
             
-            locations.add(new WordLocation(row, column, row, column + 4));
+            int start = row * 50 + column;
+            int end = start + 4;
+            locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
             wordsFilled++;

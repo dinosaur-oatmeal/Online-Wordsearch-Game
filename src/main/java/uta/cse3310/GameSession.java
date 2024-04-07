@@ -5,43 +5,35 @@ import java.util.*;
 
 public class GameSession
 {
-	private Map<WebSocket, PlayerType> players = new HashMap<>();
-	private int MAX_PLAYERS;
-	private boolean gameStarted = false;
+	public PlayerType players;
+	public PlayerType[] button;
+	public int gameId;
+	public Statistics stats;
+
 	WordBank bank = new WordBank();
+	char[][] board;
 	int wordsToFill = bank.wordsToFill;
 	int wordsFilled = 0;
-	int lastRow, lastColumn = -1;
+	int lastLocation, location = -1;
 
-	public GameSession(int maxPlayers)
+	public GameSession(Statistics s)
 	{
-		this.MAX_PLAYERS = maxPlayers;
+		stats = s;
+		button = new PlayerType[2500];
+		resetBoard();
 	}
 
-	public boolean addPlayer(WebSocket conn, PlayerType type)
+	public void resetBoard()
 	{
-		if(players.size() < MAX_PLAYERS)
+		for(int i = 0; i < button.length; i++)
 		{
-			players.put(conn, type);
-			return true;
+			button[i] = PlayerType.NOPLAYER;
 		}
-
-		return false;
 	}
 
-	public boolean isFull()
+	public void startGame()
 	{
-		return players.size() == MAX_PLAYERS;
-	}
-
-	public int getPlayerCount()
-	{
-		return players.size();
-	}
-
-	public char[][] startGame()
-	{
-		char[][] board = bank.generateGrid();
+		board = bank.generateGrid();
 
 		// print for debugging
 		for(int i = 0; i < 50; i++)
@@ -52,28 +44,24 @@ public class GameSession
 			}
 			System.out.print("\n");
 		}
-
-		return board;
 	}
 	
-	public void charSelected(int row, int column)
+	public void charSelected(int location)
 	{
 		// see if the current character is in the same word as the last one chosen (either direction)
-		if(wordFound(lastRow, lastColumn, row, column) ||
-		wordFound(row, column, lastRow, lastColumn))
+		if(wordFound(lastLocation, location))
 		{
 			highlightWord();
 		}
 
 		// update last character chosen
-		lastRow = row;
-		lastColumn = column;
+		lastLocation = location;
 	}
 	
-	public boolean wordFound(int startRow, int startColumn, int endRow, int endColumn)
+	public boolean wordFound(int lastLocation, int location)
 	{
 		// cast selected locations to a WordLocation object
-		WordLocation selectedLocation = new WordLocation(startRow, startColumn, endRow, endColumn);
+		WordLocation selectedLocation = new WordLocation(lastLocation, location);
 		
 		// loop through ArrayList of location structures
 		for(int i = 0; i < bank.locations.size(); i++)
@@ -113,7 +101,15 @@ public class GameSession
 	public void update(UserEvent U)
 	{
 		//will update the game when a word is won by a player
-		System.out.println("TEST");
+		System.out.println("The user event is " + U.PlayerIdx + " " + U.Button);
+
+		if(button[U.Button] == PlayerType.NOPLAYER)
+		{
+			System.out.println("The button was 0, setting it to " + U.PlayerIdx);
+			button[U.Button] = U.PlayerIdx;
+
+			//charSelected(button[U.Button]);
+		}
 	}
 	
 }
