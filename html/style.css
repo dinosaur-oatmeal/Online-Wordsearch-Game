@@ -1,0 +1,47 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+  }
+  
+  #phase2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* Ensures that children fill the vertical space */
+    height: 100vh; /* 100% of the viewport height */
+  }
+  
+  .left-panel, .join-buttons, #leaderboard {
+    flex: 1; /* Allows each section to take equal width */
+    margin: 10px;
+    display: flex;
+    flex-direction: column; /* Aligns inner content vertically */
+  }
+  
+  #leaderboard, .left-panel {
+    overflow-y: auto; /* Adds scroll to these sections if content exceeds height */
+  }
+  
+  .join-buttons {
+    justify-content: center; /* Centers buttons vertically */
+    align-items: center; /* Centers buttons horizontally */
+  }
+  
+  .word-grid {
+    display: none; /* Hidden by default, shown in phase 3 */
+  }
+  
+  .stats-page {
+    display: none; /* Hidden by default, shown in phase 3 */
+  }
+  
+  #messageBoard, #playersList {
+    flex: 1; /* Allows these sections to fill available space equally */
+    margin-bottom: 10px; /* Adds space between message board and input area */
+  }
+  
+  input[type="text"], button {
+    margin: 5px 0; /* Adds a little space around input and button */
+  }
+  
