@@ -60,11 +60,14 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class App extends WebSocketServer {
+public class App extends WebSocketServer
+{
 
   // All games currently underway on this server are stored in
-  // the vector ActiveGames
-  private Vector<WordBankGame> ActiveGames = new Vector<WordBankGame>();
+  // the vector activeGames
+  private Gson gson = new Gson();
+  private PlayerType type = null;
+  private Vector<GameSession> activeGames = new Vector<GameSession>();
 
   private int GameId = 1;
 
@@ -74,62 +77,54 @@ public class App extends WebSocketServer {
 
   private Statistics stats;
 
-  public App(int port) {
+  public App(int port)
+  {
     super(new InetSocketAddress(port));
   }
 
-  public App(InetSocketAddress address) {
+  public App(InetSocketAddress address)
+  {
     super(address);
   }
 
-  public App(int port, Draft_6455 draft) {
+  public App(int port, Draft_6455 draft)
+  {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
   }
 
   @Override
-  public void onOpen(WebSocket conn, ClientHandshake handshake) {
+  public void onOpen(WebSocket conn, ClientHandshake handshake)
+  {
 
     connectionId++;
-
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
+    GameSession gameSession = findAvailableGameSession();
+
+    if(gameSession == null)
+    {
+      gameSession = new GameSession(GameId++);
+      activeGames.add(gameSession);
+    }
+
+    PlayerType type = determinePlayerType(gameSession);
+    gameSession.addPlayer(conn, type);
+
+    if(gameSession.isFull())
+    {
+      gameSession.startGame();
+      //broadcastGameStarts(gameSession);
+    }
+
     ServerEvent E = new ServerEvent();
-
-    // search for a game needing a player
-    WordBankGame G = null;
-    for (WordBankGame i : ActiveGames) {
-      if (i.Players == uta.cse3310.PlayerType.Player2) {
-        G = i;
-        System.out.println("found a match");
-      }
-    }
-
-    // No matches ? Create a new Game.
-    if (G == null) {
-      G = new WordBankGame(stats);
-      G.GameId = GameId;
-      GameId++;
-      // Add the first player
-      G.Players = PlayerType.Player1;
-      ActiveGames.add(G);
-      System.out.println(" creating a new Game");
-    } else {
-      // join an existing game
-      System.out.println(" not a new game");
-      G.Players = PlayerType.Player2;
-      G.GS.startGame();
-    }
-
     // create an event to go to only the new player
-    E.YouAre = G.Players;
-    E.GameId = G.GameId;
+    E.YouAre = type;
+    E.GameId = activeGames.size();
 
     // allows the websocket to give us the Game when a message arrives..
     // it stores a pointer to G, and will give that pointer back to us
     // when we ask for it
-    conn.setAttachment(G);
-
-    Gson gson = new Gson();
+    conn.setAttachment(gameSession);
 
     // Note only send to the single connection
     String jsonString = gson.toJson(E);
@@ -142,23 +137,44 @@ public class App extends WebSocketServer {
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // The state of the game has changed, so lets send it to everyone
-    jsonString = gson.toJson(G);
+    jsonString = gson.toJson(gameSession);
     System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
     broadcast(jsonString);
 
   }
 
-  @Override
-  public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-    System.out.println(conn + " has closed");
-    // Retrieve the game tied to the websocket connection
-    WordBankGame G = conn.getAttachment();
-    G = null;
+  private GameSession findAvailableGameSession()
+  {
+    for(GameSession session : activeGames)
+    {
+      if(!session.isFull())
+      {
+        return session;
+      }
+    }
+
+    return null;
+  }
+
+  private PlayerType determinePlayerType(GameSession gameSession)
+  {
+    int playerCount = gameSession.getPlayerCount();
+    return PlayerType.values()[playerCount];
   }
 
   @Override
-  public void onMessage(WebSocket conn, String message) {
+  public void onClose(WebSocket conn, int code, String reason, boolean remote)
+  {
+    System.out.println(conn + " has closed");
+    // Retrieve the game tied to the websocket connection
+    GameSession gameSession = conn.getAttachment();
+    gameSession = null;
+  }
+
+  @Override
+  public void onMessage(WebSocket conn, String message)
+  {
     System.out
         .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
 
@@ -172,13 +188,13 @@ public class App extends WebSocketServer {
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // Get our Game Object
-    WordBankGame G = conn.getAttachment();
-    //G.gameSession.Update(U);
+    GameSession gameSession = conn.getAttachment();
+    gameSession.update(U);
 
     // send out the game state every time
     // to everyone
     String jsonString;
-    jsonString = gson.toJson(G);
+    jsonString = gson.toJson(gameSession);
 
     System.out
         .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
@@ -186,34 +202,41 @@ public class App extends WebSocketServer {
   }
 
   @Override
-  public void onMessage(WebSocket conn, ByteBuffer message) {
+  public void onMessage(WebSocket conn, ByteBuffer message)
+  {
     System.out.println(conn + ": " + message);
   }
 
   @Override
-  public void onError(WebSocket conn, Exception ex) {
+  public void onError(WebSocket conn, Exception ex)
+  {
     ex.printStackTrace();
-    if (conn != null) {
+    if (conn != null)
+    {
       // some errors like port binding failed may not be assignable to a specific
       // websocket
     }
   }
 
   @Override
-  public void onStart() {
+  public void onStart()
+  {
     setConnectionLostTimeout(0);
     stats = new Statistics();
     startTime = Instant.now();
   }
 
-  private String escape(String S) {
+  private String escape(String S)
+  {
     // turns " into \"
     String retval = new String();
     // this routine is very slow.
     // but it is not called very often
-    for (int i = 0; i < S.length(); i++) {
+    for (int i = 0; i < S.length(); i++)
+    {
       Character ch = S.charAt(i);
-      if (ch == '\"') {
+      if (ch == '\"')
+      {
         retval = retval + '\\';
       }
       retval = retval + ch;
@@ -221,8 +244,8 @@ public class App extends WebSocketServer {
     return retval;
   }
 
-  public static void main(String[] args) {
-
+  public static void main(String[] args)
+  {
     // Set up the http server
     int port = 9080;
     HttpServer H = new HttpServer(port, "./html");

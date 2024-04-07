@@ -1,13 +1,45 @@
 package uta.cse3310;
 
+import org.java_websocket.WebSocket;
+import java.util.*;
+
 public class GameSession
 {
+	private Map<WebSocket, PlayerType> players = new HashMap<>();
+	private int MAX_PLAYERS;
+	private boolean gameStarted = false;
 	WordBank bank = new WordBank();
 	int wordsToFill = bank.wordsToFill;
 	int wordsFilled = 0;
 	int lastRow, lastColumn = -1;
 
-	public void startGame()
+	public GameSession(int maxPlayers)
+	{
+		this.MAX_PLAYERS = maxPlayers;
+	}
+
+	public boolean addPlayer(WebSocket conn, PlayerType type)
+	{
+		if(players.size() < MAX_PLAYERS)
+		{
+			players.put(conn, type);
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isFull()
+	{
+		return players.size() == MAX_PLAYERS;
+	}
+
+	public int getPlayerCount()
+	{
+		return players.size();
+	}
+
+	public char[][] startGame()
 	{
 		char[][] board = bank.generateGrid();
 
@@ -20,6 +52,8 @@ public class GameSession
 			}
 			System.out.print("\n");
 		}
+
+		return board;
 	}
 	
 	public void charSelected(int row, int column)
@@ -79,6 +113,7 @@ public class GameSession
 	public void update(UserEvent U)
 	{
 		//will update the game when a word is won by a player
+		System.out.println("TEST");
 	}
 	
 }

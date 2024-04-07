@@ -1,6 +1,7 @@
 package uta.cse3310;
 
-public class WordBankGame {
+public class WordBankGame
+{
     public PlayerType Players;
     public PlayerType CurrentTurn;
     public int GameId;
@@ -13,7 +14,6 @@ public class WordBankGame {
     public Players P;
     public Lobby Lby;
     public Leaderboard Lboard;
-    public GameSession GS;
 
     WordBankGame(Statistics s)
     {
@@ -25,21 +25,23 @@ public class WordBankGame {
         Msg[1] = "";
     }
 
-    public WordBankGame(String nickname) {
+    public WordBankGame(String nickname)
+    {
         this.nickname = nickname;
         this.UA = new UserAuthentication();
         this.P = new Players();
         this.Lby = new Lobby();
         this.Lboard = new Leaderboard();
-        this.GS = new GameSession();
     }
 
-    public int openSpots() {
+    public int openSpots()
+    {
         // Calculate open spots in the game
         return 0; // Placeholder
     }
 
-    public void tick() {
+    public void tick()
+    {
         // Advances game 
     }
 }
