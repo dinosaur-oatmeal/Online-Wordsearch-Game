@@ -150,6 +150,7 @@ public class App extends WebSocketServer
     if(G.players == PlayerType.Player2)
     {
       String boardJson = gson.toJson(G.board);
+      System.out.println(boardJson);
       conn.send(boardJson);
     }
 

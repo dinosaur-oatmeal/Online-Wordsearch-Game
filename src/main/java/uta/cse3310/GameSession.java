@@ -36,14 +36,14 @@ public class GameSession
 		board = bank.generateGrid();
 
 		// print for debugging
-		for(int i = 0; i < 50; i++)
+		/*for(int i = 0; i < 50; i++)
 		{
 			for(int j = 0; j < 50; j++)
 			{
 				System.out.print(board[i][j] + " ");
 			}
 			System.out.print("\n");
-		}
+		}*/
 	}
 	
 	public void charSelected(int location)
