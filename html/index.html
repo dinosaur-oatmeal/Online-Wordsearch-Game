@@ -5,6 +5,23 @@
     <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
     <title>Word Search Game</title>
     <link rel = "stylesheet" href = "style.css"> <!-- Link to CSS file-->
+    <style>
+    .game-board
+    {
+        display: grid;
+        grid-template-columns: repeat(50, 1fr);
+        grid-gap: 1px;
+    }
+
+    .game-board button
+    {
+        width: 100%;
+        height: 20px;
+        padding: 0;
+        margin: 0;
+        font-size: 12px;
+    }
+    </style>
 </head>
 
 <body>
@@ -61,10 +78,13 @@
     </div>
 
     <script>
+
+    var connection;
+
     function joinGame(playerCount)
     {
         var serverUrl = "ws://" + window.location.hostname + ":9880";
-        var connection = new WebSocket(serverUrl);
+        connection = new WebSocket(serverUrl);
         var idx = -1;
         var gameid = -1;
 
@@ -100,24 +120,27 @@
     }
         
     function initializeGameBoard(boardData)
+    {
+        const board = document.getElementById('gameBoard');
+        for(let i = 0; i < 50; i++)
+        {
+            for(let j = 0; j < 50; j++)
             {
-                const board = document.getElementById('gameBoard');
-                for(let i = 0; i < 50; i++)
-                {
-                    for(let j = 0; j < 50; j++)
-                    {
-                        const button = document.createElement('button');
-                        button.textContent = boardData[i][j];
-                        button.onclick = function(){selectCharacter(i, j);};
-                        board.appendChild(button);
-                    }
-                }
+                const button = document.createElement('button');
+                button.textContent = boardData[i][j];
+                button.onclick = function(){selectCharacter(i, j);};
+                board.appendChild(button);
             }
+        }
+    }
         
-            function selectCharacter(row, column)
-            {
-                console.log(`Character at ${row}, ${column} selected`);
-            }
+    function selectCharacter(row, column)
+    {
+        console.log(`Character at ${row}, ${column} selected`);
+
+        const message = JSON.stringify({action: "selectCharacter", row: row, column: column});
+        connection.send(message);
+    }
     </script>
 </body>
 </html>
