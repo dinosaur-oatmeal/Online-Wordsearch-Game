@@ -65,7 +65,6 @@ public class App extends WebSocketServer
 
   // All games currently underway on this server are stored in
   // the vector activeGames
-  private PlayerType type = null;
   private Vector<GameSession> activeGames = new Vector<GameSession>();
 
   private int gameId = 1;
@@ -133,7 +132,16 @@ public class App extends WebSocketServer
     }
 
     // create an event to go to only the new player
-    E.YouAre = type;
+    if(G.players == PlayerType.Player1)
+    {
+      E.YouAre = PlayerType.Player1;
+    }
+
+    else
+    {
+      E.YouAre = PlayerType.Player2;
+    }
+
     E.gameId = G.gameId;
 
     // allows the websocket to give us the Game when a message arrives..
@@ -145,26 +153,23 @@ public class App extends WebSocketServer
 
     // Note only send to the single connection
     String jsonString = gson.toJson(E);
-    conn.send(jsonString);
+    broadcast(jsonString);
 
     if(G.players == PlayerType.Player2)
     {
       String boardJson = gson.toJson(G.board);
-      System.out.println(boardJson);
+      //System.out.println(boardJson);
       conn.send(boardJson);
     }
 
-    System.out
-        .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " "
-            + escape(jsonString));
+    //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
 
     // Update the running time
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
     // The state of the game has changed, so lets send it to everyone
     jsonString = gson.toJson(G);
-    System.out
-        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
     broadcast(jsonString);
 
   }
