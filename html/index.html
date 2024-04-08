@@ -5,7 +5,6 @@
     <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
     <title>Word Search Game</title>
     <link rel = "stylesheet" href = "style.css"> <!-- Link to CSS file-->
-    <script defer src = "script.js"></script> <!-- Link to JS file-->
 </head>
 
 <body>
@@ -86,26 +85,17 @@
             console.log("Message received: " + evt.data);
             const obj = JSON.parse(evt.data);
 
-            if(Array.isArray(obj) && obj.every(Array.isArray))
-            {
-                initializeGameBoard(obj.board);
-
-                document.getElementById('phase 2').style.display = 'none';
-                document.getElementById('phase 3').style.display = 'block';
-            }
-
             if('YouAre' in obj)
             {
-                if(obj.youAre === "Player1") idx = 0;
-                else if(obj.youAre === "Player2") idx = 1;
-                else if(obj.youAre === "Player3") idx = 2;
-                else idx = 3;
-
+                idx = ["Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
                 gameid = obj.GameId;
             }
 
-            else if(obj.type === 'boardUpdate')
+            if(idx > 0 && obj.board)
             {
+                document.getElementById('phase 2').style.display = 'none';
+                document.getElementById('phase 3').style.display = 'block';
+                    
                 initializeGameBoard(obj.board);
             }
         }
