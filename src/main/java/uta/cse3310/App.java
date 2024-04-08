@@ -75,6 +75,8 @@ public class App extends WebSocketServer
 
   private Statistics stats;
 
+  GameSession G = null;
+
   public App(int port)
   {
     super(new InetSocketAddress(port));
@@ -97,8 +99,6 @@ public class App extends WebSocketServer
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
     ServerEvent E = new ServerEvent();
-
-    GameSession G = null;
 
     // match found
     for(GameSession i : activeGames)
@@ -194,6 +194,15 @@ public class App extends WebSocketServer
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
+    System.out.println(message);
+
+    if("selectCharacter".equals(U.getAction()))
+    {
+      int row = U.getRow();
+      int column = U.getColumn();
+      System.out.println("\n Row: " + row + " Column: " + column + "\n");
+      G.charSelected(row * 50 + column);
+    }
 
     // Update the running time
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
