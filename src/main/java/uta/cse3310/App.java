@@ -75,8 +75,6 @@ public class App extends WebSocketServer
 
   private Statistics stats;
 
-  GameSession G = null;
-
   public App(int port)
   {
     super(new InetSocketAddress(port));
@@ -99,6 +97,7 @@ public class App extends WebSocketServer
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
     ServerEvent E = new ServerEvent();
+    GameSession G = null;
 
     // match found
     for(GameSession i : activeGames)
@@ -107,6 +106,9 @@ public class App extends WebSocketServer
       {
         G = i;
         System.out.println("found a match");
+        G.players = PlayerType.Player2;
+        E.YouAre = PlayerType.Player2;
+        break;
       }
     }
 
@@ -119,35 +121,17 @@ public class App extends WebSocketServer
 
       // add first player
       G.players = PlayerType.Player1;
+      E.YouAre = PlayerType.Player1;
       activeGames.add(G);
       System.out.println("creating a new game");
     }
 
-    // join existing game
-    else
-    {
-      System.out.println("not a new game");
-      G.players = PlayerType.Player2;
-      G.startGame();
-    }
-
-    // create an event to go to only the new player
-    if(G.players == PlayerType.Player1)
-    {
-      E.YouAre = PlayerType.Player1;
-    }
-
-    else
-    {
-      E.YouAre = PlayerType.Player2;
-    }
-
+    conn.setAttachment(G);
     E.gameId = G.gameId;
 
     // allows the websocket to give us the Game when a message arrives..
     // it stores a pointer to G, and will give that pointer back to us
     // when we ask for it
-    conn.setAttachment(G);
 
     Gson gson = new Gson();
 
@@ -155,14 +139,16 @@ public class App extends WebSocketServer
     String jsonString = gson.toJson(E);
     broadcast(jsonString);
 
-    if(G.players == PlayerType.Player2)
+    if(E.YouAre == PlayerType.Player2)
     {
-      String boardJson = gson.toJson(G.board);
-      //System.out.println(boardJson);
-      conn.send(boardJson);
+      G.startGame();
     }
 
-    //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
+    String boardJson = gson.toJson(G.board);
+    //System.out.println(boardJson);
+    broadcast(boardJson);
+
+    System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
 
     // Update the running time
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
@@ -186,8 +172,10 @@ public class App extends WebSocketServer
   @Override
   public void onMessage(WebSocket conn, String message)
   {
-    System.out
-        .println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
+    //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
+
+    // Get our Game Object
+    GameSession G = conn.getAttachment();
 
     // Bring in the data from the webpage
     // A UserEvent is all that is allowed at this point
@@ -201,14 +189,14 @@ public class App extends WebSocketServer
       int row = U.getRow();
       int column = U.getColumn();
       System.out.println("\n Row: " + row + " Column: " + column + "\n");
-      G.charSelected(row * 50 + column);
+
+      G.charSelected(row * 50 + column, G.players);
+      System.out.println(G.players);
     }
 
     // Update the running time
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
-    // Get our Game Object
-    GameSession G = conn.getAttachment();
     G.update(U);
 
     // send out the game state every time
@@ -216,8 +204,7 @@ public class App extends WebSocketServer
     String jsonString;
     jsonString = gson.toJson(G);
 
-    System.out
-        .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
     broadcast(jsonString);
   }
 

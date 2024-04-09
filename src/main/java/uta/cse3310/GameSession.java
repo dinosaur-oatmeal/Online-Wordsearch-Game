@@ -21,14 +21,15 @@ public class GameSession
 		stats = s;
 		button = new PlayerType[2500];
 		resetBoard();
+		players = PlayerType.Player1;
 	}
 
 	public void resetBoard()
 	{
-		for(int i = 0; i < button.length; i++)
+		/*for(int i = 0; i < button.length; i++)
 		{
 			button[i] = PlayerType.NOPLAYER;
-		}
+		}*/
 	}
 
 	public void startGame()
@@ -46,7 +47,7 @@ public class GameSession
 		}*/
 	}
 	
-	public void charSelected(int location)
+	public void charSelected(int location, PlayerType type)
 	{
 		// see if the current character is in the same word as the last one chosen (either direction)
 		if(wordFound(lastLocation, location))
