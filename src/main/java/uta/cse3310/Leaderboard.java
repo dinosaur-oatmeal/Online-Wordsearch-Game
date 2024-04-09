@@ -30,5 +30,6 @@ public class Leaderboard {
             scores.put(nickname, scores.get(nickname) + 1);
         } else {
             scores.put(nickname, 1);
+        }
     }
 }
