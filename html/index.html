@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Search Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(50, 1fr);
+            grid-gap: 1px;
+        }
+
+        .game-board button {
+            width: 100%;
+            height: 20px;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Phase 1: User Entry -->
+    <div id="phase 1">
+        <input type="text" id="username" placeholder="Enter your username">
+        <button onclick="enterUsername()">Enter</button>
+    </div>
+
+    <script>
+        function enterUsername() {
+            var usernameInput = document.getElementById('username');
+            var username = usernameInput.value.trim();
+
+            if(username === "") {
+                alert('Please enter a username.');
+                return;
+            }
+
+            document.getElementById('phase 1').style.display = 'none';
+            document.getElementById('phase 2').style.display = 'block';
+        }
+    </script>
+
+    <!-- Phase 2 & 3: Main Menu & Game -->
+    <div id="phase 2" style="display:none;">
+        <!-- Left: Players & Messages -->
+        <div class="left-panel">
+            <div id="playersList">Players Online:</div>
+            <div id="messageBoard">Message Board:</div>
+            <input type="text" id="messageInput" placeholder="Type your message">
+            <button onclick="postMessage()">Send</button>
+        </div>
+
+        <!-- Middle: Join Buttons -->
+        <div class="join-buttons">
+            <button onclick="joinGame(2)">Join 2</button>
+            <button onclick="joinGame(3)">Join 3</button>
+            <button onclick="joinGame(4)">Join 4</button>
+        </div>
+
+        <!-- Right: Leaderboard -->
+        <div id="leaderboard">Leaderboard:</div>
+    </div>
+
+    <div id="phase 3" style="display:none;">
+        <div id="gameBoard" class="game-board"></div>
+    </div>
+
+    <div class="stats-page">
+        Stats Here
+        <button onclick="showStats()">Show Stats</button>
+    </div>
+
+    <script>
+        var connection;
+
+        function joinGame(playerCount) {
+            var serverUrl = "ws://" + window.location.hostname + ":9880";
+            connection = new WebSocket(serverUrl);
+
+            connection.onopen = function(evt) {
+                console.log("open");
+            }
+
+            connection.onclose = function(evt) {
+                console.log("close");
+            }
+
+            connection.onmessage = function(evt) {
+                console.log("Message received: " + evt.data);
+                const obj = JSON.parse(evt.data);
+
+                if ('YouAre' in obj) {
+                    var idx = ["Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
+                    var gameid = obj.GameId;
+                }
+
+                if (idx > 0 && obj.board) {
+                    document.getElementById('phase 2').style.display = 'none';
+                    document.getElementById('phase 3').style.display = 'block';
+                    initializeGameBoard(obj.board);
+                }
+            }
+        }
+
+        function initializeGameBoard(boardData) {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = ''; // Clear existing buttons
+            for (let i = 0; i < 50; i++) {
+                for (let j = 0; j < 50; j++) {
+                    const button = document.createElement('button');
+                    button.textContent = boardData[i][j];
+                    button.onclick = function() { selectCharacter(i, j); };
+                    board.appendChild(button);
+                }
+            }
+        }
+
+        function selectCharacter(row, column) {
+            console.log(`Character at ${row}, ${column} selected`);
+            const message = JSON.stringify({ action: "selectCharacter", row: row, column: column });
+            connection.send(message);
+        }
+    </script>
+</body>
+</html>
