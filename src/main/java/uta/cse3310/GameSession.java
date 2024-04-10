@@ -12,9 +12,11 @@ public class GameSession
 
 	WordBank bank = new WordBank();
 	char[][] board;
-	int wordsToFill = bank.wordsToFill;
-	int wordsFilled = 0;
-	int lastLocation, location = -1;
+	int wordsToFind = bank.wordsToFill;
+	int wordsFound = 0;
+	int lastLocation = -1;
+	int Player1Score = 0;
+	int Player2Score = 0;
 
 	public GameSession(Statistics s)
 	{
@@ -26,15 +28,16 @@ public class GameSession
 
 	public void resetBoard()
 	{
-		/*for(int i = 0; i < button.length; i++)
+		for(int i = 0; i < button.length; i++)
 		{
 			button[i] = PlayerType.NOPLAYER;
-		}*/
+		}
 	}
 
 	public void startGame()
 	{
 		board = bank.generateGrid();
+		//System.out.println(bank.locations);
 
 		// print for debugging
 		/*for(int i = 0; i < 50; i++)
@@ -49,10 +52,33 @@ public class GameSession
 	
 	public void charSelected(int location, PlayerType type)
 	{
+		System.out.println("\n" + type + "\n");
+
 		// see if the current character is in the same word as the last one chosen (either direction)
 		if(wordFound(lastLocation, location))
 		{
+			// highlight the found word
 			highlightWord();
+
+			// add to Player1 score
+			if(type == PlayerType.Player1)
+			{
+				Player1Score++;
+			}
+
+			// add to Player2 score
+			if(type == PlayerType.Player2)
+			{
+				Player2Score++;
+			}
+
+			// add to total words found and see if the game is over
+			wordsFound++;
+
+			if(wordsFound == wordsToFind)
+			{
+				gameOver();
+			}
 		}
 
 		// update last character chosen
@@ -72,13 +98,6 @@ public class GameSession
 			{
 				// doesn't allow words to be overwritten
 				bank.locations.remove(selectedLocation);
-
-				// see if the game has ended
-				wordsFilled++;
-				if(wordsFilled == wordsToFill)
-				{
-					gameOver();
-				}
 
 				return true;
 			}

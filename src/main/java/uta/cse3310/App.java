@@ -146,7 +146,7 @@ public class App extends WebSocketServer
 
     String boardJson = gson.toJson(G.board);
     //System.out.println(boardJson);
-    broadcast(boardJson);
+    conn.send(boardJson);
 
     System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
 
@@ -191,7 +191,7 @@ public class App extends WebSocketServer
       System.out.println("\n Row: " + row + " Column: " + column + "\n");
 
       G.charSelected(row * 50 + column, G.players);
-      System.out.println(G.players);
+      //System.out.println(G.players);
     }
 
     // Update the running time
