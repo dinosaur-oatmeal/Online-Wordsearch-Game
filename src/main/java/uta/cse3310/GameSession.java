@@ -5,7 +5,8 @@ import java.util.*;
 
 public class GameSession
 {
-	public PlayerType players;
+	public PlayerType player;
+	public PlayerType[] players;
 	public PlayerType[] button;
 	public int gameId;
 	public Statistics stats;
@@ -23,7 +24,36 @@ public class GameSession
 		stats = s;
 		button = new PlayerType[2500];
 		resetBoard();
-		players = PlayerType.Player1;
+		player = PlayerType.Player1;
+		players = new PlayerType[5];
+	}
+
+	public void addPlayer(PlayerType player)
+	{
+		if(player == PlayerType.Player1)
+		{
+			players[0] = player;
+		}
+
+		else if(player == PlayerType.Player2)
+		{
+			players[1] = player;
+		}
+
+		else if(player == PlayerType.Player3)
+		{
+			players[2] = player;
+		}
+
+		else
+		{
+			players[3] = player;
+		}
+	}
+
+	public boolean isFull()
+	{
+		return players[3] != null;
 	}
 
 	public void resetBoard()
@@ -114,9 +144,9 @@ public class GameSession
 	{
 		//will highlight a word the players color
 	}
-	public void gameOver()
+	public boolean gameOver()
 	{
-		//method to determine if the game is over
+		return wordsToFind == wordsFound;
 	}
 	public void update(UserEvent U)
 	{
