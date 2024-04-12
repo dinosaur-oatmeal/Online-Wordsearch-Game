@@ -76,13 +76,12 @@
     </div>
 
     <script>
-        const httpPort = parseInt(process.env.HTTP_PORT); 
-        const wsPort = parseInt(process.env.WEBSOCKET_PORT); 
-
+        // Create WebSocket connection dynamically
         var connection;
 
         function joinGame(playerCount) {
-            var serverUrl = "ws://" + window.location.hostname + ":" + wsPort;
+            var portOffset = 100; // Offset to add to the port number
+            var serverUrl = "ws://" + window.location.hostname + ":" + (parseInt(location.port) + portOffset);
             connection = new WebSocket(serverUrl);
             var idx = -1;
             var gameid = -1;
