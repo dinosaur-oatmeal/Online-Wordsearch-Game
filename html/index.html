@@ -76,13 +76,13 @@
     </div>
 
     <script>
-        const httpPort = parseInt(process.env.HTTP_PORT) || 9013;
-        const wsUrl = process.env.WEBSOCKET_PORT || "ws://localhost:9113";
+        const httpPort = parseInt(process.env.HTTP_PORT); 
+        const wsPort = parseInt(process.env.WEBSOCKET_PORT); 
 
         var connection;
 
         function joinGame(playerCount) {
-            var serverUrl = wsUrl;
+            var serverUrl = "ws://" + window.location.hostname + ":" + wsPort;
             connection = new WebSocket(serverUrl);
             var idx = -1;
             var gameid = -1;
