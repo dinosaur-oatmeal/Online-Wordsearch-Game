@@ -14,11 +14,23 @@
         }
 
         .game-board button {
-            width: 100%;
+            width: 75%;
             height: 20px;
             padding: 0;
             margin: 0;
             font-size: 12px;
+        }
+
+        .Player1Highlight
+        {
+            background-color: blue;
+            color: white;
+        }
+    
+        .Player2Highlight
+        {
+            background-color: red;
+            color: white;
         }
     </style>
 </head>
@@ -80,12 +92,13 @@
         const wsPort = parseInt(process.env.WEBSOCKET_PORT); 
 
         var connection;
+        var idx;
 
         function joinGame(playerCount) {
             var serverUrl;
             serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
             connection = new WebSocket(serverUrl);
-            var idx = -1;
+            idx = -1;
             var gameid = -1;
 
             connection.onopen = function (evt) {
@@ -96,6 +109,7 @@
                 console.log("close");
             }
 
+            // players filled into game, and transition from lobby to board
             connection.onmessage = function (evt) {
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
@@ -103,6 +117,23 @@
                 if ('YouAre' in obj) {
                     idx = ["Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
                     gameid = obj.GameId;
+                }
+
+                // change from board to lobby if the game has ended
+                if ('gameOver' in obj)
+                {
+                    document.getElementById('phase 2').style.display = 'block';
+                    document.getElementById('phase 3').style.display = 'none';
+                }
+
+                // highlight word positions
+                if('wordPositions' in obj)
+                {
+                    obj.wordPositions.forEach(position =>{
+                        const row = Math.floor(position / 50);
+                        const column = position % 50;
+                        highlightButton(row, column, idx);
+                    });
                 }
 
                 if (idx > 0 && obj.board) {
@@ -114,10 +145,14 @@
             }
         }
 
-        function initializeGameBoard(boardData) {
+        // generate board from WordGrid.java, and append data onto buttons
+        function initializeGameBoard(boardData)
+        {
             const board = document.getElementById('gameBoard');
-            for (let i = 0; i < 50; i++) {
-                for (let j = 0; j < 50; j++) {
+            for (let i = 0; i < 50; i++)
+            {
+                for (let j = 0; j < 50; j++)
+                {
                     const button = document.createElement('button');
                     button.textContent = boardData[i][j];
                     button.onclick = function () { selectCharacter(i, j); };
@@ -126,11 +161,25 @@
             }
         }
 
-        function selectCharacter(row, column) {
-            console.log(`Character at ${row}, ${column} selected`);
+        // character button is pressed: highlight button, and send data to App.java to be processed
+        function selectCharacter(row, column)
+        {
+            console.log(`Character at ${row}, ${column} selected by ${idx}`);
 
-            const message = JSON.stringify({ action: "selectCharacter", row: row, column: column });
+            highlightButton(row, column, idx);
+            const message = JSON.stringify({ action: "selectCharacter", row: row, column: column, idx: idx });
             connection.send(message);
+        }
+
+        // highlight button that was pressed based on PlayerType
+        function highlightButton(row, column, idx)
+        {
+            // highlights button based on location on board and PlayerType
+            const playerType = ['NOPLAYER', 'Player1Highlight', 'Player2Highlight', 'Player3Highlight', 'Player4Highlight'];
+            const board = document.getElementById('gameBoard');
+            const button = board.children[row * 50 + column];
+        
+            button.classList.add(playerType[idx]);
         }
     </script>
 </body>
