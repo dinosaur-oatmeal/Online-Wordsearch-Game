@@ -34,7 +34,7 @@ jobs:
             IdentityFile ~/.ssh/production.key
             StrictHostKeyChecking no
           END
-          echo ~/.ssh/config
+          echo "~/.ssh/config"
                          
       - name: get source code and compile
         run: |
