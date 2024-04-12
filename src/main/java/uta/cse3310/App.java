@@ -56,16 +56,19 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.time.Instant;
 import java.time.Duration;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import uta.cse3310.WordBankGame;
+
 
 public class App extends WebSocketServer
 {
 
   // All games currently underway on this server are stored in
   // the vector activeGames
-
   private Vector<GameSession> activeGames = new Vector<GameSession>();
 
   private int gameId = 1;
@@ -99,41 +102,44 @@ public class App extends WebSocketServer
 
     ServerEvent E = new ServerEvent();
     GameSession G = null;
+    int gameType; 
 
     // match found
     for(GameSession i : activeGames)
-    {   
+    {
       G = i;
+      System.out.println("found a match");
+      //System.out.println("" + G.player);
+      //change based off the game type
       if(G.players[0] == uta.cse3310.PlayerType.Player1)
       {
-        System.out.println("found a match");
         E.YouAre = PlayerType.Player2;
         G.addPlayer(E.YouAre);
-        System.out.println("" + i.players);
+        System.out.println(G.players[1]);
         break;
       }
+
       else if(G.players[1] == uta.cse3310.PlayerType.Player2)
       {
-        System.out.println("found a match");   
         E.YouAre = PlayerType.Player3;
         G.addPlayer(E.YouAre);
-        System.out.println("" + i.players);
         break;
       }
+
       else if(G.players[2] == uta.cse3310.PlayerType.Player3)
       {
-        System.out.println("found a match");
         E.YouAre = PlayerType.Player4;
-        G.addPlayer(E.YouAre);        
-        System.out.println("" + i.players);
+        G.addPlayer(E.YouAre);
         break;
       }
+
       else
       {
         System.out.println("Error: too many players are trying to join");
         return;
       }
     }
+
       // create new game
       if(G == null)
       {
@@ -145,29 +151,28 @@ public class App extends WebSocketServer
         E.YouAre = PlayerType.Player1;
         G.addPlayer(E.YouAre);
         activeGames.add(G);
-        System.out.println("creating a new game");
+        System.out.println("\ncreating a new game");
+        System.out.println(G.players[0] + "\n");
       }
-
-      conn.setAttachment(G);
-      E.gameId = G.gameId;
-
 
       // allows the websocket to give us the Game when a message arrives..
       // it stores a pointer to G, and will give that pointer back to us
       // when we ask for it
+      conn.setAttachment(G);
+      E.gameId = G.gameId;
 
       Gson gson = new Gson();
 
-      // Note only send to the single connection
+      // note only send to the single connection
       String jsonString = gson.toJson(E);
       broadcast(jsonString);
-      
-      //changes based off of gameSession
 
+      // needs to be updated to handle different player amounts
       if(E.YouAre == PlayerType.Player2)
       {
         G.startGame();
       }
+
       System.out.println(""+ gameId);
       String boardJson = gson.toJson(G.board);
       //System.out.println(boardJson);
@@ -204,21 +209,47 @@ public class App extends WebSocketServer
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
+    
+    // print message to see what's being passed from Index.html
     System.out.println(message);
 
+    // selectCharacter action from Index.html
     if("selectCharacter".equals(U.getAction()))
     {
       int row = U.getRow();
       int column = U.getColumn();
-      System.out.println("\n Row: " + row + " Column: " + column + "\n");
+      // convert index message from Index.html into an int (easier to deal with than enum)
+      String idxParse = message.substring(message.indexOf("\"idx\":") + 6, message.indexOf("}"));
+      int typeInt = Integer.parseInt(idxParse.trim());
 
-      G.charSelected(row * 50 + column, G.player);
-      //System.out.println(G.players);
+      //System.out.println("\n Row: " + row + " Column: " + column + " Type: " + typeInt + "\n");
+
+      // call charSelected function in GameSession.java
+      boolean character = G.charSelected(row * 50 + column, typeInt);
+
+      // broadcast gameOver function to Index.html
+      if(!character)
+      {
+        U.setAction("gameOver");
+        G.update(U);
+        String jsonString;
+        jsonString = gson.toJson(G);
+        broadcast(jsonString);
+      }
+
+      // find word positions
+      List<Integer> wordPositions = G.wordPositions;
+
+      if(wordPositions != null)
+      {
+        sendHighlightPositions(conn, wordPositions);
+      }
     }
 
     // Update the running time
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
 
+    // update the game's status
     G.update(U);
 
     // send out the game state every time
@@ -271,6 +302,18 @@ public class App extends WebSocketServer
       retval = retval + ch;
     }
     return retval;
+  }
+
+  // method to send positions to index.html
+  public void sendHighlightPositions(WebSocket conn, List<Integer> positions)
+  {
+    Gson gson = new Gson();
+    Map<String, Object> message = new HashMap<>();
+    message.put("action", "highlightWords");
+    message.put("positions", positions);
+    String jsonString = gson.toJson(message);
+    System.out.println("\n" + jsonString + "\n");
+    conn.send(jsonString);
   }
 
   public static void main(String[] args)

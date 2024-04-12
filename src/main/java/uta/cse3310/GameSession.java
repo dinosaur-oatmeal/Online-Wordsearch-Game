@@ -13,11 +13,14 @@ public class GameSession
 
 	WordBank bank = new WordBank();
 	char[][] board;
-	int wordsToFind = bank.wordsToFill;
+	int wordsToFind;
 	int wordsFound = 0;
 	int lastLocation = -1;
 	int Player1Score = 0;
 	int Player2Score = 0;
+	int Player3Score = 0;
+	int Player4Score = 0;
+	List<Integer> wordPositions;
 
 	public GameSession(Statistics s)
 	{
@@ -28,6 +31,7 @@ public class GameSession
 		players = new PlayerType[5];
 	}
 
+	// adds players to array storing who's in what game
 	public void addPlayer(PlayerType player)
 	{
 		if(player == PlayerType.Player1)
@@ -51,11 +55,13 @@ public class GameSession
 		}
 	}
 
+	// see if the player count is full
 	public boolean isFull()
 	{
 		return players[3] != null;
 	}
 
+	// set every button to NOPLAYER
 	public void resetBoard()
 	{
 		for(int i = 0; i < button.length; i++)
@@ -64,6 +70,7 @@ public class GameSession
 		}
 	}
 
+	// calls WordGrid.java to execute
 	public void startGame()
 	{
 		board = bank.generateGrid();
@@ -80,54 +87,70 @@ public class GameSession
 		}*/
 	}
 	
-	public void charSelected(int location, PlayerType type)
+	// gets called when a button is clicked on the website
+	// location is the button position and typeInt is the PlayerType
+	public boolean charSelected(int location, int typeInt)
 	{
-		System.out.println("\n" + type + "\n");
+		wordsToFind = bank.wordsToFill;
 
-		// see if the current character is in the same word as the last one chosen (either direction)
+		// set button from NOPLAYER to PlayerType
+		button[location] = players[typeInt];
+
+		// see if the current character is in the same word as the last
 		if(wordFound(lastLocation, location))
 		{
-			// highlight the found word
-			highlightWord();
+			// find positions to highlight
+			wordPositions = getWordPositions(lastLocation, location);
+			//System.out.println(wordPositions);
+
+			System.out.println("\nWORD FOUND + " + players[typeInt] + "\n");
 
 			// add to Player1 score
-			if(type == PlayerType.Player1)
+			if(players[typeInt] == PlayerType.Player1)
 			{
 				Player1Score++;
 			}
 
 			// add to Player2 score
-			if(type == PlayerType.Player2)
+			if(players[typeInt] == PlayerType.Player2)
 			{
 				Player2Score++;
 			}
 
 			// add to total words found and see if the game is over
 			wordsFound++;
-
-			if(wordsFound == wordsToFind)
-			{
-				gameOver();
-			}
 		}
 
 		// update last character chosen
 		lastLocation = location;
+
+		// see if the game is over
+		boolean gameOver = (wordsFound >= wordsToFind);
+		return !gameOver;
 	}
 	
+	// word was found
 	public boolean wordFound(int lastLocation, int location)
 	{
 		// cast selected locations to a WordLocation object
 		WordLocation selectedLocation = new WordLocation(lastLocation, location);
+
+		//System.out.println("\nWord Location: " + selectedLocation + "\n");
 		
 		// loop through ArrayList of location structures
 		for(int i = 0; i < bank.locations.size(); i++)
 		{
+			//System.out.println(bank.locations.get(i));
+			WordLocation listLocation = bank.locations.get(i);
+
 			// see if data is the same
-			if(bank.locations.equals(selectedLocation))
+			if(listLocation.equals(selectedLocation))
 			{
+				//System.out.println("\nFOUND\n");
+
 				// doesn't allow words to be overwritten
-				bank.locations.remove(selectedLocation);
+				bank.locations.remove(i);
+				wordsFound = (wordsFound + 1) / 2;
 
 				return true;
 			}
@@ -135,19 +158,63 @@ public class GameSession
 
 		// word was not found
 		return false;
-	}	
-	public void wordColor()
-	{
-		//will be how a color is picked
 	}
-	public void highlightWord()
+
+	// find locations to highlight words
+	public List<Integer> getWordPositions(int start, int end)
 	{
-		//will highlight a word the players color
+		List<Integer> positions = new ArrayList<>();
+
+		int startRow = start / 50;
+		int startColumn = start % 50;
+		int endRow = end / 50;
+		int endColumn = end % 50;
+
+		// horizontal
+		if(start / 50 == end / 50)
+		{
+			for(int i = Math.min(start, end); i <= Math.max(start, end); i++)
+			{
+				//button[i] = players[typeInt];
+				positions.add(i);
+			}
+		}
+
+		// vertical (works both up and down)
+		else if(start % 50 == end % 50)
+		{
+			for(int i = Math.min(startRow, endRow); i <= Math.max(startRow, endRow); i++)
+			{
+				positions.add(i * 50 + startColumn);
+			}
+		}
+
+		// diagonal down
+		else if(endRow - startRow == endColumn - startColumn)
+		{
+			//int rowCount = Math.min(startRow, endRow);
+			//int columnCount = Math.min(startColumn, endColumn);
+
+			for(int i = 0; i <= Math.abs(endRow - startRow); i++)
+			{
+				positions.add((startRow + i) * 50 + (startColumn + i));
+			}
+		}
+
+		// diagonal up
+		else if(startRow - endRow == endColumn - startColumn)
+		{
+			for(int i = 0; i <= Math.abs(startRow - endRow); i++)
+			{
+				positions.add((startRow - i) * 50 + (startColumn + i));
+			}
+		}
+
+		return positions;
+
 	}
-	public boolean gameOver()
-	{
-		return wordsToFind == wordsFound;
-	}
+
+	// updates the game board to the newest event
 	public void update(UserEvent U)
 	{
 		//will update the game when a word is won by a player
