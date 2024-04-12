@@ -1,4 +1,4 @@
-package uni.cse;
+package uta.cse3310;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
