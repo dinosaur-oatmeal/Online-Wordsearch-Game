@@ -8,17 +8,17 @@ import java.util.Random;
 
 public class WordBank
 {
-   static int gridSize = 2500;
-   static int wordsToFill;
-   static int wordsFilled = 0;
-   static double diagDown, diagUp, vertUp, vertDown, horz = 0;
-   static double density = 0.67;
-   static Random random = new Random();
+   int gridSize = 2500;
+   int wordsToFill;
+   int wordsFilled = 0;
+   double diagDown, diagUp, vertUp, vertDown, horz = 0;
+   double density = 0.67;
+   private transient Random random = new Random();
    
    // arraylist that will store word locations
-   static List<WordLocation> locations = new ArrayList<>();
+   List<WordLocation> locations = new ArrayList<>();
 
-   public static char[][] generateGrid()
+   public char[][] generateGrid()
    {
       // amount of words for board
       wordsToFill = (int)((gridSize * density) / 5);
@@ -77,7 +77,7 @@ public class WordBank
    }
   
    // select a word from the word bank
-   public static String[] selectWords()
+   public String[] selectWords()
    {      
       // read entire file into ArrayList to quickly grab locations
       ArrayList<String> inputFile = new ArrayList<>();
@@ -130,7 +130,7 @@ public class WordBank
    }
   
    // write the word diagonally down
-   public static void diagonalDown(char[][] board, String word, int row, int column)
+   public void diagonalDown(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
@@ -175,7 +175,7 @@ public class WordBank
    }
    
    // write the word diagonally up
-   public static void diagonalUp(char[][] board, String word, int row, int column)
+   public void diagonalUp(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
@@ -221,7 +221,7 @@ public class WordBank
    }
 
    // write the word vertically down
-   public static void verticalDown(char[][] board, String word, int row, int column)
+   public void verticalDown(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
@@ -267,7 +267,7 @@ public class WordBank
    }
    
    // write the word vertically up
-   public static void verticalUp(char[][] board, String word, int row, int column)
+   public void verticalUp(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
@@ -313,7 +313,7 @@ public class WordBank
    }
 
    // write the word horizontally
-   public static void horizontal(char[][] board, String word, int row, int column)
+   public void horizontal(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
@@ -359,7 +359,7 @@ public class WordBank
    }
 
    // insert random letter in the board
-   public static void insertRandomLetters(char[][] board)
+   public void insertRandomLetters(char[][] board)
    {
       final String alphabet = "abcdefghijklmnopqrstuvwxyz";
       int letterToInsert;
@@ -379,7 +379,7 @@ public class WordBank
 
    // checks the board to make sure stats are valid
    // regenerates grid of stats aren't valid
-   public static void checkBoard(char[][] board)
+   public void checkBoard(char[][] board)
    {
       density = (double)(wordsFilled * 5) / gridSize;
       diagDown = diagDown / wordsFilled;
@@ -404,7 +404,7 @@ public class WordBank
    }
 
    // print board statistics
-   public static void statistics()
+   public void statistics()
    {   
       System.out.printf("Density: %.2f\n", density);
       System.out.printf("Diagonal Down: %.2f\n", diagDown);

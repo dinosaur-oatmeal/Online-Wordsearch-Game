@@ -115,7 +115,7 @@ public class App extends WebSocketServer
       {
         E.YouAre = PlayerType.Player2;
         G.addPlayer(E.YouAre);
-        System.out.println(G.players[1]);
+        System.out.println(E.YouAre);
         break;
       }
 
@@ -170,6 +170,7 @@ public class App extends WebSocketServer
       // needs to be updated to handle different player amounts
       if(E.YouAre == PlayerType.Player2)
       {
+        System.out.println("GAME STARTING");
         G.startGame();
       }
 
@@ -184,7 +185,6 @@ public class App extends WebSocketServer
       jsonString = gson.toJson(G);
       //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
       broadcast(jsonString);
-
   }
 
   @Override
@@ -193,6 +193,8 @@ public class App extends WebSocketServer
     System.out.println(conn + " has closed");
     // Retrieve the game tied to the websocket connection
     GameSession G = conn.getAttachment();
+    activeGames.remove(G);
+    //System.out.println(activeGames);
     G = null;
   }
 
