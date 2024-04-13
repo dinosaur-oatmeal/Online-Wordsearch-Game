@@ -58,7 +58,7 @@ public class GameSession
 	// see if the player count is full
 	public boolean isFull()
 	{
-		return players[3] != null;
+		return players[4] != null;
 	}
 
 	// set every button to NOPLAYER

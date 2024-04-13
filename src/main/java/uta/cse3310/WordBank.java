@@ -45,28 +45,31 @@ public class WordBank
          int RDVH = random.nextInt(5) + 1;
          //System.out.print(RDVH); 
          //System.out.println(cellsFilled);
+
+         int row = random.nextInt(board.length - 4);
+         int column = random.nextInt(board.length - 4);
          
          switch(RDVH)
          {
             case 1:
-               diagonalDown(board, words[wordsFilled]);
+               diagonalDown(board, words[wordsFilled], row, column);
                break;
             case 2:
-               diagonalUp(board, words[wordsFilled]);
+               diagonalUp(board, words[wordsFilled], row, column);
                break;
             case 3:
-               verticalDown(board, words[wordsFilled]);
+               verticalDown(board, words[wordsFilled], row, column);
                break;
             case 4:
-               verticalUp(board, words[wordsFilled]);
+               verticalUp(board, words[wordsFilled], row, column);
                break;
             case 5:
-               horizontal(board, words[wordsFilled]);
+               horizontal(board, words[wordsFilled], row, column);
                break;
          }
       }
       
-      //insertRandomLetters(board);
+      insertRandomLetters(board);
       
       checkBoard(board);
       
@@ -79,7 +82,7 @@ public class WordBank
       // read entire file into ArrayList to quickly grab locations
       ArrayList<String> inputFile = new ArrayList<>();
          
-      // sselection of random words
+      // selection of random words
       String[] words = new String[wordsToFill];
       String line;
          
@@ -127,10 +130,8 @@ public class WordBank
    }
   
    // write the word diagonally down
-   public static void diagonalDown(char[][] board, String word)
+   public static void diagonalDown(char[][] board, String word, int row, int column)
    {
-      int row = random.nextInt(board.length - 4);
-      int column = random.nextInt(board.length - 4);
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
@@ -174,10 +175,8 @@ public class WordBank
    }
    
    // write the word diagonally up
-   public static void diagonalUp(char[][] board, String word)
+   public static void diagonalUp(char[][] board, String word, int row, int column)
    {
-      int row = random.nextInt(board.length - 4);
-      int column = random.nextInt(board.length - 4);
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
@@ -208,8 +207,8 @@ public class WordBank
                board[row + 4 - i][column + i] = word.charAt(i);
             }
             
-            int start = row * 50 + column;
-            int end = start - (4 * 50);
+            int end = row * 50 + column;
+            int start = end + (4 * 50);
             locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
@@ -222,10 +221,8 @@ public class WordBank
    }
 
    // write the word vertically down
-   public static void verticalDown(char[][] board, String word)
+   public static void verticalDown(char[][] board, String word, int row, int column)
    {
-      int row = random.nextInt(board.length - 4);
-      int column = random.nextInt(board.length);
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
@@ -270,10 +267,8 @@ public class WordBank
    }
    
    // write the word vertically up
-   public static void verticalUp(char[][] board, String word)
+   public static void verticalUp(char[][] board, String word, int row, int column)
    {
-      int row = random.nextInt(board.length - 4);
-      int column = random.nextInt(board.length);
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
@@ -304,8 +299,8 @@ public class WordBank
                board[row + i][column] = word.charAt(4 - i);
             }
             
-            int start = row * 50 + column;
-            int end = start - (4 * 50);
+            int end = row * 50 + column;
+            int start = end + (4 * 50);
             locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
@@ -318,10 +313,8 @@ public class WordBank
    }
 
    // write the word horizontally
-   public static void horizontal(char[][] board, String word)
+   public static void horizontal(char[][] board, String word, int row, int column)
    {
-      int row = random.nextInt(board.length);
-      int column = random.nextInt(board.length - 4);
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
@@ -420,4 +413,34 @@ public class WordBank
       System.out.printf("Vertical Up: %.2f\n", vertUp);
       System.out.printf("Horizontal: %.2f\n", horz);
    }
+   
+   /////////
+   /*
+   
+   static char[][] board;
+   
+   public static void main(String args[])
+   {
+      board = generateGrid();
+      
+      Iterator<WordLocation> itr = locations.listIterator();
+      
+      while(itr.hasNext())
+      {
+         System.out.println(itr.next());
+      }
+
+		// print for debugging
+		for(int i = 0; i < 50; i++)
+		{
+			for(int j = 0; j < 50; j++)
+			{
+				System.out.print(board[i][j] + " ");
+			}
+			System.out.print("\n");
+		}
+   }
+   
+   */
+   //////////
 }

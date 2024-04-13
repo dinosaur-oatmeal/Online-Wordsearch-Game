@@ -12,9 +12,9 @@ public class WordLocation
    }
    
    // find equality of objects (coordinates)
-   public boolean equals(int lastLocation, int location)
+   public boolean equals(WordLocation location)
    {
-      return this.lastLocation == lastLocation && this.location == location;
+      return this.lastLocation == location.lastLocation && this.location == location.location;
    }
    
    // toString for debugging
@@ -22,5 +22,15 @@ public class WordLocation
    public String toString()
    {
       return "Start: ("+ lastLocation + ") End: (" + location + ")";
+   }
+
+   public int getLastLocation()
+   {
+      return lastLocation;
+   }
+
+   public int getLocation()
+   {
+      return location;
    }
 }
