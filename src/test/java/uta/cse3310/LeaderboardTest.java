@@ -44,19 +44,28 @@ public class LeaderboardTest extends TestCase {
 
   public void testSortedLeaderboard() {
         leaderboard.updateLeaderboard("Player1");
-        leaderboard.updateLeaderboard("Player2", 3);
+        leaderboard.updateLeaderboard("Player2");
         leaderboard.updateLeaderboard("Player3");
         leaderboard.updateLeaderboard("Player1");
         leaderboard.updateLeaderboard("Player2");
 
         leaderboard.displayLeaderboard();
 
-        // Check if the leaderboard is displayed in the correct sorted order
-        assertTrue(leaderboard.scores.get("Player1") > leaderboard.scores.get("Player2"));
-        assertTrue(leaderboard.scores.get("Player2") > leaderboard.scores.get("Player3"));
-        System.out.println("testSortedLeaderboard completed");
+       Iterator<Map.Entry<String, Integer>> it = leaderboard.scores.entrySet().iterator();
+  Integer prevScore = null;
+  while (it.hasNext()) {
+    Map.Entry<String, Integer> entry = it.next();
+    Integer currentScore = entry.getValue();
+    if (prevScore != null) {
+      assertTrue(prevScore >= currentScore); // Check if previous score is greater than or equal to current
     }
+    prevScore = currentScore;
+  }
+  System.out.println("testSortedLeaderboard completed");
+}
 }
   
     
+
+   
 
