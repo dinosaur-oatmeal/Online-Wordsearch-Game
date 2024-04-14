@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 public class Leaderboard {
-    private Map<String, Integer> scores; // Nickname, Score
+    protected Map<String, Integer> scores; // Nickname, Score
 
     public Leaderboard() {
         scores = new HashMap<>();
