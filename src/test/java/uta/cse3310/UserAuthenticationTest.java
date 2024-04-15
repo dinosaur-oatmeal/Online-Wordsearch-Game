@@ -46,8 +46,8 @@ public class UserAuthenticationTest extends TestCase
     {
         // Test adding a new user
         userA.newUser("NewUser");
-        // Check if newUser was added successfully
-        assertTrue("CheckName should return true for newly added user", userA.checkName("NewUser"));
+        // Check if new user was added successfully
+        assertTrue("CheckName should return true for new user", userA.checkName("NewUser"));
 
         // Test adding a duplicate user
         userA.newUser("NewUser");
@@ -57,9 +57,9 @@ public class UserAuthenticationTest extends TestCase
     {
         // Test checking an existing user
         userA.newUser("ExistingUser");
-        assertTrue("CheckName should return true for existing user", userA.checkName("ExistingUser"));
+        assertTrue("CheckName should return true for user that already exists", userA.checkName("ExistingUser"));
 
-        // Test checking a non-existing user
-        assertFalse("CheckName should return false for non-existing user", userA.checkName("NonExistingUser"));
+        // Test checking a user that does not exist
+        assertFalse("CheckName should return false for user that does not exist", userA.checkName("NonExistingUser"));
     }
 }
