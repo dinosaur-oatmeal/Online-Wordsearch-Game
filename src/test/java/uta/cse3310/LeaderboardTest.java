@@ -25,8 +25,8 @@ public class LeaderboardTest extends TestCase {
     leaderboard.updateLeaderboard("Player2");
     leaderboard.updateLeaderboard("Player1");
 
-    assertEquals(2, leaderboard.scores.get("Player1").intValue());
-    assertEquals(1, leaderboard.scores.get("Player2").intValue());
+    assertTrue(leaderboard.scores.get("Player1") == 2);
+    assertTrue(leaderboard.scores.get("Player2") == 1);
     System.out.println("testUpdateLeaderboard completed");
   }
 
@@ -38,7 +38,7 @@ public class LeaderboardTest extends TestCase {
         
         leaderboard.displayLeaderboard();
     
-        assertEquals(3, leaderboard.scores.size()); 
+        assertTrue(leaderboard.scores.size() == 3);
         System.out.println("testDisplayLeaderboard completed");
     }
 
