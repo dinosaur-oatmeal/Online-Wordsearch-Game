@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Lobby {
-    private Map<String, String> players; // Nickname, Player
+    protected Map<String, String> players; // Nickname, Player
 
     public Lobby() {
         players = new HashMap<>();
