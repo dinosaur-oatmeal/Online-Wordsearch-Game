@@ -1,39 +1,67 @@
 package uta.cse3310;
 
 public class Statistics {
-    // this class stores global statistics of the
-    // program
-    private Long RunningTime;
-    private Integer TotalGames;
-    private Integer GamesInProgress;
+    // this class stores global statistics of the program
+    private Long runningTime;
+    private Integer totalGames;
+    private Integer gamesInProgress;
 
     public Statistics() {
-        RunningTime = 0L;
-        TotalGames = 0;
-        GamesInProgress = 0;
+        runningTime = 0L;
+        totalGames = 0;
+        gamesInProgress = 0;
     }
 
     public Long getRunningTime() {
-        return RunningTime;
+        return runningTime;
     }
 
     public void setRunningTime(Long runningTime) {
-        RunningTime = runningTime;
+        this.runningTime = runningTime;
     }
 
     public Integer getTotalGames() {
-        return TotalGames;
+        return totalGames;
     }
 
     public void setTotalGames(Integer totalGames) {
-        TotalGames = totalGames;
+        this.totalGames = totalGames;
     }
 
     public Integer getGamesInProgress() {
-        return GamesInProgress;
+        return gamesInProgress;
     }
 
     public void setGamesInProgress(Integer gamesInProgress) {
-        GamesInProgress = gamesInProgress;
+        this.gamesInProgress = gamesInProgress;
+    }
+
+    // Method to increment the total number of games
+    public void incrementTotalGames() {
+        totalGames++;
+    }
+
+    // Method to decrement the total number of games
+    public void decrementTotalGames() {
+        if (totalGames > 0) {
+            totalGames--;
+        }
+    }
+
+    // Method to increment the number of games in progress
+    public void incrementGamesInProgress() {
+        gamesInProgress++;
+    }
+
+    // Method to decrement the number of games in progress
+    public void decrementGamesInProgress() {
+        if (gamesInProgress > 0) {
+            gamesInProgress--;
+        }
+    }
+
+    // Method to update the running time
+    public void updateRunningTime(Long elapsedTime) {
+        runningTime += elapsedTime;
     }
 }
