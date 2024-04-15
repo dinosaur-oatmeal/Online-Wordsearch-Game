@@ -93,7 +93,6 @@
 
         var connection;
         var idx;
-        var counter;
 
         function joinGame(playerCount) {
             var serverUrl;
@@ -101,7 +100,6 @@
             connection = new WebSocket(serverUrl);
             idx = -1;
             var gameid = -1;
-            counter = 0;
 
             connection.onopen = function (evt) {
                 console.log("open");
@@ -138,18 +136,17 @@
                     });
                 }
 
-                if (idx > 0 && obj.board && counter = 0) {
+                if (idx > 0 && obj.board) {
                     document.getElementById('phase 2').style.display = 'none';
                     document.getElementById('phase 3').style.display = 'block';
 
                     initializeGameBoard(obj.board);
-                    counter++;
                 }
             }
         }
 
         // generate board from WordGrid.java, and append data onto buttons
-        function initializeGameBoard(boardData)
+        static function initializeGameBoard(boardData)
         {
             const board = document.getElementById('gameBoard');
             for (let i = 0; i < 50; i++)
