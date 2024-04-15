@@ -136,7 +136,7 @@
                     });
                 }
 
-                if (idx > 0 && obj.board) {
+                if (idx > 0 && obj.board && document.getElementById('phase 2').style.display != 'none') {
                     document.getElementById('phase 2').style.display = 'none';
                     document.getElementById('phase 3').style.display = 'block';
 
@@ -146,7 +146,7 @@
         }
 
         // generate board from WordGrid.java, and append data onto buttons
-        static function initializeGameBoard(boardData)
+        function initializeGameBoard(boardData)
         {
             const board = document.getElementById('gameBoard');
             for (let i = 0; i < 50; i++)
