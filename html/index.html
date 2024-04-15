@@ -93,6 +93,7 @@
 
         var connection;
         var idx;
+        var counter;
 
         function joinGame(playerCount) {
             var serverUrl;
@@ -100,7 +101,7 @@
             connection = new WebSocket(serverUrl);
             idx = -1;
             var gameid = -1;
-            var counter = 0;
+            counter = 0;
 
             connection.onopen = function (evt) {
                 console.log("open");
