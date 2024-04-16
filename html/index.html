@@ -127,9 +127,9 @@
                 }
 
                 // highlight word positions
-                if('wordPositions' in obj)
+                if(obj.action === "highlightWords" && 'positions' in obj)
                 {
-                    obj.wordPositions.forEach(position =>{
+                    obj.positions.forEach(position =>{
                         const row = Math.floor(position / 50);
                         const column = position % 50;
                         highlightButton(row, column, idx);
