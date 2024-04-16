@@ -207,7 +207,7 @@ public class WordBankTest extends TestCase
         G.bank.generateGrid();
         long endTime = System.nanoTime();
 
-        // convert nanoseconds to milliseconds and then make sure under 1 second
+        // convert to seconds and check generation time under 1 second
         long difference = (startTime - endTime) / 1000000;
         assertTrue(difference < 1000);
     }
