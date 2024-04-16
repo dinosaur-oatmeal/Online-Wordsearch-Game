@@ -327,7 +327,6 @@ public class App extends WebSocketServer
     System.out.println("http Server started on port: " + port);
 
     // create and start the websocket server
-
     port = 9113;
     App A = new App(port);
     A.setReuseAddr(true);
