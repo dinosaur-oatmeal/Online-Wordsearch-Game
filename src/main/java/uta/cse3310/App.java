@@ -241,9 +241,18 @@ public class App extends WebSocketServer
 
       // find word positions
       List<Integer> wordPositions = G.wordPositions;
+      System.out.println("\n" + wordPositions + "\n");
 
       if(wordPositions != null)
       {
+        sendHighlightPositions(conn, wordPositions);
+      }
+
+      else
+      {
+        System.out.println("\nHELLO\n");
+        wordPositions = new ArrayList<>();
+        wordPositions.add(row * 50 + column);
         sendHighlightPositions(conn, wordPositions);
       }
     }
@@ -315,7 +324,7 @@ public class App extends WebSocketServer
     message.put("positions", positions);
     String jsonString = gson.toJson(message);
     System.out.println("\n" + jsonString + "\n");
-    conn.send(jsonString);
+    broadcast(jsonString);
   }
 
   public static void main(String[] args)

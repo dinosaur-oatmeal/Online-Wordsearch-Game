@@ -121,6 +121,11 @@ public class GameSession
 			wordsFound++;
 		}
 
+		else
+		{
+			wordPositions = null;
+		}
+
 		// update last character chosen
 		lastLocation = location;
 
