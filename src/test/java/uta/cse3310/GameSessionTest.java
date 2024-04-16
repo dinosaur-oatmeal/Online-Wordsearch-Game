@@ -36,7 +36,7 @@ public class GameSessionTest extends TestCase
         assertTrue(G.players[3] == PlayerType.Player4);
     }
 
-    // check that lobby is full
+    // check the lobby size
     public void testLobbyFull()
     {
         GameSession G = new GameSession(new Statistics());
