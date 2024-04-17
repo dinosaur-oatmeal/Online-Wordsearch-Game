@@ -2,15 +2,19 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background-color: rgb(0, 0, 0);
     font-family: Arial, sans-serif;
   }
-  
+  #phase1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; 
+    height: 100vh;
+  }
   #phase2 {
     display: flex;
     justify-content: space-between;
-    align-items: stretch; /* Ensures that children fill the vertical space */
-    height: 100vh; /* 100% of the viewport height */
+    align-items: stretch; 
+    height: 100vh;
   }
   
   .left-panel, .join-buttons, #leaderboard {
@@ -45,3 +49,4 @@ html, body {
   input[type="text"], button {
     margin: 5px 0; /* Adds a little space around input and button */
   }
+  
