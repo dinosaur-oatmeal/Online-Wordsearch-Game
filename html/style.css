@@ -4,12 +4,32 @@ html, body {
     height: 100%;
     font-family: Arial, sans-serif;
   }
-  #phase1 {
+  body {
+    background-color: black;
+    color: white;
+}
+
+#phase1 {
     display: flex;
-    justify-content: space-between;
-    align-items: stretch; 
-    height: 100vh;
-  }
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    flex-direction: column; 
+}
+
+#phase1 input[type="text"], #phase1 button {
+    font-size: 1.5em; 
+    padding: 0.5em; 
+    margin: 0.5em; 
+}
+
+#phase1 button {
+    cursor: pointer;
+    background-color: #444; 
+    color: white;
+    border: none; 
+    width: 50%; 
+}
   #phase2 {
     display: flex;
     justify-content: space-between;
@@ -18,35 +38,35 @@ html, body {
   }
   
   .left-panel, .join-buttons, #leaderboard {
-    flex: 1; /* Allows each section to take equal width */
+    flex: 1; 
     margin: 10px;
     display: flex;
-    flex-direction: column; /* Aligns inner content vertically */
+    flex-direction: column; 
   }
   
   #leaderboard, .left-panel {
-    overflow-y: auto; /* Adds scroll to these sections if content exceeds height */
+    overflow-y: auto; 
   }
   
   .join-buttons {
-    justify-content: center; /* Centers buttons vertically */
-    align-items: center; /* Centers buttons horizontally */
+    justify-content: center; 
+    align-items: center; 
   }
   
   .word-grid {
-    display: none; /* Hidden by default, shown in phase 3 */
+    display: none;
   }
   
   .stats-page {
-    display: none; /* Hidden by default, shown in phase 3 */
+    display: none;
   }
   
   #messageBoard, #playersList {
-    flex: 1; /* Allows these sections to fill available space equally */
-    margin-bottom: 10px; /* Adds space between message board and input area */
+    flex: 1;
+    margin-bottom: 10px; 
   }
   
   input[type="text"], button {
-    margin: 5px 0; /* Adds a little space around input and button */
+    margin: 5px 0;
   }
   
