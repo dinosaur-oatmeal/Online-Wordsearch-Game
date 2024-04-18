@@ -11,6 +11,17 @@ html, body {
   height: 100vh; 
   flex-direction: column; 
 }
+#phase1 button {
+  font-size: 1.5em; 
+  padding: 0.5em; 
+  margin: 0.5em; 
+  cursor: pointer;
+  background-color: #444; 
+  color: white;
+  border: none; 
+  width: 50%; 
+}
+
 #phase2 {
   display: flex;
   justify-content: space-between;
