@@ -3,6 +3,8 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
+  background-color: #343F3E;
+  color: white;
 }
 #phase1 {
   display: flex;
