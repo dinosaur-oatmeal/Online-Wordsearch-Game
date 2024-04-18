@@ -1,72 +1,51 @@
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-  }
-  body {
-    background-color: #343F3E;
-    color: white;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
 }
-
 #phase1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; 
-    flex-direction: column; 
-}
-
-#phase1 input[type="text"], #phase1 button {
-    font-size: 1.5em; 
-    padding: 0.5em; 
-    margin: 0.5em; 
-}
-
-#phase1 button {
-    cursor: pointer;
-    background-color: #444; 
-    color: white;
-    border: none; 
-    width: 50%; 
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; 
+  height: 100vh;
 }
 #phase2 {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch; 
-    height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; 
+  height: 100vh;
 }
 
 .left-panel, .join-buttons, #leaderboard {
-  flex: 1; 
+  flex: 1; /* Allows each section to take equal width */
   margin: 10px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column; /* Aligns inner content vertically */
 }
 
 #leaderboard, .left-panel {
-  overflow-y: auto; 
+  overflow-y: auto; /* Adds scroll to these sections if content exceeds height */
 }
 
 .join-buttons {
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center; /* Centers buttons vertically */
+  align-items: center; /* Centers buttons horizontally */
 }
 
 .word-grid {
-  display: none;
+  display: none; /* Hidden by default, shown in phase 3 */
 }
 
 .stats-page {
-  display: none;
+  display: none; /* Hidden by default, shown in phase 3 */
 }
 
 #messageBoard, #playersList {
-  flex: 1;
-  margin-bottom: 10px; 
+  flex: 1; /* Allows these sections to fill available space equally */
+  margin-bottom: 10px; /* Adds space between message board and input area */
 }
 
 input[type="text"], button {
-  margin: 5px 0;
+  margin: 5px 0; /* Adds a little space around input and button */
 }
-

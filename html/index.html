@@ -36,27 +36,29 @@
 </head>
 
 <body>
-    <div id="phase1">
+    <!-- Phase 1: User Entry -->
+    <div id="phase 1">
         <input type="text" id="username" placeholder="Enter your username">
         <button onclick="enterUsername()">Enter</button>
     </div>
+
     <script>
-        function enterUsername() 
-        {
+        function enterUsername() {
             var usernameInput = document.getElementById('username');
             var username = usernameInput.value.trim();
-            if (username === "") 
-            {
+
+            if (username === "") {
                 alert('Please enter a username.');
                 return;
             }
-            document.getElementById('phase1').style.display = 'none'; 
-            document.getElementById('phase2').style.display = 'block'; 
+
+            document.getElementById('phase 1').style.display = 'none';
+            document.getElementById('phase 2').style.display = 'block';
         }
     </script>
 
     <!-- Phase 2 & 3: Main Menu & Game -->
-    <div id="phase2" style="display:none;">
+    <div id="phase 2" style="display:none;">
         <!-- Left: Players & Messages -->
         <div class="left-panel">
             <div id="playersList">Players Online:</div>
@@ -76,7 +78,7 @@
         <div id="leaderboard">Leaderboard:</div>
     </div>
 
-    <div id="phase3" style="display:none;">
+    <div id="phase 3" style="display:none;">
         <div id="gameBoard" class="game-board"></div>
     </div>
 
@@ -101,8 +103,6 @@
 
             connection.onopen = function (evt) {
                 console.log("open");
-                const joinRequest = JSON.stringify({ action: "joinGame", playerCount: playerCount });
-                connection.send(joinRequest);
             }
 
             connection.onclose = function (evt) {
