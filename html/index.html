@@ -101,6 +101,8 @@
 
             connection.onopen = function (evt) {
                 console.log("open");
+                const joinRequest = JSON.stringify({ action: "joinGame", playerCount: playerCount });
+                connection.send(joinRequest);
             }
 
             connection.onclose = function (evt) {
