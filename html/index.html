@@ -41,17 +41,17 @@
         <button onclick="enterUsername()">Enter</button>
     </div>
     <script>
-        function enterUsername() {
+        function enterUsername() 
+        {
             var usernameInput = document.getElementById('username');
             var username = usernameInput.value.trim();
-
-            if (username === "") {
+            if (username === "") 
+            {
                 alert('Please enter a username.');
                 return;
             }
-
-            document.getElementById('phase 1').style.display = 'none';
-            document.getElementById('phase 2').style.display = 'block';
+            document.getElementById('phase1').style.display = 'none'; 
+            document.getElementById('phase2').style.display = 'block'; 
         }
     </script>
 
