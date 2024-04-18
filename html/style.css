@@ -5,7 +5,7 @@ html, body {
     font-family: Arial, sans-serif;
   }
   body {
-    background-color: black;
+    background-color: #343F3E;
     color: white;
 }
 
@@ -30,43 +30,43 @@ html, body {
     border: none; 
     width: 50%; 
 }
-  #phase2 {
+#phase2 {
     display: flex;
     justify-content: space-between;
     align-items: stretch; 
     height: 100vh;
-  }
-  
-  .left-panel, .join-buttons, #leaderboard {
-    flex: 1; 
-    margin: 10px;
-    display: flex;
-    flex-direction: column; 
-  }
-  
-  #leaderboard, .left-panel {
-    overflow-y: auto; 
-  }
-  
-  .join-buttons {
-    justify-content: center; 
-    align-items: center; 
-  }
-  
-  .word-grid {
-    display: none;
-  }
-  
-  .stats-page {
-    display: none;
-  }
-  
-  #messageBoard, #playersList {
-    flex: 1;
-    margin-bottom: 10px; 
-  }
-  
-  input[type="text"], button {
-    margin: 5px 0;
-  }
-  
+}
+
+.left-panel, .join-buttons, #leaderboard {
+  flex: 1; 
+  margin: 10px;
+  display: flex;
+  flex-direction: column; 
+}
+
+#leaderboard, .left-panel {
+  overflow-y: auto; 
+}
+
+.join-buttons {
+  justify-content: center; 
+  align-items: center; 
+}
+
+.word-grid {
+  display: none;
+}
+
+.stats-page {
+  display: none;
+}
+
+#messageBoard, #playersList {
+  flex: 1;
+  margin-bottom: 10px; 
+}
+
+input[type="text"], button {
+  margin: 5px 0;
+}
+
