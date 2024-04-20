@@ -50,7 +50,7 @@
 <body>
     <!-- Phase 1: User Entry -->
     <div id="phase1">
-        <input type="text" id="username" placeholder="Enter your username">
+        <input type="text" id="username" placeholder="Enter your username" onkeypress="handleKeyPress(event)">
         <button onclick="enterUsername()">Enter</button>
     </div>
 
@@ -66,6 +66,13 @@
 
             document.getElementById('phase1').style.display = 'none';
             document.getElementById('phase 2').style.display = 'block';
+        }
+        function handleKeyPress(event) 
+        {
+            if (event.keyCode === 13) 
+            { // Check if Enter key was pressed
+                enterUsername(); // Call the enterUsername function
+            }
         }
     </script>
 
