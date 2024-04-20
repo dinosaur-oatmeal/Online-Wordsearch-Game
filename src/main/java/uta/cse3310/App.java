@@ -173,7 +173,7 @@ public class App extends WebSocketServer
 
     // note only send to the single connection
     String jsonString = gson.toJson(E);
-    broadcast(jsonString);
+    conn.send(jsonString);
 
     System.out.println(""+ gameId);
     String boardJson = gson.toJson(G.board);
@@ -246,15 +246,15 @@ public class App extends WebSocketServer
 
       if(wordPositions != null)
       {
-        sendHighlightPositions(conn, wordPositions);
+        sendHighlightPositions(conn, wordPositions, typeInt);
       }
 
       else
       {
-        System.out.println("\nHELLO\n");
+        //System.out.println("\nHELLO\n");
         wordPositions = new ArrayList<>();
         wordPositions.add(row * 50 + column);
-        sendHighlightPositions(conn, wordPositions);
+        sendHighlightPositions(conn, wordPositions, typeInt);
       }
     }
 
@@ -317,13 +317,29 @@ public class App extends WebSocketServer
   }
 
   // method to send positions to index.html
-  public void sendHighlightPositions(WebSocket conn, List<Integer> positions)
+  public void sendHighlightPositions(WebSocket conn, List<Integer> positions, int typeInt)
   {
     Gson gson = new Gson();
+
+    // ArrayList of map containing string to be parsed and object data
+    List<Map<String, Object>> positionsWithIdx = new ArrayList<>();
+    
+     // loop through input ArrayList
+    for (Integer position : positions)
+    {
+        // store position and PlayerIdx
+        Map<String, Object> positionEntry = new HashMap<>();
+        positionEntry.put("position", position);
+        positionEntry.put("PlayerIdx", typeInt);
+        positionsWithIdx.add(positionEntry);
+    }
+
+    // store action and positions
     Map<String, Object> message = new HashMap<>();
     message.put("action", "highlightWords");
-    message.put("positions", positions);
+    message.put("positions", positionsWithIdx);
     String jsonString = gson.toJson(message);
+
     System.out.println("\n" + jsonString + "\n");
     broadcast(jsonString);
   }
