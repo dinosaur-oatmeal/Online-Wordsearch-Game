@@ -25,7 +25,7 @@ html, body {
 }
 #phase1 input
 {
-  width: 75%;
+  width: 75% !important;
 }
 #phase2 {
   display: flex;
@@ -69,7 +69,6 @@ html, body {
   border: 1px solid #fff; /* Add border for visibility */
   padding: 10px; /* Add padding for spacing */
 }
-
 
 input[type="text"], button {
   margin: 5px 0; /* Adds a little space around input and button */
