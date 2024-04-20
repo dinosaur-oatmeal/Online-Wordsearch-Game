@@ -179,7 +179,14 @@
         function updatePlayersList(playersList) 
         {
             const playersListElement = document.getElementById('playersList');
-            playersListElement.innerHTML = 'Players Online: ' + playersList.join(', ');
+            if(playersListElement)
+            {
+                playersListElement.innerHTML = 'Players Online: ' + playersList.join(', ');
+            }
+            else
+            {
+                console.error("Failed to find player list element");
+            }
         }
 
         // character button is pressed: highlight button, and send data to App.java to be processed
