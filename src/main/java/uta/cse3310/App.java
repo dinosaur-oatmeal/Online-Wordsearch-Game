@@ -69,8 +69,6 @@ public class App extends WebSocketServer
 
   // All games currently underway on this server are stored in
   // the vector activeGames
-  private List<String> playersInLobby = new ArrayList<>();
-
   private Vector<GameSession> activeGames = new Vector<GameSession>();
 
   private int gameId = 1;
@@ -96,117 +94,104 @@ public class App extends WebSocketServer
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
   }
 
-  private void broadcastPlayersInLobby()
-  {
-    Gson gson = new Gson();
-    String playersListJson = gson.toJson(playersInLobby);
-    broadcast(playersListJson);
-    System.out.println("Broadcasted players list: " + playersListJson);
-  }
-
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake)
   {
     connectionId++;
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-    playersInLobby.add(conn.getRemoteSocketAddress().getAddress().getHostAddress());
-    broadcastPlayersInLobby();
-    System.out.println("Players in lobby: " + playersInLobby);
 
     ServerEvent E = new ServerEvent();
     GameSession G = null;
-    int gameType; 
 
     // match found
     for(GameSession i : activeGames)
     {
-      G = i;
-      System.out.println("found a match");
-      //System.out.println("" + G.player);
-      //change based off the game type
-      if(G.players[0] == uta.cse3310.PlayerType.Player1)
+      if(i.player == uta.cse3310.PlayerType.Player1)
       {
-        E.YouAre = PlayerType.Player2;
-        G.addPlayer(E.YouAre);
-        System.out.println(E.YouAre);
-        break;
+        G = i;
+        System.out.println("found a match");
       }
 
-      else if(G.players[1] == uta.cse3310.PlayerType.Player2)
+    }
+
+    // new game initialization
+    if(G == null)
+    {
+      G = new GameSession(stats);
+      G.gameId = gameId;
+      gameId++;
+      G.player = PlayerType.Player1;
+      G.players[0] = PlayerType.Player1;
+      activeGames.add(G);
+      System.out.println("Starting a new game");
+    }
+
+    //join existing game
+    else
+    {
+      System.out.println("Joining existing game");
+
+      if(G.players[3] == uta.cse3310.PlayerType.Player4)
       {
-        E.YouAre = PlayerType.Player3;
-        G.addPlayer(E.YouAre);
-        break;
+        System.out.println("Too many players!");
       }
 
       else if(G.players[2] == uta.cse3310.PlayerType.Player3)
       {
-        E.YouAre = PlayerType.Player4;
-        G.addPlayer(E.YouAre);
-        break;
+        G.player = PlayerType.Player4;
+        G.players[3] = PlayerType.Player4;
+        System.out.println("Player 4 added");
+        G.startGame();
+      }
+
+      else if(G.players[1] == uta.cse3310.PlayerType.Player2)
+      {
+        G.player = PlayerType.Player3;
+        G.players[2] = PlayerType.Player3;
+        System.out.println("Player 3 added");
+        G.startGame();
       }
 
       else
       {
-        System.out.println("Error: too many players are trying to join");
-        return;
+        G.player = PlayerType.Player2;
+        G.players[1] = PlayerType.Player2;
+        System.out.println("Player 2 added");
+        G.startGame();
       }
     }
 
-      // create new game
-      if(G == null)
-      {
-        G = new GameSession(stats);
-        G.gameId = gameId;
-        gameId++;
+    E.YouAre = G.player;
+    E.gameId = G.gameId;
 
-        // add first player
-        E.YouAre = PlayerType.Player1;
-        G.addPlayer(E.YouAre);
-        activeGames.add(G);
-        System.out.println("\ncreating a new game");
-        System.out.println(G.players[0] + "\n");
-      }
+    // allows the websocket to give us the Game when a message arrives..
+    // it stores a pointer to G, and will give that pointer back to us
+    // when we ask for it
+    conn.setAttachment(G);
 
-      // allows the websocket to give us the Game when a message arrives..
-      // it stores a pointer to G, and will give that pointer back to us
-      // when we ask for it
-      conn.setAttachment(G);
-      E.gameId = G.gameId;
+    Gson gson = new Gson();
 
-      Gson gson = new Gson();
+    // note only send to the single connection
+    String jsonString = gson.toJson(E);
+    broadcast(jsonString);
 
-      // note only send to the single connection
-      String jsonString = gson.toJson(E);
-      broadcast(jsonString);
-
-      // needs to be updated to handle different player amounts
-      if(E.YouAre == PlayerType.Player2)
-      {
-        System.out.println("GAME STARTING");
-        G.startGame();
-      }
-
-      System.out.println(""+ gameId);
-      String boardJson = gson.toJson(G.board);
-      //System.out.println(boardJson);
-      conn.send(boardJson);
-      //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
-      // Update the running time
-      stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
-      // The state of the game has changed, so lets send it to everyone
-      jsonString = gson.toJson(G);
-      //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-      broadcast(jsonString);
+    System.out.println(""+ gameId);
+    String boardJson = gson.toJson(G.board);
+    //System.out.println(boardJson);
+    conn.send(boardJson);
+    //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
+    // Update the running time
+    stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
+    // The state of the game has changed, so lets send it to everyone
+    jsonString = gson.toJson(G);
+    //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    broadcast(jsonString);
   }
 
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote)
   {
     System.out.println(conn + " has closed");
-    playersInLobby.remove(conn.getRemoteSocketAddress().getAddress().getHostAddress());
-    broadcastPlayersInLobby();
-
     // Retrieve the game tied to the websocket connection
     GameSession G = conn.getAttachment();
     activeGames.remove(G);
@@ -234,11 +219,11 @@ public class App extends WebSocketServer
     // selectCharacter action from Index.html
     if("selectCharacter".equals(U.getAction()))
     {
+      System.out.println("char selected");
       int row = U.getRow();
       int column = U.getColumn();
       // convert index message from Index.html into an int (easier to deal with than enum)
-      String idxParse = message.substring(message.indexOf("\"idx\":") + 6, message.indexOf("}"));
-      int typeInt = Integer.parseInt(idxParse.trim());
+      int typeInt = U.PlayerIdx.getValue();
 
       //System.out.println("\n Row: " + row + " Column: " + column + " Type: " + typeInt + "\n");
 
