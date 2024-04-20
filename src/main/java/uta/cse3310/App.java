@@ -101,6 +101,7 @@ public class App extends WebSocketServer
     Gson gson = new Gson();
     String playersListJson = gson.toJson(playersInLobby);
     broadcast(playersListJson);
+    System.out.println("Broadcasted players list: " + playersListJson);
   }
 
   @Override
@@ -110,6 +111,7 @@ public class App extends WebSocketServer
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     playersInLobby.add(conn.getRemoteSocketAddress().getAddress().getHostAddress());
     broadcastPlayersInLobby();
+    System.out.println("Players in lobby: " + playersInLobby);
 
     ServerEvent E = new ServerEvent();
     GameSession G = null;
