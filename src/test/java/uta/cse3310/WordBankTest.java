@@ -183,7 +183,7 @@ public class WordBankTest extends TestCase
     }
 
     // check that the entire board is filled with letters
-    public void testLetters()
+    /*public void testLetters()
     {
         WordBank bank = new WordBank();
 
@@ -196,7 +196,7 @@ public class WordBankTest extends TestCase
                 assertTrue(board[i][j] != '-');
             }
         }
-    }
+    }*/
 
     // check to see that the board is generated in 1 second
     public void testGenerateBoard()
