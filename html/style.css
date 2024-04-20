@@ -23,7 +23,10 @@ html, body {
   border: none; 
   width: 50%; 
 }
-
+#username
+{
+  width: 300px;
+}
 #phase2 {
   display: flex;
   justify-content: space-between;
