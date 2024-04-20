@@ -43,6 +43,16 @@
     </div>
 
     <script>
+        document.getElementById('username').addEventListener('keydown', function(event) 
+        {
+            // Check if the key pressed is "Enter"
+            if (event.key === 'Enter') 
+            {
+                // Trigger the same action as clicking the button
+                enterUsername();
+            }
+        });
+        
         function enterUsername() {
             var usernameInput = document.getElementById('username');
             var username = usernameInput.value.trim();
