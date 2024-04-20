@@ -58,7 +58,7 @@
                 alert('Please enter a username.');
                 return;
             }
-
+            connection.send(JSON.stringify({ action: "enterUsername", username: username }));
             document.getElementById('phase1').style.display = 'none';
             document.getElementById('phase 2').style.display = 'block';
         }
@@ -134,7 +134,7 @@
                     idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
                     gameid = obj.GameId;
                 }
-                
+
                 // Update the list of players online
                 if ('players' in obj) 
                 {
