@@ -50,16 +50,6 @@
     </div>
 
     <script>
-        document.getElementById('username').addEventListener('keydown', function(event) 
-        {
-            // Check if the key pressed is "Enter"
-            if (event.key === 'Enter') 
-            {
-                // Trigger the same action as clicking the button
-                enterUsername();
-            }
-        });
-        
         function enterUsername() {
             var usernameInput = document.getElementById('username');
             var username = usernameInput.value.trim();
@@ -109,19 +99,18 @@
         const wsPort = parseInt(process.env.WEBSOCKET_PORT); 
 
         var connection;
-        var idx;
+        var idx = 0;
+        var gameid = -1;
+
+        
 
         function joinGame(playerCount) {
             var serverUrl;
             serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
             connection = new WebSocket(serverUrl);
-            idx = -1;
-            var gameid = -1;
 
             connection.onopen = function (evt) {
                 console.log("open");
-                const message = JSON.stringify({ action: "playerJoined", playerCount: playerCount});
-                connection.send(message);
             }
 
             connection.onclose = function (evt) {
@@ -134,13 +123,9 @@
                 const obj = JSON.parse(evt.data);
 
                 if ('YouAre' in obj) {
-                    idx = ["Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
+                    idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
                     gameid = obj.GameId;
                 }
-                if ('playersList' in obj)
-                {
-                    updatePlayersList(obj.playersList);
-                }   
 
                 // change from board to lobby if the game has ended
                 if ('gameOver' in obj)
@@ -183,28 +168,53 @@
                 }
             }
         }
-        function updatePlayersList(playersList) 
-        {
-            console.log("Received players list from server: ", playersList);
-            const playersListElement = document.getElementById('playersList');
-            if(playersListElement)
-            {
-                playersListElement.innerHTML = 'Players Online: ' + playersList.join(', ');
-            }
-            else
-            {
-                console.error("Failed to find player list element");
-            }
-        }
 
         // character button is pressed: highlight button, and send data to App.java to be processed
         function selectCharacter(row, column)
         {
-            console.log(`Character at ${row}, ${column} selected by ${idx}`);
+            // UserEvent U was uninitialized before this declaration was moved here
+            class UserEvent
+            {
+                Button = -1;
+                PlayerIdx = 0;
+                GameId = 0;
+                row = -1;
+                column = -1;
+                action = "";
+            }
 
             highlightButton(row, column, idx);
-            const message = JSON.stringify({ action: "selectCharacter", row: row, column: column, idx: idx });
-            connection.send(message);
+            U = new UserEvent();
+            U.Button = (row * 50 + column);
+            if(idx == 1)
+            {
+                U.PlayerIdx = "Player1";
+            }
+
+            if(idx == 2)
+            {
+                U.PlayerIdx = "Player2";
+            }
+
+            if(idx == 3)
+            {
+                U.PlayerIdx = "Player3";
+            }
+
+            if(idx == 4)
+            {
+                U.PlayerIdx = "Player4";
+            }
+
+            U.GameId = gameid;
+            U.row = row;
+            U.column = column;
+            U.action = "selectCharacter";
+
+            //const message = JSON.stringify({ action: "selectCharacter", row: row, column: column, idx: idx });
+            connection.send(JSON.stringify(U));
+            console.log(U);
+            //connection.send(message);
         }
 
         // highlight button that was pressed based on PlayerType

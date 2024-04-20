@@ -69,7 +69,7 @@ public class WordBank
          }
       }
       
-      insertRandomLetters(board);
+      //insertRandomLetters(board);
       
       checkBoard(board);
       
