@@ -102,7 +102,15 @@
         var idx = 0;
         var gameid = -1;
 
-        
+        function updatePlayersList(players) 
+        {
+                var playersList = document.getElementById('playersList');
+                playersList.innerHTML = 'Players Online:<br>';
+                players.forEach(function(player)
+                {
+                    playersList.innerHTML += player + '<br>';
+                });
+        }
 
         function joinGame(playerCount) {
             var serverUrl;
@@ -125,6 +133,12 @@
                 if ('YouAre' in obj) {
                     idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
                     gameid = obj.GameId;
+                }
+                
+                // Update the list of players online
+                if ('players' in obj) 
+                {
+                    updatePlayersList(obj.players);
                 }
 
                 // change from board to lobby if the game has ended
