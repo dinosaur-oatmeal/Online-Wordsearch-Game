@@ -69,6 +69,8 @@ public class App extends WebSocketServer
 
   // All games currently underway on this server are stored in
   // the vector activeGames
+  private List<String> playersInLobby = new ArrayList<>();
+
   private Vector<GameSession> activeGames = new Vector<GameSession>();
 
   private int gameId = 1;
@@ -94,11 +96,20 @@ public class App extends WebSocketServer
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
   }
 
+  private void broadcastPlayersInLobby()
+  {
+    Gson gson = new Gson();
+    String playersListJson = gson.toJson(playersInLobby);
+    broadcast(playersListJson);
+  }
+
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake)
   {
     connectionId++;
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+    playersInLobby.add(conn.getRemoteSocketAddress().getAddress().getHostAddress());
+    broadcastPlayersInLobby();
 
     ServerEvent E = new ServerEvent();
     GameSession G = null;
@@ -191,6 +202,9 @@ public class App extends WebSocketServer
   public void onClose(WebSocket conn, int code, String reason, boolean remote)
   {
     System.out.println(conn + " has closed");
+    playersInLobby.remove(conn.getRemoteSocketAddress().getAddress().getHostAddress());
+    broadcastPlayersInLobby();
+
     // Retrieve the game tied to the websocket connection
     GameSession G = conn.getAttachment();
     activeGames.remove(G);
