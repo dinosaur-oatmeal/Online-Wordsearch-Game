@@ -58,7 +58,6 @@
                 alert('Please enter a username.');
                 return;
             }
-            connection.send(JSON.stringify({ action: "enterUsername", username: username }));
             document.getElementById('phase1').style.display = 'none';
             document.getElementById('phase 2').style.display = 'block';
         }
