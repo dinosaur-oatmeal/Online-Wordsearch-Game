@@ -33,11 +33,16 @@
             color: white;
         }
 
-        #phase1 input[type="text"] {
-            width: 50%; /* Adjust the width as needed */
-            padding: 5px; /* Add some padding for better appearance */
-            margin: 5px; /* Add margin for spacing */
-            font-size: 16px; /* Increase font size for better readability */
+        .Player3Highlight
+        {
+            background-color: green;
+            color: white;
+        }
+
+        .Player4Highlight
+        {
+            background-color: orange;
+            color: white;
         }
     </style>
 </head>
@@ -58,6 +63,7 @@
                 alert('Please enter a username.');
                 return;
             }
+
             document.getElementById('phase1').style.display = 'none';
             document.getElementById('phase 2').style.display = 'block';
         }
@@ -101,16 +107,6 @@
         var idx = 0;
         var gameid = -1;
 
-        function updatePlayersList(players) 
-        {
-                var playersList = document.getElementById('playersList');
-                playersList.innerHTML = 'Players Online:<br>';
-                players.forEach(function(player)
-                {
-                    playersList.innerHTML += player + '<br>';
-                });
-        }
-
         function joinGame(playerCount) {
             var serverUrl;
             serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
@@ -129,15 +125,11 @@
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
 
-                if ('YouAre' in obj) {
-                    idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
-                    gameid = obj.GameId;
-                }
-
-                // Update the list of players online
-                if ('players' in obj) 
+                if ('YouAre' in obj)
                 {
-                    updatePlayersList(obj.players);
+                    idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
+                    console.log("updated to: ", idx);
+                    gameid = obj.gameId;
                 }
 
                 // change from board to lobby if the game has ended
@@ -148,11 +140,14 @@
                 }
 
                 // highlight word positions
-                if(obj.action === "highlightWords" && 'positions' in obj)
+                if (obj.action === "highlightWords" && Array.isArray(obj.positions))
                 {
-                    obj.positions.forEach(position =>{
-                        const row = Math.floor(position / 50);
-                        const column = position % 50;
+                    // loop through and grab data (row, column, and PlayerIdx number)
+                    obj.positions.forEach(entry => {
+                        const row = Math.floor(entry.position / 50);
+                        const column = entry.position % 50;
+                        const idx = entry.PlayerIdx;
+
                         highlightButton(row, column, idx);
                     });
                 }
