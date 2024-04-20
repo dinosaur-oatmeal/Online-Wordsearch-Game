@@ -60,6 +60,14 @@ html, body {
   margin-bottom: 10px; /* Adds space between message board and input area */
 }
 
+#playersList {
+  flex: 1; /* Allows the section to fill available space */
+  overflow-y: auto; /* Adds scroll if content exceeds height */
+  border: 1px solid #fff; /* Add border for visibility */
+  padding: 10px; /* Add padding for spacing */
+}
+
+
 input[type="text"], button {
   margin: 5px 0; /* Adds a little space around input and button */
 }
