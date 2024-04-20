@@ -23,10 +23,6 @@ html, body {
   border: none; 
   width: 50%; 
 }
-#phase1 input
-{
-  width: 75% !important;
-}
 #phase2 {
   display: flex;
   justify-content: space-between;
