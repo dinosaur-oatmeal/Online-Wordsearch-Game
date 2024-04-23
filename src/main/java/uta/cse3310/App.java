@@ -224,6 +224,7 @@ public class App extends WebSocketServer
       int column = U.getColumn();
       // convert index message from Index.html into an int (easier to deal with than enum)
       int typeInt = U.PlayerIdx.getValue();
+      System.out.println("\n" + typeInt + "\n");
 
       //System.out.println("\n Row: " + row + " Column: " + column + " Type: " + typeInt + "\n");
 
@@ -237,7 +238,7 @@ public class App extends WebSocketServer
         G.update(U);
         String jsonString;
         jsonString = gson.toJson(G);
-        broadcast(jsonString);
+        conn.send(jsonString);
       }
 
       // find word positions

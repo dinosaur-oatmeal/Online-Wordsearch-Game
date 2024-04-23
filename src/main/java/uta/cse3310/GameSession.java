@@ -94,7 +94,7 @@ public class GameSession
 		wordsToFind = bank.wordsToFill;
 
 		// set button from NOPLAYER to PlayerType
-		button[location] = players[typeInt];
+		button[location] = players[typeInt - 1];
 
 		// see if the current character is in the same word as the last
 		if(wordFound(lastLocation, location))
@@ -106,15 +106,27 @@ public class GameSession
 			System.out.println("\nWORD FOUND + " + players[typeInt] + "\n");
 
 			// add to Player1 score
-			if(players[typeInt] == PlayerType.Player1)
+			if(typeInt == 1)
 			{
 				Player1Score++;
 			}
 
 			// add to Player2 score
-			if(players[typeInt] == PlayerType.Player2)
+			else if(typeInt == 2)
 			{
 				Player2Score++;
+			}
+
+			// add to Player3 score
+			else if(typeInt == 3)
+			{
+				Player3Score++;
+			}
+
+			// add to Player4 score
+			else if(typeInt == 4)
+			{
+				Player4Score++;
 			}
 
 			// add to total words found and see if the game is over
