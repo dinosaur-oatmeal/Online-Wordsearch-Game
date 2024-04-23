@@ -10,12 +10,15 @@ public class WordBank
 {
    int gridSize = 2500;
    int wordsToFill;
-   int wordsFilled = 0;
+   int wordsFilled, TCounter = 0;
    double diagDown, diagUp, vertUp, vertDown, horz = 0;
    double density = 0.67;
-   private transient Random random = new Random();
+   transient Random random = new Random();
    
-   // arraylist that will store word locations
+   // ArrayList to store words
+   ArrayList<String> words;
+   
+   // ArrayList that will store word locations
    List<WordLocation> locations = new ArrayList<>();
 
    public char[][] generateGrid()
@@ -23,9 +26,6 @@ public class WordBank
       // amount of words for board
       wordsToFill = (int)((gridSize * density) / 5);
       //System.out.println(wordsToFill);
-      
-      // array with chosen words for board
-      String[] words = selectWords();
       
       // initialize board (every cell is '-')
       char[][] board = new char[50][50];
@@ -37,7 +37,13 @@ public class WordBank
          }
       }
       
-      //System.out.println(cellsToFill);
+      // array with chosen words for board
+      words = selectWords();
+      
+      //System.out.println(words);
+      
+      int TCounterRow = 0;
+      int TCounterColumn = 0;
       
       // loop until every cell is filled to meet density
       while(wordsFilled < wordsToFill)
@@ -45,6 +51,28 @@ public class WordBank
          int RDVH = random.nextInt(5) + 1;
          //System.out.print(RDVH); 
          //System.out.println(cellsFilled);
+         
+         // fill T-shaped words first
+         if(TCounter < 10)
+         {
+            for(int i = 0; i < 10; i++)
+            {
+               // get rid of word with x from being horizontal (no vertical match)
+               if(words.get(i).charAt(2) == 'x')
+               {
+                  String temp = words.get(i);
+                  words.remove(i);
+                  words.add(temp);
+               }
+               
+               ///System.out.println(TCounterRow + " " + TCounterColumn);
+               
+               TWords(board, words, words.get(i), TCounterRow, TCounterColumn);
+               TCounterRow += 5;
+               TCounterColumn += 5;
+               TCounter++;
+            }
+         }
 
          int row = random.nextInt(board.length - 4);
          int column = random.nextInt(board.length - 4);
@@ -52,19 +80,19 @@ public class WordBank
          switch(RDVH)
          {
             case 1:
-               diagonalDown(board, words[wordsFilled], row, column);
+               diagonalDown(board, words.get(wordsFilled), row, column);
                break;
             case 2:
-               diagonalUp(board, words[wordsFilled], row, column);
+               diagonalUp(board, words.get(wordsFilled), row, column);
                break;
             case 3:
-               verticalDown(board, words[wordsFilled], row, column);
+               verticalDown(board, words.get(wordsFilled), row, column);
                break;
             case 4:
-               verticalUp(board, words[wordsFilled], row, column);
+               verticalUp(board, words.get(wordsFilled), row, column);
                break;
             case 5:
-               horizontal(board, words[wordsFilled], row, column);
+               horizontal(board, words.get(wordsFilled), row, column);
                break;
          }
       }
@@ -77,13 +105,13 @@ public class WordBank
    }
   
    // select a word from the word bank
-   public String[] selectWords()
+   public ArrayList<String> selectWords()
    {      
       // read entire file into ArrayList to quickly grab locations
       ArrayList<String> inputFile = new ArrayList<>();
          
       // selection of random words
-      String[] words = new String[wordsToFill];
+      ArrayList<String> words = new ArrayList<>();
       String line;
          
       // track line locations of selected words in inputFile
@@ -99,8 +127,8 @@ public class WordBank
             inputFile.add(line);
          }
          
-         // loop for every position in words output array
-         while(j < wordsToFill)
+         // loop for every position in words output array (+20 handles potential margin of error)
+         while(j < wordsToFill + 20)
          {
             lineNumber = random.nextInt(700);
             
@@ -109,7 +137,7 @@ public class WordBank
             {
                // all words are 5 letters
                line = inputFile.get(lineNumber);
-               words[j] = line;
+               words.add(line);
                //System.out.println(words[j]);
                
                locations.add(lineNumber);
@@ -125,7 +153,7 @@ public class WordBank
          e.printStackTrace();
       }
       
-      words[0] = "ERROR";
+      words.add("ERROR");
       return words;
    }
   
@@ -357,6 +385,54 @@ public class WordBank
          break;
       }
    }
+   
+   // create T-shaped words
+   public void TWords(char[][] board, List<String> words, String word, int row, int column)
+   {
+      // fill horizontal word and update stats
+      for(int i = 0; i < 5; i++)
+      {
+         board[row][column + i] = word.charAt(i);
+      }
+      
+      int start = row * 50 + column;
+      int end = start + 4;
+      
+      locations.add(new WordLocation(start, end));
+      wordsFilled++;
+      horz++;
+      
+      Iterator<String> iterator = words.iterator();
+      
+      // loop through ArrayList of words
+      while(iterator.hasNext())
+      {
+         String TWord = iterator.next();
+         
+         //System.out.println(TWord.charAt(0) + " " + word.charAt(2));
+         
+         // see if next word's first letter is equivalent to horizontal word's 3rd letter
+         if(TWord.charAt(0) == word.charAt(2))
+         {
+            // place word vertically
+            for(int k = 1; k < 5; k++)
+            {
+               board[row + k][column + 2] = TWord.charAt(k);
+            }
+            
+            // update stats and remove word from list
+            start = row * 50 + column + 2;
+            end = start + (4 * 50);
+            locations.add(new WordLocation(start, end));
+            //System.out.println(locations);
+            iterator.remove();
+            
+            wordsFilled++;
+            vertDown++;
+            break;
+         }
+      }
+   }
 
    // insert random letter in the board
    public void insertRandomLetters(char[][] board)
@@ -389,7 +465,7 @@ public class WordBank
       horz = horz / wordsFilled;
       
       if(density < 0.6 || diagDown < 0.15 || diagUp < 0.15 ||
-      vertDown < 0.15 || vertUp < 0.15 || horz < 0.15)
+      vertDown < 0.15 || vertUp < 0.15 || horz < 0.15 || TCounter < 9)
       {
          density = 0.67;
          diagDown = 0;
@@ -398,6 +474,7 @@ public class WordBank
          vertDown = 0;
          horz = 0;
          wordsFilled = 0;
+         TCounter = 0;
          
          generateGrid();
       }
@@ -412,11 +489,11 @@ public class WordBank
       System.out.printf("Vertical Down: %.2f\n", vertDown);
       System.out.printf("Vertical Up: %.2f\n", vertUp);
       System.out.printf("Horizontal: %.2f\n", horz);
+      System.out.printf("T-Shaped Words: %d", TCounter);
    }
    
-   /////////
-   /*
    
+   /*
    static char[][] board;
    
    public static void main(String args[])
@@ -439,8 +516,7 @@ public class WordBank
 			}
 			System.out.print("\n");
 		}
-   }
-   
-   */
-   //////////
+      
+      statistics();
+   }*/
 }
