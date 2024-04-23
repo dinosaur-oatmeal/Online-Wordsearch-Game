@@ -107,8 +107,8 @@ public class GameSessionTest extends TestCase
         G.players[4] = PlayerType.Player4;
 
         // select the first and last characters as Player2 and Player1
-        G.charSelected(0, 1);
-        G.charSelected(2499, 0);
+        G.charSelected(0, 2);
+        G.charSelected(2499, 1);
 
         assertTrue(G.button[0] == PlayerType.Player2);
         assertTrue(G.button[2499] == PlayerType.Player1);
