@@ -156,7 +156,7 @@
         }
 
         // generate board from WordGrid.java, and append data onto buttons
-        function initializeGameBoard(boardData)
+        /*function initializeGameBoard(boardData)
         {
             const board = document.getElementById('gameBoard');
             for (let i = 0; i < 50; i++)
@@ -168,6 +168,20 @@
                     button.onclick = function () { selectCharacter(i, j); };
                     board.appendChild(button);
                 }
+            }
+        }*/
+        function initializeGameBoard(boardData) {
+            const board = document.getElementById('gameBoard');
+            for (let i = 0; i < 50; i++) {
+                const row = document.createElement('div');
+                row.classList.add('game-board-row');
+                for (let j = 0; j < 50; j++) {
+                    const button = document.createElement('button');
+                    button.textContent = boardData[i][j];
+                    button.onclick = function () { selectCharacter(i, j); };
+                    row.appendChild(button);
+                }
+                board.appendChild(row);
             }
         }
 
