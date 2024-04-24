@@ -63,6 +63,7 @@ button.enter{
   grid-column: span 9;
   grid-row: span 4;
   /*display: flex;*/
+  overflow: auto; 
   align-items: center;
   justify-content: center;
 }
