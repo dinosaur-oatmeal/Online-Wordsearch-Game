@@ -62,7 +62,7 @@ button.enter{
 #gameBoard{
   grid-column: span 9;
   grid-row: span 4;
-  display: flex;
+  /*display: flex;*/
   align-items: center;
   justify-content: center;
 }
