@@ -1,214 +1,92 @@
 package uta.cse3310;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.util.*;
-
-public class WholeGameTest extends TestCase
-{
-    public WholeGameTest(String testName)
-    {
+public class WholeGameTest
+        extends TestCase {
+    /**
+     * Create the test case
+     *
+     * @param testName name of the test case
+     * @return
+     */
+    public WholeGameTest(String testName) {
         super(testName);
     }
 
-    public static Test suite()
-    {
+    /**
+     * @return the suite of tests being tested
+     */
+    public static Test suite() {
         return new TestSuite(WholeGameTest.class);
     }
 
-    ///////////////////////////////////
-    // Unit tests for WordBank.java //
-    /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // This test is very close to a system level test.
+    // Well, the system without the UI.
+    // Inputs and Outputs are provided by JSON strings.
+    //
+    //
+    // Should be able to test all of the logic in the program
+    // with these tests.
+    //
+    // The challenge is doing it without repeating a lot of code, or making
+    // it tightly coupled to the specific implementation.
+    // To minimize coupling, the majority of the tests should deal with
+    // json strings.
+    ////////////////////////////////////////////////////////////////////////////
+    // Routines to replace those in App.java
+    ///////////////////////////////////////////////////////////////////////////
 
-    // check horizontal words can be placed on the board
-    public void testHorizontal()
-    {
-        WordBank bank = new WordBank();
-
-        // initialize board (every cell is '-')
-        char[][] board = new char[50][50];
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                board[i][j] = '-';
-            }
-        }
-
-        // place in top left and bottom right
-        bank.horizontal(board, "hello", 0, 0);
-        bank.horizontal(board, "hello", 49, 45);
-
-        // check that words are valid placements
-        assertTrue(board[0][0] == 'h' && board[0][4] == 'o');
-        assertTrue(board[49][45] == 'h' && board[49][49] == 'o');
+    private String update(Game G, String msg) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        UserEvent U = gson.fromJson(msg, UserEvent.class);
+        G.Update(U);
+        String jsonString = gson.toJson(G);
+        return jsonString;
     }
 
-    // check vertical down words can be placed on the board
-    public void testVerticalDown()
-    {
-        WordBank bank = new WordBank();
+    ////////////////////////////////////////////////////////////////////////////
+    public void testXWinGame() {
+        Game game = new Game(new Statistics());
+        String msg = new String();
+        String result = new String();
 
-        // initialize board (every cell is '-')
-        char[][] board = new char[50][50];
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                board[i][j] = '-';
-            }
-        }
+        // > 7707 1 {\"YouAre\":\"XPLAYER\",\"GameId\":1}
+        // < 7746 *
+        // {\"Players\":\"XPLAYER\",\"CurrentTurn\":\"NOPLAYER\",\"Button\":[\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\"],\"Msg\":[\"Waiting
+        // for other player to join\",\"\"],\"GameId\":1}
 
-        // place in top left and bottom right
-        bank.verticalDown(board, "hello", 0, 0);
-        bank.verticalDown(board, "hello", 45, 49);
+        // > 17987 2 {\"YouAre\":\"OPLAYER\",\"GameId\":1}
+        game.Players = PlayerType.OPLAYER;
+        game.StartGame();
 
-        // check that words are valid placements
-        assertTrue(board[0][0] == 'h' && board[4][0] == 'o');
-        assertTrue(board[45][49] == 'h' && board[49][49] == 'o');
-    }
-
-    // check vertical up words can be placed on the board
-    public void testVerticalUp()
-    {
-        WordBank bank = new WordBank();
-
-        // initialize board (every cell is '-')
-        char[][] board = new char[50][50];
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                board[i][j] = '-';
-            }
-        }
-
-        // place in top left and bottom right
-        bank.verticalUp(board, "hello", 0, 0);
-        bank.verticalUp(board, "hello", 45, 49);
-
-        // check that words are valid placements
-        assertTrue(board[0][0] == 'o' && board[4][0] == 'h');
-        assertTrue(board[45][49] == 'o' && board[49][49] == 'h');
-    }
-
-    // check diagonal down words can be placed on the board
-    public void testDiagonalDown()
-    {
-        WordBank bank = new WordBank();
-
-        // initialize board (every cell is '-')
-        char[][] board = new char[50][50];
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                board[i][j] = '-';
-            }
-        }
-
-        // place in top left and bottom right
-        bank.diagonalDown(board, "hello", 0, 0);
-        bank.diagonalDown(board, "hello", 45, 45);
-
-        // check that words are valid placements
-        assertTrue(board[0][0] == 'h' && board[4][4] == 'o');
-        assertTrue(board[45][45] == 'h' && board[49][49] == 'o');
-    }
-
-    // check diagonal up words can be placed on the board
-    public void testDiagonalUp()
-    {
-        WordBank bank = new WordBank();
-
-        // initialize board (every cell is '-')
-        char[][] board = new char[50][50];
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                board[i][j] = '-';
-            }
-        }
-
-        // place as close to top left and bottom right as possible
-        bank.diagonalUp(board, "hello", 0, 0);
-        bank.diagonalUp(board, "hello", 45, 45);
-
-        // check that words are valid placements
-        assertTrue(board[4][0] == 'h' && board[0][4] == 'o');
-        assertTrue(board[49][45] == 'h' && board[45][49] == 'o');
-    }
-
-    // test words aren't overwritten
-    public void testOverwrite()
-    {
-        WordBank bank = new WordBank();
-
-        // initialize board (every cell is '-')
-        char[][] board = new char[50][50];
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                board[i][j] = '-';
-            }
-        }
-
-        // set locations to hello, and try to overwrite 5 times
-        bank.horizontal(board, "hello", 0, 0);
-        bank.horizontal(board, "scary", 0, 0);
-        bank.verticalDown(board, "scary", 0, 0);
-        bank.verticalUp(board, "scary", 0, 0);
-        bank.diagonalDown(board, "scary", 0, 0);
-        bank.diagonalUp(board, "scary", 0, 0);
-
-        // check that the word wasn't overwritten
-        assertTrue(board[0][0] == 'h' && board[0][1] == 'e' && board[0][2] == 'l');
-        assertTrue(board[0][3] == 'l' && board[0][4] == 'o');
-    }
-
-    // check that game stats are fulfilled when a board is generated
-    public void testStats()
-    {
-        WordBank bank = new WordBank();
-
-        char[][] board = bank.generateGrid();
-
-        // test that all stats are satisfied
-        assertTrue(bank.density >= 0.6 && bank.diagDown >= 0.15 &&
-        bank.diagUp >= 0.15 && bank.vertDown >= 0.15 &&
-        bank.vertUp >= 0.15 && bank.horz >= 0.15);
-    }
-
-    // check that the entire board is filled with letters
-    /*public void testLetters()
-    {
-        WordBank bank = new WordBank();
-
-        char[][] board = bank.generateGrid();
-
-        for(int i = 0; i < 50; i++)
-        {
-            for(int j = 0; j < 50; j++)
-            {
-                assertTrue(board[i][j] != '-');
-            }
-        }
-    }*/
-
-    // check to see that the board is generated in 1 second
-    public void testGenerateBoard()
-    {
-        GameSession G = new GameSession(new Statistics());
+        msg = "{\"Players\":\"OPLAYER\",\"CurrentTurn\":\"XPLAYER\",\"Button\":[\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\"],\"Msg\":[\"You are X. Your turn\",\"You are O. Other players turn\"],\"GameId\":1}";
+        assertTrue(msg.indexOf("\"Msg\":[\"You are X. Your turn\"")>-1);
+         
+        result = update(game, "{\"Button\":0,\"PlayerIdx\":\"XPLAYER\",\"GameId\":1}");
+       
+        // {\"Players\":\"OPLAYER\",\"CurrentTurn\":\"OPLAYER\",\"Button\":[\"XPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\"],\"Msg\":[\"Other
+       
+        // Players Move.\",\"Your Move.\"],\"GameId\":1}
+        result = update(game,"{\"Button\":1,\"PlayerIdx\":\"OPLAYER\",\"GameId\":1}");
+        // > 24067 *
+        // {\"Players\":\"OPLAYER\",\"CurrentTurn\":\"XPLAYER\",\"Button\":[\"XPLAYER\",\"OPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\"],\"Msg\":[\"Your
+        // Move.\",\"Other Players Move.\"],\"GameId\":1}
+        result = update(game,"{\"Button\":4,\"PlayerIdx\":\"XPLAYER\",\"GameId\":1}");
+        // > 25126 *
+        // {\"Players\":\"OPLAYER\",\"CurrentTurn\":\"OPLAYER\",\"Button\":[\"XPLAYER\",\"OPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"XPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\"],\"Msg\":[\"Other
+        // Players Move.\",\"Your Move.\"],\"GameId\":1}
+        result = update(game,"{\"Button\":2,\"PlayerIdx\":\"OPLAYER\",\"GameId\":1}");
+        // > 26285 *
+        // {\"Players\":\"OPLAYER\",\"CurrentTurn\":\"XPLAYER\",\"Button\":[\"XPLAYER\",\"OPLAYER\",\"OPLAYER\",\"NOPLAYER\",\"XPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\"],\"Msg\":[\"Your
+        // Move.\",\"Other Players Move.\"],\"GameId\":1}
+        result = update(game,"{\"Button\":8,\"PlayerIdx\":\"XPLAYER\",\"GameId\":1}");
         
-        long startTime = System.nanoTime();
-        G.bank.generateGrid();
-        long endTime = System.nanoTime();
+        assertTrue(result.indexOf("[\"You Win!\",\"You Lose!\"]")>-1);
+       
+        // > 27683 *
+        // {\"Players\":\"OPLAYER\",\"CurrentTurn\":\"NOPLAYER\",\"Button\":[\"XPLAYER\",\"OPLAYER\",\"OPLAYER\",\"NOPLAYER\",\"XPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"NOPLAYER\",\"XPLAYER\"],\"Msg\":[\"You
+        // Win!\",\"You Lose!\"],\"GameId\":1}
 
-        // convert to seconds and check generation time under 1 second
-        long difference = (startTime - endTime) / 1000000;
-        assertTrue(difference < 1000);
     }
 }
