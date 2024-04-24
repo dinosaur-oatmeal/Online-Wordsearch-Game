@@ -189,6 +189,11 @@
         // character button is pressed: highlight button, and send data to App.java to be processed
         function selectCharacter(row, column)
         {
+            if (row < 0 || row >= 50 || column < 0 || column >= 50) {
+                console.log("Selected position is outside the game board boundaries.");
+                return;
+            }
+
             // UserEvent U was uninitialized before this declaration was moved here
             class UserEvent
             {
