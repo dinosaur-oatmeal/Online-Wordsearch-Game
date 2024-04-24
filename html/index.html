@@ -7,6 +7,20 @@
     <title>Word Search Game</title>
     <link rel="stylesheet" href="style.css"> <!-- Link to CSS file-->
     <style>
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(50, 1fr);
+            grid-gap: 1px;
+        }
+
+        .game-board button {
+            width: 75%;
+            height: 20px;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+        
         .Player1Highlight
         {
             background-color: blue;
