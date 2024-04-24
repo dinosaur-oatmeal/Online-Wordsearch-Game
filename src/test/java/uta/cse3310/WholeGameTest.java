@@ -52,5 +52,7 @@ public class WholeGameTest extends TestCase
 
         // checking initial state of game with no words found
         assertTrue(result.contains("\"wordsFound\":0"));
+
+        // assertTrue(result.contains("\"gameOver\":true"));
     }
 }
