@@ -10,7 +10,7 @@
         .game-board {
             display: grid;
             grid-template-columns: repeat(50, 1fr);
-            grid-row: span 4;
+            grid-template-rows: repeat(50, 1fr);
             grid-gap: 1px;
         }
 
@@ -70,8 +70,8 @@
         function handleKeyPress(event) 
         {
             if (event.keyCode === 13) 
-            { // Check if Enter key was pressed
-                enterUsername(); // Call the enterUsername function
+            { 
+                enterUsername(); 
             }
         }
     </script>
