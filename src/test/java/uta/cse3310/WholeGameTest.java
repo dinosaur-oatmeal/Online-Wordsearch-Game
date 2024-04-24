@@ -49,5 +49,8 @@ public class WholeGameTest extends TestCase
 
         msg = "{\"GameId\":1,\"PlayerIdx\":\"Player1\",\"Button\":25,\"row\":0,\"column\":5,\"action\":\"selectCharacter\"}";
         result = update(game, msg);
+
+        // checking initial state of game with no words found
+        assertTrue(result.contains("\"wordsFound\":0"));
     }
 }
