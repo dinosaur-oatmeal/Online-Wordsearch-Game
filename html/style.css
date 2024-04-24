@@ -3,9 +3,14 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
-  background-color: #343F3E;
+  background-color: #EBE9E1;
   color: white;
 }
+
+* {
+  border: 1px solid #bbb;
+}
+
 #phase1 {
   display: flex;
   justify-content: center;
@@ -13,59 +18,72 @@ html, body {
   height: 100vh; 
   flex-direction: column; 
 }
-#phase1 button {
-  font-size: 1.5em; 
-  padding: 0.5em; 
-  margin: 0.5em; 
-  cursor: pointer;
-  background-color: #505A5B; 
-  color: white;
-  border: none; 
-  width: 50%; 
+.username{
+  text-align: center;
+  font-size: medium;
+  width: 400px;
+  height: 60px;
+  margin: 5px 0;
+  border-radius: 50px;
 }
-#phase2 {
+button.btn{
+  text-decoration: none;
+  width: 400px;
+  color: #fff;
+  padding: 20px 40px;
+  border-radius: 50px;
+  margin: 5px;
+}
+button.enter{
+  background-color: #e43d12; 
+}
+
+/*#phase2 {
+  height: 100%;
+  width: 100%;
+  border: 1px solid #c3c3c3;
   display: flex;
-  justify-content: space-between;
-  align-items: stretch; 
-  height: 100vh;
+  flex-direction: row;
+}*/
+#phase2{
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(5, 1fr);
 }
-
-.left-panel, .join-buttons, #leaderboard {
-  flex: 1; /* Allows each section to take equal width */
-  margin: 10px;
+#playersList{
+  grid-column: span 3;
+  grid-row: span 3;
   display: flex;
-  flex-direction: column; /* Aligns inner content vertically */
+  align-items: center;
+  justify-content: center;
 }
-
-#leaderboard, .left-panel {
-  overflow-y: auto; /* Adds scroll to these sections if content exceeds height */
+#gameBoard{
+  grid-column: span 9;
+  grid-row: span 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.join-buttons {
-  justify-content: center; /* Centers buttons vertically */
-  align-items: center; /* Centers buttons horizontally */
+#messageBoard{
+  grid-column: span 6;
+  grid-row: span 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.word-grid {
-  display: none; /* Hidden by default, shown in phase 3 */
+#leaderboard{
+  grid-column: span 3;
+  grid-row: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.stats-page {
-  display: none; /* Hidden by default, shown in phase 3 */
-}
-
-#messageBoard, #playersList {
-  flex: 1; /* Allows these sections to fill available space equally */
-  margin-bottom: 10px; /* Adds space between message board and input area */
-}
-
-#playersList {
-  flex: 1; /* Allows the section to fill available space */
-  overflow-y: auto; /* Adds scroll if content exceeds height */
-  border: 1px solid #fff; /* Add border for visibility */
-  padding: 10px; /* Add padding for spacing */
-}
-
-input[type="text"], button {
-  margin: 5px 0; /* Adds a little space around input and button */
+#joinbuttos{
+  grid-column: span 3;
+  grid-row: span 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
