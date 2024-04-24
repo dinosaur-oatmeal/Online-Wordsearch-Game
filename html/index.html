@@ -50,10 +50,9 @@
 <body>
     <!-- Phase 1: User Entry -->
     <div id="phase1">
-        <input type="text" id="username" placeholder="Enter your username" onkeypress="handleKeyPress(event)">
-        <button onclick="enterUsername()">Enter</button>
+        <input class = "username" type="text" id="username" placeholder="username" onkeypress="handleKeyPress(event)">
+        <button href = "#" class = "btn enter" onclick="enterUsername()">Enter</button>
     </div>
-
     <script>
         function enterUsername() {
             var usernameInput = document.getElementById('username');
@@ -65,7 +64,7 @@
             }
 
             document.getElementById('phase1').style.display = 'none';
-            document.getElementById('phase 2').style.display = 'block';
+            document.getElementById('phase2').style.display = 'grid';
         }
         function handleKeyPress(event) 
         {
@@ -76,34 +75,22 @@
         }
     </script>
 
-    <!-- Phase 2 & 3: Main Menu & Game -->
-    <div id="phase 2" style="display:none;">
-        <!-- Left: Players & Messages -->
-        <div class="left-panel">
-            <div id="playersList">Players Online:</div>
-            <div id="messageBoard">Message Board:</div>
+
+    <!-- phase2 & 3: Main Menu & Game -->
+    <div id="phase2" style="display:none;">
+        <div id="playersList">Players Online:</div>
+        <div id="gameBoard" class="game-board"></div>
+        <div id="leaderboard">Leaderboard:</div>
+        <div id="messageBoard">Message Board:
             <input type="text" id="messageInput" placeholder="Type your message">
             <button onclick="postMessage()">Send</button>
         </div>
-
-        <!-- Middle: Join Buttons -->
-        <div class="join-buttons">
+        <div id = "joinbuttos" class="join-buttons">
             <button onclick="joinGame(2)">Join 2</button>
             <button onclick="joinGame(3)">Join 3</button>
             <button onclick="joinGame(4)">Join 4</button>
+            <button onclick="showStats()">Show Stats</button>
         </div>
-
-        <!-- Right: Leaderboard -->
-        <div id="leaderboard">Leaderboard:</div>
-    </div>
-
-    <div id="phase 3" style="display:none;">
-        <div id="gameBoard" class="game-board"></div>
-    </div>
-
-    <div class="stats-page">
-        Stats Here
-        <button onclick="showStats()">Show Stats</button>
     </div>
 
     <script>
@@ -142,7 +129,7 @@
                 // change from board to lobby if the game has ended
                 if ('gameOver' in obj)
                 {
-                    document.getElementById('phase 2').style.display = 'block';
+                    document.getElementById('phase2').style.display = 'block';
                     document.getElementById('phase 3').style.display = 'none';
                 }
 
@@ -158,10 +145,9 @@
                         highlightButton(row, column, idx);
                     });
                 }
-                
-                if (idx > 0 && obj.board && document.getElementById('phase 2').style.display != 'none')
-                {
-                    document.getElementById('phase 2').style.display = 'none';
+
+                if (idx > 0 && obj.board && document.getElementById('phase2').style.display != 'none') {
+                    document.getElementById('phase2').style.display = 'none';
                     document.getElementById('phase 3').style.display = 'block';
 
                     initializeGameBoard(obj.board);
