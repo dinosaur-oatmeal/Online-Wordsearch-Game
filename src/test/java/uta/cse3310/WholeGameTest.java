@@ -35,4 +35,7 @@ public class WholeGameTest extends TestCase
         String jsonString = gson.toJson(G);
         return jsonString;
     }
-}
+
+    public void testGameSession() {
+        
+    }
