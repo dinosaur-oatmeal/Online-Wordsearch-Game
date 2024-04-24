@@ -43,5 +43,11 @@ public class WholeGameTest extends TestCase
         String result = new result();
 
         game.startGame();
+
+        msg = "{\"GameId\":1,\"PlayerIdx\":\"Player1\",\"Button\":0,\"row\":0,\"column\":0,\"action\":\"selectCharacter\"}";
+        result = update(game, msg);
+
+        msg = "{\"GameId\":1,\"PlayerIdx\":\"Player1\",\"Button\":25,\"row\":0,\"column\":5,\"action\":\"selectCharacter\"}";
+        result = update(game, msg);
     }
 }
