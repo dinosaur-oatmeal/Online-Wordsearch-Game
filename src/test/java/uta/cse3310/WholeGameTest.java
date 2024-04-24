@@ -40,7 +40,7 @@ public class WholeGameTest extends TestCase
         GameSession game = new GameSession(new Statistics());
         WordBank bank = new WordBank();
         String msg = new String();
-        String result = new result();
+        String result = new String();
 
         game.startGame();
 
