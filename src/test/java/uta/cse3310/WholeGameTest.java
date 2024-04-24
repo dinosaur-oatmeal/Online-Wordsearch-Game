@@ -37,5 +37,11 @@ public class WholeGameTest extends TestCase
     }
 
     public void testGameSession() {
-        
+        GameSession game = new GameSession(new Statistics());
+        WordBank bank = new WordBank();
+        String msg = new String();
+        String result = new result();
+
+        game.startGame();
     }
+}
