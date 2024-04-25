@@ -14,6 +14,8 @@ public class WordBank
    double diagDown, diagUp, vertUp, vertDown, horz = 0;
    double density = 0.67;
    transient Random random = new Random();
+   static final int RETRY = 100;
+   int retry = 0;
    
    // ArrayList to store words
    transient ArrayList<String> words;
@@ -46,7 +48,7 @@ public class WordBank
       int TCounterColumn = 0;
       
       // loop until every cell is filled to meet density
-      while(wordsFilled < wordsToFill)
+      while(wordsFilled < wordsToFill && retry < 1000)
       {
          int RDVH = random.nextInt(5) + 1;
          //System.out.print(RDVH); 
@@ -76,23 +78,34 @@ public class WordBank
 
          int row = random.nextInt(board.length - 4);
          int column = random.nextInt(board.length - 4);
+         boolean fail;
          
          switch(RDVH)
          {
             case 1:
-               diagonalDown(board, words.get(wordsFilled), row, column);
+               fail = diagonalDown(board, words.get(wordsFilled), row, column);
+               if(fail)
+                  retry++;
                break;
             case 2:
-               diagonalUp(board, words.get(wordsFilled), row, column);
+               fail = diagonalUp(board, words.get(wordsFilled), row, column);
+               if(fail)
+                  retry++;
                break;
             case 3:
-               verticalDown(board, words.get(wordsFilled), row, column);
+               fail = verticalDown(board, words.get(wordsFilled), row, column);
+               if(fail)
+                  retry++;
                break;
             case 4:
-               verticalUp(board, words.get(wordsFilled), row, column);
+               fail = verticalUp(board, words.get(wordsFilled), row, column);
+               if(fail)
+                  retry++;
                break;
             case 5:
-               horizontal(board, words.get(wordsFilled), row, column);
+               fail = horizontal(board, words.get(wordsFilled), row, column);
+               if(fail)
+                  retry++;
                break;
          }
       }
@@ -158,12 +171,12 @@ public class WordBank
    }
   
    // write the word diagonally down
-   public void diagonalDown(char[][] board, String word, int row, int column)
+   public boolean diagonalDown(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
-      while(failCounter < 5)
+      while(failCounter < RETRY)
       {
          // don't overwrite data
          boolean valid = true;
@@ -196,19 +209,20 @@ public class WordBank
             // add to variables for statistics
             wordsFilled++;
             diagDown++;
+            return false;
          }
-         
-         break;
       }
+
+      return true;
    }
    
    // write the word diagonally up
-   public void diagonalUp(char[][] board, String word, int row, int column)
+   public boolean diagonalUp(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
-      while(failCounter < 5)
+      while(failCounter < RETRY)
       {
          // don't overwrite data
          boolean valid = true;
@@ -242,19 +256,20 @@ public class WordBank
             // add to variables for statistics
             wordsFilled++;
             diagUp++;
+            return false;
          }
-         
-         break;
       }
+
+      return true;
    }
 
    // write the word vertically down
-   public void verticalDown(char[][] board, String word, int row, int column)
+   public boolean verticalDown(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
-      while(failCounter < 5)
+      while(failCounter < RETRY)
       {
          // don't overwrite data
          boolean valid = true;
@@ -288,19 +303,21 @@ public class WordBank
             // add to variables for statistics
             wordsFilled++;
             vertDown++;
+
+            return false;
          }
-            
-         break;
       }
+
+      return true;
    }
    
    // write the word vertically up
-   public void verticalUp(char[][] board, String word, int row, int column)
+   public boolean verticalUp(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
-      while(failCounter < 5)
+      while(failCounter < RETRY)
       {
          // don't overwrite data
          boolean valid = true;
@@ -334,19 +351,21 @@ public class WordBank
             // add to variables for statistics
             wordsFilled++;
             vertUp++;
+
+            return false;
          }
-            
-         break;
       }
+
+      return true;
    }
 
    // write the word horizontally
-   public void horizontal(char[][] board, String word, int row, int column)
+   public boolean horizontal(char[][] board, String word, int row, int column)
    {
       int failCounter = 0;
       
       // loop until valid option is found or 5 fails
-      while(failCounter < 5)
+      while(failCounter < RETRY)
       {
          // don't overwrite data
          boolean valid = true;
@@ -380,10 +399,11 @@ public class WordBank
             // add to variables for statistics
             wordsFilled++;
             horz++;
+            return false;
          }
-            
-         break;
       }
+
+      return true;
    }
    
    // create T-shaped words
@@ -475,6 +495,7 @@ public class WordBank
          horz = 0;
          wordsFilled = 0;
          TCounter = 0;
+         retry = 0;
          
          generateGrid();
       }
