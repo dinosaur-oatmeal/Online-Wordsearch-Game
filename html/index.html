@@ -54,28 +54,6 @@
         <input class = "username" type="text" id="username" placeholder="username" onkeypress="handleKeyPress(event)">
         <button href = "#" class = "btn enter" onclick="enterUsername()">Enter</button>
     </div>
-    <script>
-        function enterUsername() {
-            var usernameInput = document.getElementById('username');
-            var username = usernameInput.value.trim();
-
-            if (username === "") {
-                alert('Please enter a username.');
-                return;
-            }
-
-            document.getElementById('phase1').style.display = 'none';
-            document.getElementById('phase2').style.display = 'grid';
-        }
-        function handleKeyPress(event) 
-        {
-            if (event.keyCode === 13) 
-            { 
-                enterUsername(); 
-            }
-        }
-    </script>
-
 
     <!-- phase2 & 3: Main Menu & Game -->
     <div id="phase2" style="display:none;">
@@ -103,7 +81,20 @@
         var gameid = -1;
         var gameStarted = 0;
 
-        function joinGame(playerCount) {
+        // enter username and open websocket connection
+        function enterUsername()
+        {
+            var usernameInput = document.getElementById('username');
+            var username = usernameInput.value.trim();
+
+            if (username === "") {
+                alert('Please enter a username.');
+                return;
+            }
+
+            document.getElementById('phase1').style.display = 'none';
+            document.getElementById('phase2').style.display = 'grid';
+
             var serverUrl;
             serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
             connection = new WebSocket(serverUrl);
@@ -115,6 +106,21 @@
             connection.onclose = function (evt) {
                 console.log("close");
             }
+        }
+
+        function handleKeyPress(event) 
+        {
+            if (event.keyCode === 13) 
+            { 
+                enterUsername(); 
+            }
+        }
+
+        function joinGame(playerCount)
+        {
+            // send message and playerCount to server
+            const message = JSON.stringify({ action: "joinGame", maxPlayers: playerCount });
+            connection.send(message);
 
             // players filled into game, and transition from lobby to board
             connection.onmessage = function (evt) {
@@ -122,6 +128,7 @@
                 const obj = JSON.parse(evt.data);
                 var gameId = obj.gameId;
 
+                // assign gameid to client
                 if ('YouAre' in obj)
                 {
                     idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
@@ -179,20 +186,6 @@
                 }
             }
         }
-        /*function initializeGameBoard(boardData) {
-            const board = document.getElementById('gameBoard');
-            for (let i = 0; i < 50; i++) {
-                const row = document.createElement('div');
-                row.classList.add('game-board-row');
-                for (let j = 0; j < 50; j++) {
-                    const button = document.createElement('button');
-                    button.textContent = boardData[i][j];
-                    button.onclick = function () { selectCharacter(i, j); };
-                    row.appendChild(button);
-                }
-                board.appendChild(row);
-            }
-        }*/
 
         // character button is pressed: highlight button, and send data to App.java to be processed
         function selectCharacter(row, column)
@@ -216,6 +209,8 @@
             U = new UserEvent();
             highlightButton(row, column, idx);
             U.Button = (row * 50 + column);
+
+            // find character associated with highlight
             if(idx == 1)
             {
                 U.PlayerIdx = "Player1";
@@ -241,10 +236,8 @@
             U.column = column;
             U.action = "selectCharacter";
 
-            //const message = JSON.stringify({ action: "selectCharacter", row: row, column: column, idx: idx });
             connection.send(JSON.stringify(U));
             console.log(U);
-            //connection.send(message);
         }
 
         // highlight button that was pressed based on PlayerType
