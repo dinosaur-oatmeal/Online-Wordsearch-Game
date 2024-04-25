@@ -101,6 +101,7 @@
         var connection;
         var idx = 0;
         var gameid = -1;
+        var gameStarted = 0;
 
         function joinGame(playerCount) {
             var serverUrl;
@@ -119,6 +120,7 @@
             connection.onmessage = function (evt) {
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
+                var gameId = obj.gameId;
 
                 if ('YouAre' in obj)
                 {
@@ -137,21 +139,27 @@
                 // highlight word positions
                 if (obj.action === "highlightWords" && Array.isArray(obj.positions))
                 {
-                    // loop through and grab data (row, column, and PlayerIdx number)
-                    obj.positions.forEach(entry => {
-                        const row = Math.floor(entry.position / 50);
-                        const column = entry.position % 50;
-                        const idx = entry.PlayerIdx;
+                    //console.log(gameid + " " + obj.GameId);
+                    if(gameid == obj.gameId)
+                    {
+                        // loop through and grab data (row, column, and PlayerIdx number)
+                        obj.positions.forEach(entry => {
+                            const row = Math.floor(entry.position / 50);
+                            const column = entry.position % 50;
+                            const idx = entry.PlayerIdx;
 
-                        highlightButton(row, column, idx);
-                    });
+                            highlightButton(row, column, idx);
+                        });
+                    }
                 }
 
-                if (idx > 0 && obj.board && document.getElementById('phase2').style.display != 'none') {
+                // only initialize the gameBoard once
+                if (idx > 0 && obj.board && !gameStarted) {
                     //document.getElementById('phase2').style.display = 'none';
                     //document.getElementById('phase 3').style.display = 'block';
 
                     initializeGameBoard(obj.board);
+                    gameStarted = 1;
                 }
             }
         }
@@ -205,8 +213,8 @@
                 action = "";
             }
 
-            highlightButton(row, column, idx);
             U = new UserEvent();
+            highlightButton(row, column, idx);
             U.Button = (row * 50 + column);
             if(idx == 1)
             {
