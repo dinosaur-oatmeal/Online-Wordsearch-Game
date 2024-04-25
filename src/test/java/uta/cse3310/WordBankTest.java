@@ -211,4 +211,21 @@ public class WordBankTest extends TestCase
         long difference = (startTime - endTime) / 1000000;
         assertTrue(difference < 1000);
     }
+
+    // test to see if the generation hits an infinite loop
+    // tested locally running the loop 10000 times
+    //  (didn't want to deploy 10k version due to system strain)
+    public void testDeadlock()
+    {
+        GameSession G = new GameSession(new Statistics());
+
+        // ran this loop locally 10k times
+        for(int i = 0; i < 100; i++)
+        {
+            G.bank.generateGrid();
+            //System.out.println(i);
+        }
+
+        //System.out.println("deadlock passed");
+    }
 }
