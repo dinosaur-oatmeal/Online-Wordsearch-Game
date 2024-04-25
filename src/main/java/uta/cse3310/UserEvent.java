@@ -8,7 +8,6 @@ public class UserEvent {
     int row;
     int column;
     String action;
-    int maxPlayers;
 
     UserEvent() {
 
@@ -21,7 +20,6 @@ public class UserEvent {
         row = _row;
         column = _column;
         action = _action;
-        int maxPlayers;
     }
 
     public String getAction()
@@ -52,10 +50,5 @@ public class UserEvent {
     public void setColumn(int column)
     {
         this.column = column;
-    }
-
-    public int getMaxPlayers()
-    {
-        return maxPlayers;
     }
 }
