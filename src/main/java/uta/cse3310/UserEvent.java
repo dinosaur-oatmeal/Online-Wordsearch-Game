@@ -8,18 +8,20 @@ public class UserEvent {
     int row;
     int column;
     String action;
+    int maxPlayers;
 
     UserEvent() {
 
     }
 
-    UserEvent(int _GameId, PlayerType _PlayerIdx, int _Button, int _row, int _column, String _action) {
+    UserEvent(int _GameId, PlayerType _PlayerIdx, int _Button, int _row, int _column, String _action, int _maxPlayers) {
         GameId = _GameId;
         PlayerIdx = _PlayerIdx;
         Button = _Button;
         row = _row;
         column = _column;
         action = _action;
+        maxPlayers = _maxPlayers;
     }
 
     public String getAction()
@@ -50,5 +52,10 @@ public class UserEvent {
     public void setColumn(int column)
     {
         this.column = column;
+    }
+
+    public int getMaxPlayers()
+    {
+        return maxPlayers;
     }
 }

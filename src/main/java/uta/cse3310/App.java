@@ -99,96 +99,10 @@ public class App extends WebSocketServer
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake)
   {
+    // only get connectionId when connection is made
+    // sent when client clicks button to enter lobby
     connectionId++;
     //System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-
-    ServerEvent E = new ServerEvent();
-    GameSession G = null;
-
-    // match found
-    for(GameSession i : activeGames)
-    {
-      if(i.player == uta.cse3310.PlayerType.Player1)
-      {
-        G = i;
-        //System.out.println("found a match");
-      }
-
-    }
-
-    // new game initialization
-    if(G == null)
-    {
-      G = new GameSession(stats);
-      //G.setPlayers(maxPlayers);
-      G.gameId = gameId;
-      gameId++;
-      G.player = PlayerType.Player1;
-      G.players[0] = PlayerType.Player1;
-      activeGames.add(G);
-      System.out.println("Starting a new game");
-    }
-
-    //join existing game
-    else
-    {
-      System.out.println("Joining existing game");
-
-      if(G.players[3] == uta.cse3310.PlayerType.Player4)
-      {
-        System.out.println("Too many players!");
-      }
-
-      else if(G.players[2] == uta.cse3310.PlayerType.Player3)
-      {
-        G.player = PlayerType.Player4;
-        G.players[3] = PlayerType.Player4;
-        System.out.println("Player 4 added");
-        G.startGame();
-      }
-
-      else if(G.players[1] == uta.cse3310.PlayerType.Player2)
-      {
-        G.player = PlayerType.Player3;
-        G.players[2] = PlayerType.Player3;
-        System.out.println("Player 3 added");
-        G.startGame();
-      }
-
-      else
-      {
-        G.player = PlayerType.Player2;
-        G.players[1] = PlayerType.Player2;
-        System.out.println("Player 2 added");
-        G.startGame();
-      }
-    }
-
-    E.YouAre = G.player;
-    E.gameId = G.gameId;
-
-    // allows the websocket to give us the Game when a message arrives..
-    // it stores a pointer to G, and will give that pointer back to us
-    // when we ask for it
-    conn.setAttachment(G);
-
-    Gson gson = new Gson();
-
-    // note only send to the single connection
-    String jsonString = gson.toJson(E);
-    conn.send(jsonString);
-
-    //System.out.println(""+ gameId);
-    String boardJson = gson.toJson(G.board);
-    //System.out.println(boardJson);
-    conn.send(boardJson);
-    //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
-    // Update the running time
-    stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
-    // The state of the game has changed, so lets send it to everyone
-    jsonString = gson.toJson(G);
-    //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
-    broadcast(jsonString);
   }
 
   @Override
@@ -207,14 +121,111 @@ public class App extends WebSocketServer
   {
     //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
 
-    // Get our Game Object
-    GameSession G = conn.getAttachment();
-
     // Bring in the data from the webpage
     // A UserEvent is all that is allowed at this point
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
+
+    // user event for when client joins game
+    if("joinGame".equals(U.getAction()))
+    {
+      ServerEvent E = new ServerEvent();
+      GameSession G = null;
+      int maxPlayers = U.getMaxPlayers();
+
+      // match found
+      for(GameSession i : activeGames)
+      {
+        if(!i.isFull())
+        {
+          G = i;
+          //System.out.println("found a match");
+        }
+
+      }
+
+      // new game initialization
+      if(G == null)
+      {
+        G = new GameSession(stats);
+        //G.setPlayers(maxPlayers);
+        G.gameId = gameId;
+        gameId++;
+        G.player = PlayerType.Player1;
+        G.setPlayers(maxPlayers);
+        G.players[0] = PlayerType.Player1;
+        activeGames.add(G);
+        System.out.println("Starting a new game");
+      }
+
+      // join existing game
+      else
+      {
+        System.out.println("Joining existing game");
+
+        // add player 2
+        if(G.players[0] != null && G.players[1] == null)
+        {
+          G.player = PlayerType.Player2;
+          G.players[1] = PlayerType.Player2;
+          System.out.println("Player 2 added");
+        }
+
+        // add player 3
+        else if(G.players[1] != null && G.players[2] == null)
+        {
+          G.player = PlayerType.Player3;
+          G.players[2] = PlayerType.Player3;
+          System.out.println("Player 3 added");
+        }
+
+        // add player 4
+        else
+        {
+          G.player = PlayerType.Player4;
+          G.players[3] = PlayerType.Player4;
+          System.out.println("Player 4 added");
+        }
+        
+        // start game once lobby is full
+        if(G.isFull())
+        {
+          G.startGame();
+        }
+      }
+
+      E.YouAre = G.player;
+      E.gameId = G.gameId;
+
+      // allows the websocket to give us the Game when a message arrives..
+      // it stores a pointer to G, and will give that pointer back to us
+      // when we ask for it
+      conn.setAttachment(G);
+
+      // note only send to the single connection
+      String jsonString = gson.toJson(E);
+      conn.send(jsonString);
+
+      //System.out.println(""+ gameId);
+      String boardJson = gson.toJson(G.board);
+      //System.out.println(boardJson);
+      conn.send(boardJson);
+      //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
+      // Update the running time
+      stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
+      // The state of the game has changed, so lets send it to everyone
+      jsonString = gson.toJson(G);
+      //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+      broadcast(jsonString);
+
+      // return from function because nothing below is needed
+      return;
+    }
+
+
+    // Get our Game Object
+    GameSession G = conn.getAttachment();
     
     // print message to see what's being passed from Index.html
     System.out.println(message);

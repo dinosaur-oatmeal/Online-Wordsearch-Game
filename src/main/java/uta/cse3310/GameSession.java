@@ -10,8 +10,7 @@ public class GameSession
 	transient public PlayerType[] button;
 	public int gameId;
 	public Statistics stats;
-//	private List<Message> chatLog = new ArrayList<>();
-	//public int maxPlayers;
+	public int maxPlayers;
 
 	WordBank bank = new WordBank();
 	char[][] board;
@@ -30,13 +29,12 @@ public class GameSession
 		button = new PlayerType[2500];
 		resetBoard();
 		player = PlayerType.Player1;
-		players = new PlayerType[4];
 	}
 
 	public void setPlayers(int maxPlayers)
 	{
-		//this.maxPlayers = maxPlayers;
-		//this.players = new PlayerType[maxPlayers];
+		this.maxPlayers = maxPlayers;
+		this.players = new PlayerType[maxPlayers];
 	}
 
 	// adds players to array storing who's in what game
@@ -63,19 +61,10 @@ public class GameSession
 		}
 	}
 
-//	public void addToChat (String sender, String message) {
-//		this.chatLog.add(new Message(sender, message));
-//	}
-
-//	public List<Message> getChatLog() {
-//		return this.chatLog;
-//	}
-
 	// see if the player count is full
 	public boolean isFull()
 	{
-		//return players[maxPlayers - 1] != null;
-		return players[4 - 1] != null;
+		return players[maxPlayers - 1] != null;
 	}
 
 	// set every button to NOPLAYER
