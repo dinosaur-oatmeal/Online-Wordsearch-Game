@@ -10,6 +10,7 @@ public class GameSession
 	transient public PlayerType[] button;
 	public int gameId;
 	public Statistics stats;
+	private List<Message> chatLog = new ArrayList<>();
 	//public int maxPlayers;
 
 	WordBank bank = new WordBank();
@@ -60,6 +61,14 @@ public class GameSession
 		{
 			players[3] = player;
 		}
+	}
+
+	public void addToChat (String sender, String message) {
+		this.chatLog.add(new Message(sender, message));
+	}
+
+	public List<Message> getChatLog() {
+		return this.chatLog;
 	}
 
 	// see if the player count is full
