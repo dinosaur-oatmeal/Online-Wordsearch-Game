@@ -25,6 +25,7 @@ public class GameSessionTest extends TestCase
     public void testAddPlayer()
     {
         GameSession G = new GameSession(new Statistics());
+        G.setPlayers(4);
         G.players[0] = PlayerType.Player1;
 
         // add players and test that they were added to correct positions
@@ -40,6 +41,7 @@ public class GameSessionTest extends TestCase
     public void testLobbyFull()
     {
         GameSession G = new GameSession(new Statistics());
+        G.setPlayers(4);
 
         G.players[0] = PlayerType.Player1;
         G.players[1] = PlayerType.Player2;
@@ -47,8 +49,8 @@ public class GameSessionTest extends TestCase
         // lobby is not full
         assertTrue(!G.isFull());
 
-        G.players[3] = PlayerType.Player3;
-        G.players[4] = PlayerType.Player4;
+        G.players[2] = PlayerType.Player3;
+        G.players[3] = PlayerType.Player4;
 
         // lobby is full
         assertTrue(G.isFull());
@@ -87,6 +89,7 @@ public class GameSessionTest extends TestCase
     public void testCharSelected()
     {
         GameSession G = new GameSession(new Statistics());
+        G.setPlayers(4);
 
         char[][] board = new char[50][50];
         for(int i = 0; i < 50; i++)
@@ -103,8 +106,8 @@ public class GameSessionTest extends TestCase
 
         G.players[0] = PlayerType.Player1;
         G.players[1] = PlayerType.Player2;
-        G.players[3] = PlayerType.Player3;
-        G.players[4] = PlayerType.Player4;
+        G.players[2] = PlayerType.Player3;
+        G.players[3] = PlayerType.Player4;
 
         // select the first and last characters as Player2 and Player1
         G.charSelected(0, 2);
@@ -118,6 +121,7 @@ public class GameSessionTest extends TestCase
     public void testGameOver()
     {
         GameSession G = new GameSession(new Statistics());
+        G.setPlayers(4);
         G.startGame();
 
         G.bank.wordsToFill = 100;
@@ -137,6 +141,7 @@ public class GameSessionTest extends TestCase
     public void testWordFound()
     {
         GameSession G = new GameSession(new Statistics());
+        G.setPlayers(4);
         G.startGame();
         WordLocation wordLoc = G.bank.locations.get(50);
         int lastLocation = wordLoc.getLastLocation();
