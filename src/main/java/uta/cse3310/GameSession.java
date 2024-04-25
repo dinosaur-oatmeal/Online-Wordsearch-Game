@@ -7,9 +7,10 @@ public class GameSession
 {
 	public PlayerType player;
 	public PlayerType[] players;
-	public PlayerType[] button;
+	transient public PlayerType[] button;
 	public int gameId;
 	public Statistics stats;
+	//public int maxPlayers;
 
 	WordBank bank = new WordBank();
 	char[][] board;
@@ -20,7 +21,7 @@ public class GameSession
 	int Player2Score = 0;
 	int Player3Score = 0;
 	int Player4Score = 0;
-	List<Integer> wordPositions;
+	transient List<Integer> wordPositions;
 
 	public GameSession(Statistics s)
 	{
@@ -28,7 +29,13 @@ public class GameSession
 		button = new PlayerType[2500];
 		resetBoard();
 		player = PlayerType.Player1;
-		players = new PlayerType[5];
+		players = new PlayerType[4];
+	}
+
+	public void setPlayers(int maxPlayers)
+	{
+		//this.maxPlayers = maxPlayers;
+		//this.players = new PlayerType[maxPlayers];
 	}
 
 	// adds players to array storing who's in what game
@@ -58,7 +65,8 @@ public class GameSession
 	// see if the player count is full
 	public boolean isFull()
 	{
-		return players[4] != null;
+		//return players[maxPlayers - 1] != null;
+		return players[4 - 1] != null;
 	}
 
 	// set every button to NOPLAYER
@@ -103,7 +111,7 @@ public class GameSession
 			wordPositions = getWordPositions(lastLocation, location);
 			//System.out.println(wordPositions);
 
-			System.out.println("\nWORD FOUND + " + players[typeInt] + "\n");
+			//System.out.println("\nWORD FOUND + " + players[typeInt] + "\n");
 
 			// add to Player1 score
 			if(typeInt == 1)
@@ -235,7 +243,7 @@ public class GameSession
 	public void update(UserEvent U)
 	{
 		//will update the game when a word is won by a player
-		System.out.println("The user event is " + U.PlayerIdx + " " + U.Button);
+		System.out.println("The user event is " + U.PlayerIdx + " " + U.Button + "\n");
 
 		if(button[U.Button] == PlayerType.NOPLAYER)
 		{

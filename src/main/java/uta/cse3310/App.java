@@ -63,7 +63,9 @@ import com.google.gson.GsonBuilder;
 
 import uta.cse3310.WordBankGame;
 
-public class App extends WebSocketServer {
+
+public class App extends WebSocketServer
+{
 
   // All games currently underway on this server are stored in
   // the vector activeGames
@@ -77,38 +79,48 @@ public class App extends WebSocketServer {
 
   private Statistics stats;
 
-  public App(int port) {
+  private int maxPlayers;
+
+  public App(int port)
+  {
     super(new InetSocketAddress(port));
   }
 
-  public App(InetSocketAddress address) {
+  public App(InetSocketAddress address)
+  {
     super(address);
   }
 
-  public App(int port, Draft_6455 draft) {
+  public App(int port, Draft_6455 draft)
+  {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
   }
 
   @Override
-  public void onOpen(WebSocket conn, ClientHandshake handshake) {
+  public void onOpen(WebSocket conn, ClientHandshake handshake)
+  {
     connectionId++;
-    System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+    //System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
     ServerEvent E = new ServerEvent();
     GameSession G = null;
 
     // match found
-    for (GameSession i : activeGames) {
-      if (i.player == uta.cse3310.PlayerType.Player1) {
+    for(GameSession i : activeGames)
+    {
+      if(i.player == uta.cse3310.PlayerType.Player1)
+      {
         G = i;
-        System.out.println("found a match");
+        //System.out.println("found a match");
       }
 
     }
 
     // new game initialization
-    if (G == null) {
+    if(G == null)
+    {
       G = new GameSession(stats);
+      //G.setPlayers(maxPlayers);
       G.gameId = gameId;
       gameId++;
       G.player = PlayerType.Player1;
@@ -117,29 +129,34 @@ public class App extends WebSocketServer {
       System.out.println("Starting a new game");
     }
 
-    // join existing game
-    else {
+    //join existing game
+    else
+    {
       System.out.println("Joining existing game");
 
-      if (G.players[3] == uta.cse3310.PlayerType.Player4) {
+      if(G.players[3] == uta.cse3310.PlayerType.Player4)
+      {
         System.out.println("Too many players!");
       }
 
-      else if (G.players[2] == uta.cse3310.PlayerType.Player3) {
+      else if(G.players[2] == uta.cse3310.PlayerType.Player3)
+      {
         G.player = PlayerType.Player4;
         G.players[3] = PlayerType.Player4;
         System.out.println("Player 4 added");
         G.startGame();
       }
 
-      else if (G.players[1] == uta.cse3310.PlayerType.Player2) {
+      else if(G.players[1] == uta.cse3310.PlayerType.Player2)
+      {
         G.player = PlayerType.Player3;
         G.players[2] = PlayerType.Player3;
         System.out.println("Player 3 added");
         G.startGame();
       }
 
-      else {
+      else
+      {
         G.player = PlayerType.Player2;
         G.players[1] = PlayerType.Player2;
         System.out.println("Player 2 added");
@@ -161,35 +178,34 @@ public class App extends WebSocketServer {
     String jsonString = gson.toJson(E);
     conn.send(jsonString);
 
-    System.out.println("" + gameId);
+    //System.out.println(""+ gameId);
     String boardJson = gson.toJson(G.board);
-    // System.out.println(boardJson);
+    //System.out.println(boardJson);
     conn.send(boardJson);
-    // System.out.println("> " + Duration.between(startTime,
-    // Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
+    //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
     // Update the running time
     stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
     // The state of the game has changed, so lets send it to everyone
     jsonString = gson.toJson(G);
-    // System.out.println("< " + Duration.between(startTime,
-    // Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
     broadcast(jsonString);
   }
 
   @Override
-  public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+  public void onClose(WebSocket conn, int code, String reason, boolean remote)
+  {
     System.out.println(conn + " has closed");
     // Retrieve the game tied to the websocket connection
     GameSession G = conn.getAttachment();
     activeGames.remove(G);
-    // System.out.println(activeGames);
+    //System.out.println(activeGames);
     G = null;
   }
 
   @Override
-  public void onMessage(WebSocket conn, String message) {
-    // System.out.println("< " + Duration.between(startTime,
-    // Instant.now()).toMillis() + " " + "-" + " " + escape(message));
+  public void onMessage(WebSocket conn, String message)
+  {
+    //System.out.println("< " + Duration.between(startTime, Instant.now()).toMillis() + " " + "-" + " " + escape(message));
 
     // Get our Game Object
     GameSession G = conn.getAttachment();
@@ -199,28 +215,30 @@ public class App extends WebSocketServer {
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
-
+    
     // print message to see what's being passed from Index.html
     System.out.println(message);
 
     // selectCharacter action from Index.html
-    if ("selectCharacter".equals(U.getAction())) {
-      System.out.println("char selected");
+    if("selectCharacter".equals(U.getAction()))
+    {
+      //System.out.println("char selected");
       int row = U.getRow();
       int column = U.getColumn();
-      // convert index message from Index.html into an int (easier to deal with than
-      // enum)
-      int typeInt = U.PlayerIdx.getValue();
-      System.out.println("\n" + typeInt + "\n");
+      int gameId = U.GameId;
 
-      // System.out.println("\n Row: " + row + " Column: " + column + " Type: " +
-      // typeInt + "\n");
+      // convert index message from Index.html into an int (easier to deal with than enum)
+      int typeInt = U.PlayerIdx.getValue();
+      //System.out.println("\n" + typeInt + "\n");
+
+      //System.out.println("\n Row: " + row + " Column: " + column + " Type: " + typeInt + "\n");
 
       // call charSelected function in GameSession.java
       boolean character = G.charSelected(row * 50 + column, typeInt);
 
       // broadcast gameOver function to Index.html
-      if (!character) {
+      if(!character)
+      {
         U.setAction("gameOver");
         G.update(U);
         String jsonString;
@@ -230,17 +248,19 @@ public class App extends WebSocketServer {
 
       // find word positions
       List<Integer> wordPositions = G.wordPositions;
-      System.out.println("\n" + wordPositions + "\n");
+      //System.out.println("\n" + wordPositions + "\n");
 
-      if (wordPositions != null) {
-        sendHighlightPositions(conn, wordPositions, typeInt);
+      if(wordPositions != null)
+      {
+        sendHighlightPositions(conn, wordPositions, typeInt, gameId);
       }
 
-      else {
-        // System.out.println("\nHELLO\n");
+      else
+      {
+        //System.out.println("\nHELLO\n");
         wordPositions = new ArrayList<>();
         wordPositions.add(row * 50 + column);
-        sendHighlightPositions(conn, wordPositions, typeInt);
+        sendHighlightPositions(conn, wordPositions, typeInt, gameId);
       }
     }
 
@@ -255,40 +275,46 @@ public class App extends WebSocketServer {
     String jsonString;
     jsonString = gson.toJson(G);
 
-    System.out
-        .println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
+    //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + "*" + " " + escape(jsonString));
     broadcast(jsonString);
   }
 
   @Override
-  public void onMessage(WebSocket conn, ByteBuffer message) {
+  public void onMessage(WebSocket conn, ByteBuffer message)
+  {
     System.out.println(conn + ": " + message);
   }
 
   @Override
-  public void onError(WebSocket conn, Exception ex) {
+  public void onError(WebSocket conn, Exception ex)
+  {
     ex.printStackTrace();
-    if (conn != null) {
+    if (conn != null)
+    {
       // some errors like port binding failed may not be assignable to a specific
       // websocket
     }
   }
 
   @Override
-  public void onStart() {
+  public void onStart()
+  {
     setConnectionLostTimeout(0);
     stats = new Statistics();
     startTime = Instant.now();
   }
 
-  private String escape(String S) {
+  private String escape(String S)
+  {
     // turns " into \"
     String retval = new String();
     // this routine is very slow.
     // but it is not called very often
-    for (int i = 0; i < S.length(); i++) {
+    for (int i = 0; i < S.length(); i++)
+    {
       Character ch = S.charAt(i);
-      if (ch == '\"') {
+      if (ch == '\"')
+      {
         retval = retval + '\\';
       }
       retval = retval + ch;
@@ -297,32 +323,36 @@ public class App extends WebSocketServer {
   }
 
   // method to send positions to index.html
-  public void sendHighlightPositions(WebSocket conn, List<Integer> positions, int typeInt) {
+  public void sendHighlightPositions(WebSocket conn, List<Integer> positions, int typeInt, int gameId)
+  {
     Gson gson = new Gson();
 
     // ArrayList of map containing string to be parsed and object data
     List<Map<String, Object>> positionsWithIdx = new ArrayList<>();
-
-    // loop through input ArrayList
-    for (Integer position : positions) {
-      // store position and PlayerIdx
-      Map<String, Object> positionEntry = new HashMap<>();
-      positionEntry.put("position", position);
-      positionEntry.put("PlayerIdx", typeInt);
-      positionsWithIdx.add(positionEntry);
+    
+     // loop through input ArrayList
+    for (Integer position : positions)
+    {
+        // store position and PlayerIdx
+        Map<String, Object> positionEntry = new HashMap<>();
+        positionEntry.put("position", position);
+        positionEntry.put("PlayerIdx", typeInt);
+        positionsWithIdx.add(positionEntry);
     }
 
     // store action and positions
     Map<String, Object> message = new HashMap<>();
     message.put("action", "highlightWords");
     message.put("positions", positionsWithIdx);
+    message.put("gameId", gameId);
     String jsonString = gson.toJson(message);
 
-    System.out.println("\n" + jsonString + "\n");
+    //System.out.println("\n" + jsonString + "\n");
     broadcast(jsonString);
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args)
+  {
     // Set up the http server
     int port = 9013;
     HttpServer H = new HttpServer(port, "./html");

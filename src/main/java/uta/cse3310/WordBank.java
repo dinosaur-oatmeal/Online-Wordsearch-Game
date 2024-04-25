@@ -16,10 +16,10 @@ public class WordBank
    transient Random random = new Random();
    
    // ArrayList to store words
-   ArrayList<String> words;
+   transient ArrayList<String> words;
    
    // ArrayList that will store word locations
-   List<WordLocation> locations = new ArrayList<>();
+   transient List<WordLocation> locations = new ArrayList<>();
 
    public char[][] generateGrid()
    {
