@@ -58,4 +58,9 @@ public class UserEvent {
     {
         return maxPlayers;
     }
+
+    public int getGameId()
+    {
+        return GameId;
+    }
 }

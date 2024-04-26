@@ -130,6 +130,7 @@ public class App extends WebSocketServer
     // user event for when client joins game
     if("joinGame".equals(U.getAction()))
     {
+      System.out.println(U.getAction());
       ServerEvent E = new ServerEvent();
       GameSession G = null;
       int maxPlayers = U.getMaxPlayers();
@@ -162,36 +163,41 @@ public class App extends WebSocketServer
       // join existing game
       else
       {
-        System.out.println("Joining existing game");
-
-        // add player 2
-        if(G.players[0] != null && G.players[1] == null)
+        // trying to stop this from executing if one player continuously clicks join game buttons
+        // (breaks the program)
+        if(G.gameId != U.getGameId())
         {
-          G.player = PlayerType.Player2;
-          G.players[1] = PlayerType.Player2;
-          System.out.println("Player 2 added");
-        }
+          System.out.println("Joining existing game");
 
-        // add player 3
-        else if(G.players[1] != null && G.players[2] == null)
-        {
-          G.player = PlayerType.Player3;
-          G.players[2] = PlayerType.Player3;
-          System.out.println("Player 3 added");
-        }
+          // add player 2
+          if(G.players[0] != null && G.players[1] == null)
+          {
+            G.player = PlayerType.Player2;
+            G.players[1] = PlayerType.Player2;
+            System.out.println("Player 2 added");
+          }
 
-        // add player 4
-        else
-        {
-          G.player = PlayerType.Player4;
-          G.players[3] = PlayerType.Player4;
-          System.out.println("Player 4 added");
-        }
+          // add player 3
+          else if(G.players[1] != null && G.players[2] == null)
+          {
+            G.player = PlayerType.Player3;
+            G.players[2] = PlayerType.Player3;
+            System.out.println("Player 3 added");
+          }
 
-        // start game once lobby is full
-        if(G.isFull())
-        {
-          G.startGame();
+          // add player 4
+          else
+          {
+            G.player = PlayerType.Player4;
+            G.players[3] = PlayerType.Player4;
+            System.out.println("Player 4 added");
+          }
+
+          // start game once lobby is full
+          if(G.isFull())
+          {
+            G.startGame();
+          }
         }
       }
 
