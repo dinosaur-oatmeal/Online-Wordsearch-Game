@@ -81,6 +81,8 @@ public class App extends WebSocketServer
 
   private int maxPlayers;
 
+  ArrayList<String> users = new ArrayList<>();
+
   public App(int port)
   {
     super(new InetSocketAddress(port));
@@ -167,10 +169,6 @@ public class App extends WebSocketServer
       // join existing game
       else
       {
-        // trying to stop this from executing if one player continuously clicks join game buttons
-        // (breaks the program)
-        //if(G.gameId != U.getGameId())
-        //{
           System.out.println("Joining existing game");
 
           // add player 2
@@ -202,7 +200,6 @@ public class App extends WebSocketServer
           {
             G.startGame();
           }
-        //}
       }
 
       E.YouAre = G.player;
@@ -302,6 +299,28 @@ public class App extends WebSocketServer
 
       // only send to client who requested to see the stats
       conn.send(jsonString);
+    }
+
+    if("userJoin".equals(U.getAction()))
+    {
+      users.add(U.getUsername());
+      Map<String, ArrayList> userList = new HashMap<>();
+      userList.put("userList", users);
+      String jsonString = gson.toJson(userList);
+      //System.out.println(jsonString);
+      broadcast(jsonString);
+      System.out.println(users);
+      return;
+    }
+
+    if("userLeave".equals(U.getAction()))
+    {
+      users.remove(U.getUsername());
+      Map<String, Object> userList = new HashMap<>();
+      userList.put("userList", userList);
+      String jsonString = gson.toJson(userList);
+      broadcast(jsonString);
+      return;
     }
 
     // Update the running time
