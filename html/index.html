@@ -164,6 +164,7 @@
         var gameStarted = 0;
 
         // enter username and open websocket connection
+        // (button to transition to lobby is clicked)
         function enterUsername()
         {
             var usernameInput = document.getElementById('username');
@@ -198,9 +199,10 @@
             }
         }
 
+        // join game button is pressed
         function joinGame(playerCount)
         {
-            // send message and playerCount to server
+            // send message, playerCount, and gameId to server
             const message = JSON.stringify({ action: "joinGame", maxPlayers: playerCount, GameId: gameid });
             connection.send(message);
 
@@ -210,7 +212,7 @@
                 const obj = JSON.parse(evt.data);
                 var gameId = obj.gameId;
 
-                // assign gameid to client
+                // assign PlayerType and gameid to client
                 if ('YouAre' in obj)
                 {
                     idx = ["NOPLAYER", "Player1", "Player2", "Player3", "Player4"].indexOf(obj.YouAre);
@@ -237,9 +239,11 @@
                             const column = entry.position % 50;
                             const idx = entry.PlayerIdx;
 
+                            // call highlight button for each position
                             highlightButton(row, column, idx);
                         });
 
+                        // update scores everytime
                         updateScores(obj);
                     }
                 }
@@ -248,7 +252,7 @@
                 if(obj.action === "showStats")
                 {
                     console.log("showing stats");
-                    // send stats flag to server
+
                     let statDetails = document.getElementById('statDetails');
                     let gameStats = document.getElementById('gameStats');
 
@@ -285,6 +289,8 @@
                                     value = `${inputValue}`;
                                 }
                             }
+
+                            // add all stats to textContent
                             textContent += `${key}: ${value}\n`;
                         }
 
@@ -295,11 +301,14 @@
                 }
 
                 // only initialize the gameBoard once
-                if (idx > 0 && obj.board && !gameStarted) {
+                if (idx > 0 && obj.board && !gameStarted)
+                {
                     //document.getElementById('phase2').style.display = 'none';
                     //document.getElementById('phase 3').style.display = 'block';
 
                     initializeGameBoard(obj.board);
+
+                    // flag makes sure board isn't reprinted
                     gameStarted = 1;
                 }
             }
@@ -309,12 +318,16 @@
         function initializeGameBoard(boardData)
         {
             const board = document.getElementById('gameBoard');
+
+            // loops through buttons and puts characters on them
             for (let i = 0; i < 50; i++)
             {
                 for (let j = 0; j < 50; j++)
                 {
                     const button = document.createElement('button');
                     button.textContent = boardData[i][j];
+
+                    // call selectCharacter() when a button is pressed
                     button.onclick = function () { selectCharacter(i, j); };
                     board.appendChild(button);
                 }
@@ -324,6 +337,7 @@
         // character button is pressed: highlight button, and send data to App.java to be processed
         function selectCharacter(row, column)
         {
+            // edge case to make sure the button location is valid
             if (row < 0 || row >= 50 || column < 0 || column >= 50) {
                 console.log("Selected position is outside the game board boundaries.");
                 return;
@@ -341,35 +355,35 @@
             }
 
             U = new UserEvent();
-            highlightButton(row, column, idx);
-            U.Button = (row * 50 + column);
 
-            // find character associated with highlight
+            // find PlayerType from associated client
             if(idx == 1)
             {
                 U.PlayerIdx = "Player1";
             }
 
-            if(idx == 2)
+            else if(idx == 2)
             {
                 U.PlayerIdx = "Player2";
             }
 
-            if(idx == 3)
+            else if(idx == 3)
             {
                 U.PlayerIdx = "Player3";
             }
 
-            if(idx == 4)
+            else if(idx == 4)
             {
                 U.PlayerIdx = "Player4";
             }
 
+            U.Button = (row * 50 + column);
             U.GameId = gameid;
             U.row = row;
             U.column = column;
             U.action = "selectCharacter";
 
+            // send UserEvent() to server to be processed
             connection.send(JSON.stringify(U));
             console.log(U);
         }
@@ -388,7 +402,7 @@
         // show board statistics and player scores
         function showStats()
         {
-            // send message and playerCount to server
+            // send stats to server for it to grab stats
             const message = JSON.stringify({ action: "stats" });
             connection.send(message);
         }
