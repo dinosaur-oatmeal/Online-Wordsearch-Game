@@ -169,8 +169,8 @@ public class App extends WebSocketServer
       {
         // trying to stop this from executing if one player continuously clicks join game buttons
         // (breaks the program)
-        if(G.gameId != U.getGameId())
-        {
+        //if(G.gameId != U.getGameId())
+        //{
           System.out.println("Joining existing game");
 
           // add player 2
@@ -202,7 +202,7 @@ public class App extends WebSocketServer
           {
             G.startGame();
           }
-        }
+        //}
       }
 
       E.YouAre = G.player;
@@ -368,10 +368,16 @@ public class App extends WebSocketServer
 
     // ArrayList of maps containing string to be parsed and object data
     List<Map<String, Object>> positionsWithIdx = new ArrayList<>();
+    GameSession G = null;
 
     // get associated game in activeGames vector
-    // gameId starts at 1, so 1 - 1 gets the first game
-    GameSession G = activeGames.get(gameId - 1);
+    for(GameSession i : activeGames)
+    {
+      if(gameId == i.gameId)
+      {
+        G = i;
+      }
+    }
     
      // loop through input ArrayList
     for (Integer position : positions)
