@@ -201,7 +201,7 @@
         function joinGame(playerCount)
         {
             // send message and playerCount to server
-            const message = JSON.stringify({ action: "joinGame", maxPlayers: playerCount });
+            const message = JSON.stringify({ action: "joinGame", maxPlayers: playerCount, GameId: gameid });
             connection.send(message);
 
             // players filled into game, and transition from lobby to board
