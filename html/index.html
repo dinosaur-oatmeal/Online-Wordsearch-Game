@@ -184,10 +184,26 @@
 
             connection.onopen = function (evt) {
                 console.log("open");
+                // send message, playerCount, and gameId to server
+                const message = JSON.stringify({ action: "userJoin", username: username });
+                connection.send(message);
             }
 
             connection.onclose = function (evt) {
                 console.log("close");
+                // send message, playerCount, and gameId to server
+                const message = JSON.stringify({ action: "userLeave", username: username });
+                connection.send(message);
+            }
+
+            connection.onmessage = function (evt) {
+                console.log("Message received: " + evt.data);
+                const obj = JSON.parse(evt.data);
+
+                if("userList" in obj)
+                {
+                    console.log("User List Here");
+                }
             }
         }
 
@@ -207,7 +223,7 @@
             connection.send(message);
 
             // players filled into game, and transition from lobby to board
-            connection.onmessage = function (evt) {
+        connection.onmessage = function (evt) {
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
                 var gameId = obj.gameId;
