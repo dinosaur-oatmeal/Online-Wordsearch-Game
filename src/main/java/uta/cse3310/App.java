@@ -187,7 +187,7 @@ public class App extends WebSocketServer
           G.players[3] = PlayerType.Player4;
           System.out.println("Player 4 added");
         }
-        
+
         // start game once lobby is full
         if(G.isFull())
         {
@@ -250,11 +250,13 @@ public class App extends WebSocketServer
       // broadcast gameOver function to Index.html
       if(!character)
       {
-        U.setAction("gameOver");
-        G.update(U);
         String jsonString;
         jsonString = gson.toJson(G);
-        conn.send(jsonString);
+
+        // manually add action to the end of jsonString for it to be parsed by client
+        int endOfString = jsonString.lastIndexOf('}');
+        jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"gameOver\"" + jsonString.substring(endOfString);
+        broadcast(jsonString);
       }
 
       // find word positions
@@ -268,11 +270,22 @@ public class App extends WebSocketServer
 
       else
       {
-        //System.out.println("\nHELLO\n");
         wordPositions = new ArrayList<>();
         wordPositions.add(row * 50 + column);
         sendHighlightPositions(conn, wordPositions, typeInt, gameId);
       }
+    }
+
+    if("stats".equals(U.getAction()))
+    {
+      String jsonString;
+      jsonString = gson.toJson(G);
+
+      // manually add action to the end of jsonString for it to be parsed by client
+      int endOfString = jsonString.lastIndexOf('}');
+      jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"showStats\"" + jsonString.substring(endOfString);
+      //System.out.println("\n" + jsonString + "\n");
+      conn.send(jsonString);
     }
 
     // Update the running time
@@ -340,6 +353,8 @@ public class App extends WebSocketServer
 
     // ArrayList of map containing string to be parsed and object data
     List<Map<String, Object>> positionsWithIdx = new ArrayList<>();
+
+    GameSession G = activeGames.get(gameId - 1);
     
      // loop through input ArrayList
     for (Integer position : positions)
@@ -351,11 +366,15 @@ public class App extends WebSocketServer
         positionsWithIdx.add(positionEntry);
     }
 
-    // store action and positions
+    // store action, positions, and scores
     Map<String, Object> message = new HashMap<>();
     message.put("action", "highlightWords");
     message.put("positions", positionsWithIdx);
     message.put("gameId", gameId);
+    message.put("Player1Score", G.Player1Score);
+    message.put("Player2Score", G.Player2Score);
+    message.put("Player3Score", G.Player3Score);
+    message.put("Player4Score", G.Player4Score);
     String jsonString = gson.toJson(message);
 
     //System.out.println("\n" + jsonString + "\n");

@@ -12,7 +12,7 @@ public class WordBank
    int wordsToFill;
    int wordsFilled, TCounter = 0;
    double diagDown, diagUp, vertUp, vertDown, horz = 0;
-   double density = 0.67;
+   public double density = 0.67;
    transient Random random = new Random();
    static final int RETRY = 100;
    int retry = 0;
