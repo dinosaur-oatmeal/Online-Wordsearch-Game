@@ -9,12 +9,15 @@ public class UserEvent {
     int column;
     String action;
     int maxPlayers;
+    String username;
+    int wordCount;
+    String message;
 
     UserEvent() {
 
     }
 
-    UserEvent(int _GameId, PlayerType _PlayerIdx, int _Button, int _row, int _column, String _action, int _maxPlayers) {
+    UserEvent(int _GameId, PlayerType _PlayerIdx, int _Button, int _row, int _column, String _action, int _maxPlayers, String _username, int _wordCount, String _message) {
         GameId = _GameId;
         PlayerIdx = _PlayerIdx;
         Button = _Button;
@@ -22,6 +25,9 @@ public class UserEvent {
         column = _column;
         action = _action;
         maxPlayers = _maxPlayers;
+        username = _username;
+        wordCount = _wordCount;
+        message = _message;
     }
 
     public String getAction()
@@ -62,5 +68,20 @@ public class UserEvent {
     public int getGameId()
     {
         return GameId;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public int getWordCount()
+    {
+        return wordCount;
+    }
+
+    public String getMessage()
+    {
+        return message;
     }
 }
