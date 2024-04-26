@@ -23,6 +23,7 @@ public class GameSession
 	int Player4Score = 0;
 	transient List<Integer> wordPositions;
 
+	// constructor
 	public GameSession(Statistics s)
 	{
 		stats = s;
@@ -31,6 +32,7 @@ public class GameSession
 		player = PlayerType.Player1;
 	}
 
+	// set the maximum number of players
 	public void setPlayers(int maxPlayers)
 	{
 		this.maxPlayers = maxPlayers;
@@ -103,7 +105,7 @@ public class GameSession
 		button[location] = players[typeInt - 1];
 
 		// see if the current character is in the same word as the last
-		if(wordFound(lastLocation, location))
+		if(wordFound(lastLocation, location) || wordFound(location, lastLocation))
 		{
 			// find positions to highlight
 			wordPositions = getWordPositions(lastLocation, location);
@@ -139,6 +141,7 @@ public class GameSession
 			wordsFound++;
 		}
 
+		// word was not found
 		else
 		{
 			wordPositions = null;

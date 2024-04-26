@@ -109,10 +109,10 @@ public class App extends WebSocketServer
   public void onClose(WebSocket conn, int code, String reason, boolean remote)
   {
     System.out.println(conn + " has closed");
-    // Retrieve the game tied to the websocket connection
+
+    // Retrieve the game tied to the websocket connection and remove
     GameSession G = conn.getAttachment();
     activeGames.remove(G);
-    //System.out.println(activeGames);
     G = null;
   }
 
@@ -130,14 +130,17 @@ public class App extends WebSocketServer
     // user event for when client joins game
     if("joinGame".equals(U.getAction()))
     {
-      System.out.println(U.getAction());
+      //System.out.println(U.getAction());
       ServerEvent E = new ServerEvent();
       GameSession G = null;
+
+      // see what game they're trying to join
       int maxPlayers = U.getMaxPlayers();
 
       // match found
       for(GameSession i : activeGames)
       {
+        // lobby is open to accept new players
         if(!i.isFull())
         {
           G = i;
@@ -150,10 +153,11 @@ public class App extends WebSocketServer
       if(G == null)
       {
         G = new GameSession(stats);
-        //G.setPlayers(maxPlayers);
         G.gameId = gameId;
         gameId++;
+
         G.player = PlayerType.Player1;
+
         G.setPlayers(maxPlayers);
         G.players[0] = PlayerType.Player1;
         activeGames.add(G);
@@ -213,11 +217,12 @@ public class App extends WebSocketServer
       String jsonString = gson.toJson(E);
       conn.send(jsonString);
 
-      //System.out.println(""+ gameId);
       String boardJson = gson.toJson(G.board);
       //System.out.println(boardJson);
       conn.send(boardJson);
+
       //System.out.println("> " + Duration.between(startTime, Instant.now()).toMillis() + " " + connectionId + " " + escape(jsonString));
+      
       // Update the running time
       stats.setRunningTime(Duration.between(startTime, Instant.now()).toSeconds());
       // The state of the game has changed, so lets send it to everyone
@@ -244,22 +249,22 @@ public class App extends WebSocketServer
       int column = U.getColumn();
       int gameId = U.GameId;
 
-      // convert index message from Index.html into an int (easier to deal with than enum)
+      // convert PlayerType to an int (easier to deal with than enum)
       int typeInt = U.PlayerIdx.getValue();
-      //System.out.println("\n" + typeInt + "\n");
 
       //System.out.println("\n Row: " + row + " Column: " + column + " Type: " + typeInt + "\n");
 
       // call charSelected function in GameSession.java
       boolean character = G.charSelected(row * 50 + column, typeInt);
 
-      // broadcast gameOver function to Index.html
+      // broadcast gameOver function to Index.html if wordsFilled = wordsToFill
       if(!character)
       {
         String jsonString;
         jsonString = gson.toJson(G);
 
         // manually add action to the end of jsonString for it to be parsed by client
+        // (easiest way I found to append data to the end of the string manually)
         int endOfString = jsonString.lastIndexOf('}');
         jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"gameOver\"" + jsonString.substring(endOfString);
         broadcast(jsonString);
@@ -269,11 +274,13 @@ public class App extends WebSocketServer
       List<Integer> wordPositions = G.wordPositions;
       //System.out.println("\n" + wordPositions + "\n");
 
+      // word found and should send all associated buttons to be highlighted
       if(wordPositions != null)
       {
         sendHighlightPositions(conn, wordPositions, typeInt, gameId);
       }
 
+      // word not found, so only send selected position to be highlighted
       else
       {
         wordPositions = new ArrayList<>();
@@ -282,6 +289,7 @@ public class App extends WebSocketServer
       }
     }
 
+    // stats action from Index.html
     if("stats".equals(U.getAction()))
     {
       String jsonString;
@@ -291,6 +299,8 @@ public class App extends WebSocketServer
       int endOfString = jsonString.lastIndexOf('}');
       jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"showStats\"" + jsonString.substring(endOfString);
       //System.out.println("\n" + jsonString + "\n");
+
+      // only send to client who requested to see the stats
       conn.send(jsonString);
     }
 
@@ -300,8 +310,7 @@ public class App extends WebSocketServer
     // update the game's status
     G.update(U);
 
-    // send out the game state every time
-    // to everyone
+    // send out the game state every time to everyone
     String jsonString;
     jsonString = gson.toJson(G);
 
@@ -357,15 +366,17 @@ public class App extends WebSocketServer
   {
     Gson gson = new Gson();
 
-    // ArrayList of map containing string to be parsed and object data
+    // ArrayList of maps containing string to be parsed and object data
     List<Map<String, Object>> positionsWithIdx = new ArrayList<>();
 
+    // get associated game in activeGames vector
+    // gameId starts at 1, so 1 - 1 gets the first game
     GameSession G = activeGames.get(gameId - 1);
     
      // loop through input ArrayList
     for (Integer position : positions)
     {
-        // store position and PlayerIdx
+        // store position and PlayerIdx to be parsed in Index.html
         Map<String, Object> positionEntry = new HashMap<>();
         positionEntry.put("position", position);
         positionEntry.put("PlayerIdx", typeInt);
@@ -384,6 +395,8 @@ public class App extends WebSocketServer
     String jsonString = gson.toJson(message);
 
     //System.out.println("\n" + jsonString + "\n");
+
+    // send to everyone (client will decide if its' relevant)
     broadcast(jsonString);
   }
 

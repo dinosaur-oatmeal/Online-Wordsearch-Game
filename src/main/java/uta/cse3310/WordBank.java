@@ -8,14 +8,14 @@ import java.util.Random;
 
 public class WordBank
 {
-   int gridSize = 2500;
-   int wordsToFill;
+   transient int gridSize = 2500;
+   transient int wordsToFill;
    int wordsFilled, TCounter = 0;
    double diagDown, diagUp, vertUp, vertDown, horz = 0;
    public double density = 0.67;
    transient Random random = new Random();
    static final int RETRY = 100;
-   int retry = 0;
+   transient int retry = 0;
    
    // ArrayList to store words
    transient ArrayList<String> words;
