@@ -45,6 +45,72 @@
             background-color: orange;
             color: white;
         }
+
+        #gameStats
+        {
+            display: flex;
+            flex-direction: row;
+            position: relative;
+            color: black;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            padding: 10px;
+        }
+
+        #gameStats > h3
+        {
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        #statDetails
+        {
+            color: black;
+            align-items: center;
+            text-align: left;
+            margin-right: 10px;
+            display: flex;
+            flex-grow: 1;
+        }
+
+        #statDetails > div
+        {
+            white-space: nowrap;
+            margin-right: 15px;
+        }
+
+        .game-controls
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .join-buttons
+        {
+            margin-right: 20px;
+        }
+
+        .player-scores
+        {
+            color: black;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-row
+        {
+            color: black;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .score-item
+        {
+            color: black;
+            margin: 5px;
+        }
     </style>
 </head>
 
@@ -64,11 +130,27 @@
             <input type="text" id="messageInput" placeholder="Type your message">
             <button onclick="postMessage()">Send</button>
         </div>
-        <div id = "joinbuttos" class="join-buttons">
-            <button onclick="joinGame(2)">Join 2</button>
-            <button onclick="joinGame(3)">Join 3</button>
-            <button onclick="joinGame(4)">Join 4</button>
-            <button onclick="showStats()">Show Stats</button>
+        <div class="game-controls">
+            <div id = "joinbuttos" class="join-buttons">
+                <button onclick="joinGame(2)">Join 2</button>
+                <button onclick="joinGame(3)">Join 3</button>
+                <button onclick="joinGame(4)">Join 4</button>
+                <button onclick="showStats()">Show Stats</button>
+            </div>
+            <div id="playerScores" class="player-scores">
+                <div class="score-row">
+                    <div class="score-item">Player 1: <span id="player1Score">0</span></div>
+                    <div class="score-item">Player 2: <span id="player2Score">0</span></div>
+                </div>
+                <div class="score-row">
+                    <div class="score-item">Player 3: <span id="player3Score">0</span></div>
+                    <div class="score-item">Player 4: <span id="player4Score">0</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="gameStats" style="display: none;">
+            <h3>Game Statistics</h3>
+            <div id="statDetails"></div>
         </div>
     </div>
 
@@ -157,6 +239,58 @@
 
                             highlightButton(row, column, idx);
                         });
+
+                        updateScores(obj);
+                    }
+                }
+
+                // stats button
+                if(obj.action === "showStats")
+                {
+                    console.log("showing stats");
+                    // send stats flag to server
+                    let statDetails = document.getElementById('statDetails');
+                    let gameStats = document.getElementById('gameStats');
+
+                    // make stats toggleable
+                    if(gameStats.style.display === 'block')
+                    {
+                        gameStats.style.display = 'none';
+                    }
+
+                    // grab variables from WordBank.java
+                    else if(obj.hasOwnProperty('bank'))
+                    {
+                        let bank = obj.bank;
+                        let textContent = '';
+
+                        // get content from obj and add to text
+                        for(const key in bank)
+                        {
+                            let inputValue = bank[key];
+                            let value;
+
+                            // see if we're parsing a number
+                            if(typeof inputValue === 'number')
+                            {
+                                // format percentages
+                                if(inputValue < 1)
+                                {
+                                    value = `${(inputValue * 100).toFixed(2)}%`;
+                                }
+
+                                // format other numbers
+                                else
+                                {
+                                    value = `${inputValue}`;
+                                }
+                            }
+                            textContent += `${key}: ${value}\n`;
+                        }
+
+                        statDetails.innerHTML = textContent;
+
+                        document.getElementById('gameStats').style.display = 'block';
                     }
                 }
 
@@ -249,6 +383,24 @@
             const button = board.children[row * 50 + column];
         
             button.classList.add(playerType[idx]);
+        }
+
+        // show board statistics and player scores
+        function showStats()
+        {
+            // send message and playerCount to server
+            const message = JSON.stringify({ action: "stats" });
+            connection.send(message);
+        }
+
+        // update scores for games in real-time
+        function updateScores(obj)
+        {
+            console.log(obj.Player1Score);
+            document.getElementById('player1Score').textContent = obj.Player1Score;
+            document.getElementById('player2Score').textContent = obj.Player2Score;
+            document.getElementById('player3Score').textContent = obj.Player3Score;
+            document.getElementById('player4Score').textContent = obj.Player4Score;
         }
     </script>
 </body>
