@@ -301,6 +301,15 @@ public class App extends WebSocketServer
       conn.send(jsonString);
     }
 
+    if("newMessage".equals(U.getAction()))
+    {
+      String jsonString;
+      jsonString = gson.toJson(G);
+      int endOfString = jsonString.lastIndexOf('}');
+      jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"sendMessage\"" + jsonString.substring(endOfString);
+      conn.send(jsonString);
+    }
+
     if("userJoin".equals(U.getAction()))
     {
       users.add(U.getUsername());

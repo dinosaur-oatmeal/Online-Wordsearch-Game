@@ -128,7 +128,7 @@
         <div id="leaderboard">Leaderboard:</div>
         <div id="messageBoard">Message Board:
             <input type="text" id="messageInput" placeholder="Type your message">
-            <button onclick="postMessage()">Send</button>
+            <button onclick="sendMessage()">Send</button>
         </div>
         <div class="game-controls">
             <div id = "joinbuttos" class="join-buttons">
@@ -203,6 +203,11 @@
                 if("userList" in obj)
                 {
                     console.log("User List Here");
+                }
+
+                if(obj.action === "sendMessage")
+                {
+                    console.log("message received");
                 }
             }
         }
@@ -420,6 +425,12 @@
         {
             // send stats to server for it to grab stats
             const message = JSON.stringify({ action: "stats" });
+            connection.send(message);
+        }
+
+        function sendMessage()
+        {
+            const message = JSON.stringify({ action: "newMessage" });
             connection.send(message);
         }
 
