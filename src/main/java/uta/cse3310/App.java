@@ -301,7 +301,7 @@ public class App extends WebSocketServer
       conn.send(jsonString);
     }
 
-    if("newMessage".equals(U.getAction()))
+    if("sendMessage".equals(U.getAction()))
     {
       String jsonString;
       jsonString = gson.toJson(G);
