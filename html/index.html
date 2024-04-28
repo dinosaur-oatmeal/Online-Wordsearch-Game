@@ -135,7 +135,7 @@
                 <button onclick="joinGame(2)">Join 2</button>
                 <button onclick="joinGame(3)">Join 3</button>
                 <button onclick="joinGame(4)">Join 4</button>
-                <button onclick="showStats()">Show Stats</button>
+                <button id="statsButton" onclick="showStats()" style="display: none;">Show Stats</button>
             </div>
             <div id="playerScores" class="player-scores">
                 <div class="score-row">
@@ -200,16 +200,24 @@
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
 
-                if("userList" in obj)
-                {
+                if ("userList" in obj) {
+                    var playersList = document.getElementById('playersList');
+                    playersList.innerHTML = ""; // Clear existing content
+
+                    for (var key in obj.userList) {
+                        if (obj.userList.hasOwnProperty(key)) {
+                            var userInList = document.createElement("div");
+                            userInList.textContent = obj.userList[key];
+                            playersList.appendChild(userInList);
+                        }
+                    }
                     console.log("User List Here");
                 }
 
-                if(obj.action === "displayMessage")
+
+                if(obj.action === "sendMessage")
                 {
-                    const messageText = obj.message;
                     console.log("message received");
-                    console.log("Received message: " + messageText);
                 }
             }
         }
@@ -330,6 +338,8 @@
                     //document.getElementById('phase 3').style.display = 'block';
 
                     initializeGameBoard(obj.board);
+                    document.getElementById('statsButton').style.display = 'block';
+                    
 
                     // flag makes sure board isn't reprinted
                     gameStarted = 1;
@@ -445,6 +455,8 @@
             document.getElementById('player3Score').textContent = obj.Player3Score;
             document.getElementById('player4Score').textContent = obj.Player4Score;
         }
+
+
     </script>
 </body>
 
