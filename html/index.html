@@ -220,9 +220,11 @@
                 }
 
 
-                if(obj.action === "sendMessage")
-                {
-                    console.log("message received");
+                if(obj.action === "newMessage") {
+                    var messageBoard = document.getElementById('messageBoard');
+                    var messageDiv = document.createElement("div");
+                    messageDiv.textContent = obj.message;
+                    messageBoard.appendChild(messageDiv);
                 }
             }
         }
@@ -445,11 +447,20 @@
             connection.send(message);
         }
 
-        function sendMessage()
-        {
-            const message = JSON.stringify({ action: "newMessage" });
-            connection.send(message);
+        function sendMessage() {
+            const inputElement = document.getElementById('messageInput');
+            const message = inputElement.value;
+            
+            if (message.trim() === '') {
+                alert('Please type a message before sending.');
+                return;
+            }
+
+            const msgObj = { action: "newMessage", message: message, username: "yourUsername" }; // Replace "yourUsername" dynamically
+            connection.send(JSON.stringify(msgObj));
+            inputElement.value = ''; // Clear the input after sending
         }
+
 
         // update scores for games in real-time
         function updateScores(obj)
