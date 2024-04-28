@@ -205,9 +205,11 @@
                     console.log("User List Here");
                 }
 
-                if(obj.action === "sendMessage")
+                if(obj.action === "displayMessage")
                 {
+                    const messageText = obj.message;
                     console.log("message received");
+                    console.log("Received message: " + messageText);
                 }
             }
         }

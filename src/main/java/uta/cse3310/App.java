@@ -303,11 +303,17 @@ public class App extends WebSocketServer
 
     if("newMessage".equals(U.getAction()))
     {
-      String jsonString;
-      jsonString = gson.toJson(G);
-      int endOfString = jsonString.lastIndexOf('}');
-      jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"sendMessage\"" + jsonString.substring(endOfString);
-      conn.send(jsonString);
+      // Get the message text from the UserEvent
+      String newMessage = U.getMessage();
+
+      // Create a message object to be sent to all clients
+      Map<String, Object> messageObject = new HashMap<>();
+      messageObject.put("action", "displayMessage");
+      messageObject.put("message", newMessage);
+      String jsonString = gson.toJson(messageObject);
+
+      // Broadcast the message to all connected clients
+      broadcast(jsonString);
     }
 
     if("userJoin".equals(U.getAction()))
