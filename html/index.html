@@ -249,12 +249,13 @@
                     // messageDiv.textContent = obj.message;
                     // messageBoard.appendChild(messageDiv);
                     // console.log("Messaage received");
-                    const messageBoard= document.getElementById('messageBoard');
-                    const messageDiv = document.getElementById("messageDiv");
-                    messageDiv.textContent = obj.message;
-                    messageDiv.style.padding = "5px"; // Consistent styling for received messages
-                    messageBoard.appendChild(messageDiv);
-                    messageBoard.scrollTop = messageBoard.scrollHeight; // Auto-scroll to the newest message
+                    // const messageBoard= document.getElementById('messageBoard');
+                    // const messageDiv = document.getElementById("messageDiv");
+                    // messageDiv.textContent = obj.message;
+                    // messageDiv.style.padding = "5px";
+                    // messageBoard.appendChild(messageDiv);
+                    // messageBoard.scrollTop = messageBoard.scrollHeight; // Auto-scroll to the newest message
+                    appendMessageToDiv(obj.message);
                     console.log("Messaage received");
                 }
 
@@ -470,9 +471,7 @@
             newMessageDiv.style.padding = "5px"; // Styling for better readability
 
             // Append the new message div to the existing message container
-            const messageDiv = document.getElementById('messageDiv');
-            messageDiv.appendChild(newMessageDiv);
-            messageDiv.scrollTop = messageDiv.scrollHeight; // Auto-scroll to new message
+            appendMessageToDiv(message);
 
             // Construct the JSON object to send via WebSocket
             const msgObj = JSON.stringify({
@@ -486,7 +485,14 @@
             }
             inputElement.value = '';
         }
-
+        function appendMessageToDiv(message) {
+            const messageDiv = document.getElementById('messageDiv');
+            const newMessageDiv = document.createElement("div");
+            newMessageDiv.textContent = message;
+            newMessageDiv.style.padding = "5px";
+            messageDiv.appendChild(newMessageDiv);
+            messageDiv.scrollTop = messageDiv.scrollHeight; // Auto-scroll to the new message
+        }
 
         // update scores for games in real-time
         function updateScores(obj)
