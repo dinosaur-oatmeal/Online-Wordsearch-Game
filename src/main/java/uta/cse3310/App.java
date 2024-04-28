@@ -301,13 +301,10 @@ public class App extends WebSocketServer
       conn.send(jsonString);
     }
 
-    if("sendMessage".equals(U.getAction()))
+    if("newMessage".equals(U.getAction()))
     {
-      String jsonString;
-      jsonString = gson.toJson(G);
-      int endOfString = jsonString.lastIndexOf('}');
-      jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"sendMessage\"" + jsonString.substring(endOfString);
-      conn.send(jsonString);
+        // Broadcast the received message to all connected clients
+        broadcast(message);
     }
 
     if("userJoin".equals(U.getAction()))
