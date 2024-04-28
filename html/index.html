@@ -244,10 +244,17 @@
                 
 
                 if(obj.action === "newMessage") {
-                    var messageBoard = document.getElementById('messageBoard');
-                    var messageDiv = document.getElementById("messageDiv");
+                    // var messageBoard = document.getElementById('messageBoard');
+                    // var messageDiv = document.getElementById("messageDiv");
+                    // messageDiv.textContent = obj.message;
+                    // messageBoard.appendChild(messageDiv);
+                    // console.log("Messaage received");
+                    const meswsageBoard = document.getElementById('messageDiv');
+                    const messageDiv = document.getElementById("messageDiv");
                     messageDiv.textContent = obj.message;
-                    messageBoard.appendChild(messageDiv);
+                    messageDiv.style.padding = "5px"; // Consistent styling for received messages
+                    meswsageBoard.appendChild(messageDiv);
+                    meswsageBoard.scrollTop = meswsageBoard.scrollHeight; // Auto-scroll to the newest message
                     console.log("Messaage received");
                 }
 
@@ -457,6 +464,17 @@
                 return;
             }
 
+            // Create a new div element for each new message
+            const newMessageDiv = document.createElement("div");
+            newMessageDiv.textContent = message;
+            newMessageDiv.style.padding = "5px"; // Styling for better readability
+
+            // Append the new message div to the existing message container
+            const messageDiv = document.getElementById('messageDiv');
+            messageDiv.appendChild(newMessageDiv);
+            messageDiv.scrollTop = messageDiv.scrollHeight; // Auto-scroll to new message
+
+            // Construct the JSON object to send via WebSocket
             const msgObj = JSON.stringify({
                 action: "newMessage",
                 message: message
@@ -466,9 +484,8 @@
             } else {
                 console.error("Cannot send data: WebSocket is not open.");
             }
-            inputElement.value = ''; // Clear the input after sending
+            inputElement.value = '';
         }
-
 
 
         // update scores for games in real-time
