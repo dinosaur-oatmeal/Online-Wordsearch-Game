@@ -80,6 +80,11 @@ button.enter{
   align-items: center;
   justify-content: center;
 }
+#messageElement{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 #leaderboard{
   grid-column: span 3;
   grid-row: span 2;
