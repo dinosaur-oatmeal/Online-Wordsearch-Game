@@ -73,6 +73,7 @@ button.enter{
   align-items: center;
   justify-content: center;
 }
+
 #messageBoard{
   grid-column: span 6;
   grid-row: span 1;
@@ -83,14 +84,12 @@ button.enter{
   padding: 10px;
   box-sizing: border-box;
 }
+
 #messageDiv{
   width: 100%; /* Take the full width of #messageBoard */
-  overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 150px; /* Set a maximum height */
-  margin-bottom: 10px; /* Space between messages and the input */
-  flex-grow: 1; /* Allow it to take up any available space */
-  width: calc(100% - 20px); /* Slightly less than full width to accommodate padding */
+  overflow: auto; 
 }
+
 #messageInput, button {
   width: calc(50% - 10px); /* Adjust width for both, accounting for button spacing */
   padding: 8px 10px;
