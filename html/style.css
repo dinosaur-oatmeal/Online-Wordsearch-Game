@@ -55,13 +55,13 @@ button.enter{
 #playersList{
   grid-column: span 3;
   grid-row: span 3;
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: center;
-  white-space: pre-wrap; /* Allows the newline characters to create line breaks */
+  white-space: pre-wrap; 
 }
 #userInList{
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: center;
 }
@@ -76,11 +76,6 @@ button.enter{
 #messageBoard{
   grid-column: span 6;
   grid-row: span 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#messageElement{
   display: flex;
   align-items: center;
   justify-content: center;
