@@ -135,7 +135,7 @@
                 <button onclick="joinGame(2)">Join 2</button>
                 <button onclick="joinGame(3)">Join 3</button>
                 <button onclick="joinGame(4)">Join 4</button>
-                <button onclick="showStats()">Show Stats</button>
+                <button id="statsButton" onclick="showStats()" style="display: none;">Show Stats</button>
             </div>
             <div id="playerScores" class="player-scores">
                 <div class="score-row">
@@ -330,6 +330,8 @@
                     //document.getElementById('phase 3').style.display = 'block';
 
                     initializeGameBoard(obj.board);
+                    document.getElementById('statsButton').style.display = 'block';
+                    
 
                     // flag makes sure board isn't reprinted
                     gameStarted = 1;
