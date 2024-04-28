@@ -240,7 +240,7 @@
                 var gameId = obj.gameId;
                 
 
-                if('newMessage' in obj) {
+                if(obj.action === "newMessage") {
                     var messageBoard = document.getElementById('messageBoard');
                     var messageDiv = document.createElement("div");
                     messageDiv.textContent = obj.message;
