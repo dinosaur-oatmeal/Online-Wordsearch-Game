@@ -307,8 +307,8 @@ public class App extends WebSocketServer
         String msg = U.getMessage();
         //String formattedMessage = U.getUsername() + ": " + msg;
         int endOfString = jsonString.lastIndexOf('}');
-        jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"newMessage\"" + jsonString.substring(endOfString);
-        broadcast(msg);
+        jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"newMessage\", \"message\": massage " + jsonString.substring(endOfString);
+        broadcast(jsonString);
         return;
     }
 
