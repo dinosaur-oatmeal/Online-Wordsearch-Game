@@ -58,6 +58,7 @@ button.enter{
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: pre-wrap; /* Allows the newline characters to create line breaks */
 }
 #userInList{
   display: flex;

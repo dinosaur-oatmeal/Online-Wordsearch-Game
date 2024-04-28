@@ -207,7 +207,7 @@
                     for (var key in obj.userList) {
                         if (obj.userList.hasOwnProperty(key)) {
                             var userInList = document.createElement("div");
-                            userInList.textContent = obj.userList[key];
+                            userInList.textContent = obj.userList[key] + '\n';
                             playersList.appendChild(userInList);
                         }
                     }
