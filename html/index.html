@@ -127,6 +127,9 @@
         <div id="gameBoard" class="game-board"></div>
         <div id="leaderboard">Leaderboard:</div>
         <div id="messageBoard">
+            <div id="messageDiv" style="overflow-y: auto; max-height: 150px;">
+                <!-- Messages will be appended here -->
+            </div>
             <input type="text" id="messageInput" placeholder="Type your message">
             <button onclick="sendMessage()">Send</button>
         </div>
@@ -242,7 +245,7 @@
 
                 if(obj.action === "newMessage") {
                     var messageBoard = document.getElementById('messageBoard');
-                    var messageDiv = document.createElement("div");
+                    var messageDiv = document.getElementById("messageDiv");
                     messageDiv.textContent = obj.message;
                     messageBoard.appendChild(messageDiv);
                     console.log("Messaage received");
