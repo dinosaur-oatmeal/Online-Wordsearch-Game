@@ -456,7 +456,7 @@
                 return;
             }
 
-            const msgObj = { action: "newMessage", message: message, username: "username" }; // Replace "yourUsername" dynamically
+            const msgObj = { action: "newMessage", message: message};
             connection.send(JSON.stringify(msgObj));
             inputElement.value = ''; // Clear the input after sending
         }
