@@ -249,12 +249,12 @@
                     // messageDiv.textContent = obj.message;
                     // messageBoard.appendChild(messageDiv);
                     // console.log("Messaage received");
-                    const meswsageBoard = document.getElementById('messageDiv');
+                    const messageBoard= document.getElementById('messageBoard');
                     const messageDiv = document.getElementById("messageDiv");
                     messageDiv.textContent = obj.message;
                     messageDiv.style.padding = "5px"; // Consistent styling for received messages
-                    meswsageBoard.appendChild(messageDiv);
-                    meswsageBoard.scrollTop = meswsageBoard.scrollHeight; // Auto-scroll to the newest message
+                    messageBoard.appendChild(messageDiv);
+                    messageBoard.scrollTop = messageBoard.scrollHeight; // Auto-scroll to the newest message
                     console.log("Messaage received");
                 }
 
