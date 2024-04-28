@@ -449,18 +449,25 @@
 
         function sendMessage() {
             const inputElement = document.getElementById('messageInput');
-            const message = inputElement.value;
+            const message = inputElement.value.trim();
             
-            if (message.trim() === '') 
-            {
+            if (message === '') {
                 alert('Please type a message before sending.');
                 return;
             }
 
-            const msgObj = JSON.stringify({ action: "newMessage", message: message });
-            connection.send(msgObj);
+            const msgObj = JSON.stringify({
+                action: "newMessage",
+                message: message
+            });
+            if (connection.readyState === WebSocket.OPEN) {
+                connection.send(msgObj);
+            } else {
+                console.error("Cannot send data: WebSocket is not open.");
+            }
             inputElement.value = ''; // Clear the input after sending
         }
+
 
 
         // update scores for games in real-time
