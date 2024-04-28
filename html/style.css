@@ -77,8 +77,15 @@ button.enter{
   grid-column: span 6;
   grid-row: span 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;  /* Align children in a row */
+  justify-content: center; /* Center children horizontally */
+  align-items: flex-end; /* Align children to the end of the vertical axis */
+  padding: 10px; /* Add some padding for spacing */
+  box-sizing: border-box; /* Includes padding in the element's total width and height */
+}
+#messageDiv{
+  display: grid;
+  overflow: auto; 
 }
 #leaderboard{
   grid-column: span 3;
