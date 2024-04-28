@@ -94,21 +94,21 @@
 
         .player-scores
         {
-            color: black;
+            color: #a1cca5;
             display: flex;
             flex-direction: column;
         }
 
         .score-row
         {
-            color: black;
+            color: #a1cca5;
             display: flex;
             justify-content: space-between;
         }
-
+        /*score board in corner*/
         .score-item
         {
-            color: black;
+            color: #a1cca5;
             margin: 5px;
         }
     </style>
@@ -220,10 +220,9 @@
                 }
 
 
-                if ("newMessage" in obj) {
-                    // Display the message in the message board
-                    displayMessage(obj.message);
-                    console.log("Message Sent");
+                if(obj.action === "sendMessage")
+                {
+                    console.log("message received");
                 }
             }
         }
@@ -446,24 +445,10 @@
             connection.send(message);
         }
 
-        // Function to send a message to the server
-        function sendMessage() {
-            // Retrieve message from input field
-            var messageInput = document.getElementById('messageInput');
-            var message = messageInput.value.trim();
-
-            // Create JSON object with action and message content
-            var data = {
-                action: "sendMessage",
-                message: message
-            };
-
-            // Send JSON object to server
-            connection.send(JSON.stringify(data));
-
-            // Clear input field after sending message
-            messageInput.value = "";
-    
+        function sendMessage()
+        {
+            const message = JSON.stringify({ action: "newMessage" });
+            connection.send(message);
         }
 
         // update scores for games in real-time
@@ -475,15 +460,8 @@
             document.getElementById('player3Score').textContent = obj.Player3Score;
             document.getElementById('player4Score').textContent = obj.Player4Score;
         }
-        // Function to display a message in the message board
-        function displayMessage(message) {
-            // Create a new message element
-            var messageElement = document.createElement("div");
-            messageElement.textContent = message;
-            // Append the message element to the message board
-            var messageBoard = document.getElementById('messageBoard');
-            messageBoard.appendChild(messageElement);
-        }
+
+
     </script>
 </body>
 
