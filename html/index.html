@@ -243,7 +243,7 @@
                 var gameId = obj.gameId;
                 
 
-                if(obj.action === "newMessage") {
+                if('newMessage' in obj) {
                     var messageBoard = document.getElementById('messageBoard');
                     var messageDiv = document.createElement("div");
                     messageDiv.textContent = obj.message;
@@ -451,13 +451,14 @@
             const inputElement = document.getElementById('messageInput');
             const message = inputElement.value;
             
-            if (message.trim() === '') {
+            if (message.trim() === '') 
+            {
                 alert('Please type a message before sending.');
                 return;
             }
 
-            const msgObj = { action: "newMessage", message: message};
-            connection.send(JSON.stringify(msgObj));
+            const msgObj = JSON.stringify({ action: "newMessage", message: message });
+            connection.send(msgObj);
             inputElement.value = ''; // Clear the input after sending
         }
 

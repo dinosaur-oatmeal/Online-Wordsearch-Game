@@ -303,9 +303,12 @@ public class App extends WebSocketServer
 
     if("newMessage".equals(U.getAction()))
     {
-        String msg = U.getMessage(); // Assuming UserEvent has a getMessage method
-        String formattedMessage = U.getUsername() + ": " + msg;
-        broadcast(formattedMessage);
+        String jsonString = gson.toJson(G);
+        String msg = U.getMessage();
+        //String formattedMessage = U.getUsername() + ": " + msg;
+        int endOfString = jsonString.lastIndexOf('}');
+        jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"newMessage\"" + jsonString.substring(endOfString);
+        broadcast(msg);
         return;
     }
 
