@@ -70,7 +70,7 @@ public class GameSessionTest extends TestCase
     }
 
     // check that the board is created when a game is started
-    /*public void testStartGame()
+    public void testStartGame()
     {
         GameSession G = new GameSession(new Statistics());
         G.startGame();
@@ -83,7 +83,7 @@ public class GameSessionTest extends TestCase
                 assertTrue(G.board[i][j] != '-' && G.board[i][j] != '\u0000');
             }
         }
-    }*/
+    }
 
     // check that characters can be selected
     public void testCharSelected()
