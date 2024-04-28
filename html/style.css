@@ -88,6 +88,7 @@ button.enter{
 #messageDiv{
   width: 100%; /* Take the full width of #messageBoard */
   overflow: auto; 
+  border: black;
 }
 
 #messageInput, button {
