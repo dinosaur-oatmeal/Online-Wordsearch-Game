@@ -83,6 +83,7 @@ button.enter{
   align-items: center; /* Center children horizontally */
   padding: 10px;
   box-sizing: border-box;
+  overflow: auto;
 }
 
 #messageDiv{
