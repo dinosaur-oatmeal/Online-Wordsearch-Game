@@ -452,20 +452,18 @@
             var messageInput = document.getElementById('messageInput');
             var message = messageInput.value.trim();
 
-            // Check if message is not empty
-            if (message !== "") {
-                // Create JSON object with action and message content
-                var data = {
-                    action: "sendMessage",
-                    message: message
-                };
+            // Create JSON object with action and message content
+            var data = {
+                action: "sendMessage",
+                message: message
+            };
 
-                // Send JSON object to server
-                connection.send(JSON.stringify(data));
+            // Send JSON object to server
+            connection.send(JSON.stringify(data));
 
-                // Clear input field after sending message
-                messageInput.value = "";
-            }
+            // Clear input field after sending message
+            messageInput.value = "";
+    
         }
 
         // update scores for games in real-time
