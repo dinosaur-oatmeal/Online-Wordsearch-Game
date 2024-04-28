@@ -218,14 +218,6 @@
                     }
                     console.log("User List Here");
                 }
-
-
-                if(obj.action === "newMessage") {
-                    var messageBoard = document.getElementById('messageBoard');
-                    var messageDiv = document.createElement("div");
-                    messageDiv.textContent = obj.message;
-                    messageBoard.appendChild(messageDiv);
-                }
             }
         }
 
@@ -249,6 +241,14 @@
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
                 var gameId = obj.gameId;
+                
+
+                if(obj.action === "newMessage") {
+                    var messageBoard = document.getElementById('messageBoard');
+                    var messageDiv = document.createElement("div");
+                    messageDiv.textContent = obj.message;
+                    messageBoard.appendChild(messageDiv);
+                }
 
                 // assign PlayerType and gameid to client
                 if ('YouAre' in obj)
