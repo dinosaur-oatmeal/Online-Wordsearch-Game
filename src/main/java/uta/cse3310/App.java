@@ -306,9 +306,11 @@ public class App extends WebSocketServer
         String jsonString = gson.toJson(G);
         String msg = U.getMessage();
         //String formattedMessage = U.getUsername() + ": " + msg;
-        int endOfString = jsonString.lastIndexOf('}');
-        jsonString = jsonString.substring(0, endOfString) + ", \"action\": \"newMessage\"" + jsonString.substring(endOfString);
-        broadcast(jsonString);
+        Map<String, Object> newMessage = new HashMap<>();
+        newMessage.put("action", "newMessage");
+        newMessage.put("message", msg);
+        String newMessageString = gson.toJson(newMessage);
+        broadcast(newMessageString);
         return;
     }
 
