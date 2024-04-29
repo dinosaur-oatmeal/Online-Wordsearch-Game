@@ -127,6 +127,10 @@
         <div id="playersList">Players Online:</div>
         <div id="gameBoard" class="game-board"></div>
         <div id="leaderboard">Leaderboard:</div>
+        <!--changes subodh -->
+        <button onclick="getLeaderboard()">Show Leaderboard</button>
+        <div id="leaderboardContainer"></div>
+        <!-- changes -->
         <div id="messageBoard">
             <div id="messageDiv">
                 <!-- Messages will be appended here -->
@@ -504,6 +508,38 @@
             document.getElementById('player3Score').textContent = obj.Player3Score;
             document.getElementById('player4Score').textContent = obj.Player4Score;
         }
+
+        //changes subodh
+        //for leaderboard
+        function getLeaderboard() {
+        const message = JSON.stringify({ action: "getLeaderboard" });
+        connection.send(message);
+        }
+
+        connection.onmessage = function (evt) {
+            console.log("Message received: " + evt.data);
+            const obj = JSON.parse(evt.data);
+
+            // Check if the received data is the leaderboard
+            if (typeof obj === 'object' && obj !== null) {
+                displayLeaderboard(obj);
+            }
+        
+        }
+
+        function displayLeaderboard(leaderboardData) {
+            const leaderboardContainer = document.getElementById('leaderboardContainer');
+            leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
+
+            // Create and append leaderboard entries
+            for (const [nickname, score] of Object.entries(leaderboardData)) {
+                const entry = document.createElement('div');
+                entry.textContent = `${nickname}: ${score}`;
+                leaderboardContainer.appendChild(entry);
+            }
+        }
+
+        //changes
 
 
     </script>
