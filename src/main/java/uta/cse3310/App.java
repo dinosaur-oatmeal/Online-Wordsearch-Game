@@ -81,6 +81,8 @@ public class App extends WebSocketServer
 
   private int maxPlayers;
 
+  private Leaderboard leaderboard = new Leaderboard();
+
   ArrayList<String> users = new ArrayList<>();
 
   public App(int port)
@@ -150,6 +152,14 @@ public class App extends WebSocketServer
         }
 
       }
+
+      //changes subodh
+      if ("getLeaderboard".equals(U.getAction())) {
+        // Send the leaderboard data to the client
+        String leaderboardData = gson.toJson(leaderboard.scores);
+        conn.send(leaderboardData);
+      }
+      //changes
 
       // new game initialization
       if(G == null)
