@@ -228,11 +228,14 @@ public class GameSession
 		}
 
 		// diagonal up
-		else if(startRow - endRow == endColumn - startColumn)
+		else if(startRow - endRow == -(startColumn - endColumn))
 		{
 			for(int i = 0; i <= Math.abs(startRow - endRow); i++)
 			{
-				positions.add((startRow - i) * 50 + (startColumn + i));
+				int temp = (startRow - i) * 50 + (startColumn + i);
+				//positions.add((startRow - i) * 50 + (startColumn + i));
+				System.out.println(temp);
+				positions.add(temp);
 			}
 		}
 

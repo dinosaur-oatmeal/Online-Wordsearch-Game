@@ -249,8 +249,8 @@ public class WordBank
                board[row + 4 - i][column + i] = word.charAt(i);
             }
             
-            int end = row * 50 + column;
-            int start = end + (4 * 50);
+            int end = (row + 4) * 50 + column;
+            int start = row * 50 + (column + 4);
             locations.add(new WordLocation(start, end));
             
             // add to variables for statistics
