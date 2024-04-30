@@ -72,7 +72,11 @@ public class WholeGameTest extends TestCase
 
         assertFalse(result.contains("\"gameOver\":true"));
 
+        // test selection of letters
         msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"Button\":1225,\"row\":24,\"column\":25,\"action\":\"selectCharacter\"}";
         result = update(game, msg);
+
+        assertTrue(result.contains("\"Player1\""));
+
     }
 }
