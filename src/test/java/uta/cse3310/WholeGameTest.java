@@ -78,5 +78,9 @@ public class WholeGameTest extends TestCase
 
         assertTrue(result.contains("\"Player1\""));
 
+        msg = "{\"action\":\"checkBoard\"}";
+        result = update(game, result);
+
+        assertTrue(result.contains("\"board\":"));
     }
 }
