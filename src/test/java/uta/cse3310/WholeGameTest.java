@@ -82,5 +82,10 @@ public class WholeGameTest extends TestCase
         result = update(game, result);
 
         assertTrue(result.contains("\"board\":"));
+
+        assertTrue(result.contains("\"Player1Score\":0"));
+        assertTrue(result.contains("\"Player2Score\":0"));
+        assertTrue(result.contains("\"Player3Score\":0"));
+        assertTrue(result.contains("\"Player4Score\":0"));
     }
 }
