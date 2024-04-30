@@ -11,18 +11,19 @@ public class Leaderboard {
     public Leaderboard() {
         scores = new HashMap<>();
     }
-    public void displayLeaderboard() {
-        // Implementation goes here
-        PriorityQueue<Entry<String, Integer>> pq = new PriorityQueue<>((a, b) -> b.getValue() - a.getValue());
-        pq.addAll(scores.entrySet());
+    public void displayLeaderboard(int topCount = 5) {
+    // Implementation goes here (use logic from original displayLeaderboard)
+    PriorityQueue<Entry<String, Integer>> pq = new PriorityQueue<>((a, b) -> b.getValue() - a.getValue());
+    pq.addAll(scores.entrySet());
 
-        // Print the leaderboard
-        System.out.println("Leaderboard:");
-        while (!pq.isEmpty()) {
-            Entry<String, Integer> player = pq.poll();
-            System.out.println(player.getKey() + ": " + player.getValue());
-        }
+    System.out.println("Leaderboard (Top " + topCount + "):");
+    int count = 0;
+    while (!pq.isEmpty() && count < topCount) {
+      Entry<String, Integer> player = pq.poll();
+      System.out.println(player.getKey() + ": " + player.getValue());
+      count++;
     }
+  }
 
     public void updateLeaderboard(String nickname) {
         // Implementation goes here
