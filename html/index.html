@@ -201,6 +201,11 @@
                     }
                     console.log("User List Here");
                 }
+
+                // Check if the received data is the leaderboard
+                if (typeof obj === 'object' && obj !== null) {
+                displayLeaderboard(obj);
+            }
             };
 
             connection.onclose = function(evt) {
@@ -305,6 +310,7 @@
 
                         // update scores everytime
                         updateScores(obj);
+                        getLeaderboard();
                     }
                 }
 
@@ -522,17 +528,6 @@
         function getLeaderboard() {
         const message = JSON.stringify({ action: "getLeaderboard" });
         connection.send(message);
-        }
-
-        connection.onmessage = function (evt) {
-            console.log("Message received: " + evt.data);
-            const obj = JSON.parse(evt.data);
-
-            // Check if the received data is the leaderboard
-            if (typeof obj === 'object' && obj !== null) {
-                displayLeaderboard(obj);
-            }
-        
         }
 
         function displayLeaderboard(leaderboardData) {
