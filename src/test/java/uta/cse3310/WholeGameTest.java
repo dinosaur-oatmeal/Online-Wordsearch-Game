@@ -70,6 +70,9 @@ public class WholeGameTest extends TestCase
 
         //System.out.println(result);
 
-        // assertTrue(result.contains("\"gameOver\":true"));
+        assertFalse(result.contains("\"gameOver\":true"));
+
+        msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"Button\":1225,\"row\":24,\"column\":25,\"action\":\"selectCharacter\"}";
+        result = update(game, msg);
     }
 }
