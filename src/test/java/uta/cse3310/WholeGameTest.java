@@ -44,14 +44,31 @@ public class WholeGameTest extends TestCase
 
         game.startGame();
 
-        msg = "{\"GameId\":1,\"PlayerIdx\":\"Player1\",\"Button\":0,\"row\":0,\"column\":0,\"action\":\"selectCharacter\"}";
+        msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"Button\":0,\"row\":0,\"column\":0,\"action\":\"selectCharacter\"}";
         result = update(game, msg);
 
-        msg = "{\"GameId\":1,\"PlayerIdx\":\"Player1\",\"Button\":25,\"row\":0,\"column\":5,\"action\":\"selectCharacter\"}";
+        // check that density is correct
+        assertTrue(result.contains("\"density\":0.67"));
+
+        // see that Player1 was entered into the game
+        assertTrue(result.contains("\"player\":\"Player1\""));
+
+        // see that the gameId is 0 because that's the starting variable
+        assertTrue(result.contains("\"gameId\":0"));
+
+        // see that the running time is initialized
+        assertTrue(result.contains("\"runningTime\":0"));
+
+        msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"Button\":0,\"row\":0,\"column\":0,\"action\":\"selectCharacter\"}";
+        result = update(game, msg);
+
+        msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"Button\":25,\"row\":0,\"column\":5,\"action\":\"selectCharacter\"}";
         result = update(game, msg);
 
         // checking initial state of game with no words found
         assertTrue(result.contains("\"wordsFound\":0"));
+
+        //System.out.println(result);
 
         // assertTrue(result.contains("\"gameOver\":true"));
     }
