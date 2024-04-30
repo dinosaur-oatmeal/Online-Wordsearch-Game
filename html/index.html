@@ -538,23 +538,28 @@
         connection.send(message);
         }
 
+        function getLeaderboard() {
+        const message = JSON.stringify({ action: "getLeaderboard" });
+        connection.send(message);
+        }
+
         function displayLeaderboard(leaderboardData) {
-            const leaderboardTable = document.getElementById('leaderboardContainer').getElementsByTagName('tbody')[0];
-            leaderboardTable.innerHTML = ''; // Clear previous leaderboard
+            const leaderboardTableBody = document.getElementById('leaderboardContainer').getElementsByTagName('tbody')[0];
+            leaderboardTableBody.innerHTML = ''; // Clear previous leaderboard
 
             // Create and append leaderboard entries
-            for (const [nickname, score] of Object.entries(leaderboardData)) {
+            for (const entry of leaderboardData) {
                 const row = document.createElement('tr');
 
                 const nameCell = document.createElement('td');
-                nameCell.textContent = nickname;
+                nameCell.textContent = entry.nickname;
                 row.appendChild(nameCell);
 
                 const scoreCell = document.createElement('td');
-                scoreCell.textContent = score;
+                scoreCell.textContent = entry.score;
                 row.appendChild(scoreCell);
 
-                leaderboardTable.appendChild(row);
+                leaderboardTableBody.appendChild(row);
             }
         }
 
