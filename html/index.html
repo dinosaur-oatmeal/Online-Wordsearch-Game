@@ -166,13 +166,60 @@
         var idx = 0;
         var gameid = -1;
         var gameStarted = 0;
+        var username = "";
 
-        // enter username and open websocket connection
-        // (button to transition to lobby is clicked)
-        function enterUsername()
-        {
+        // start connection when webpage is opened
+        window.onload = function() {
+            var serverUrl = "ws://" + window.location.hostname + ":" + (parseInt(location.port) + 100);
+            connection = new WebSocket(serverUrl);
+
+            connection.onopen = function(evt) {
+                console.log("Connection opened");
+            };
+
+            connection.onmessage = function(evt) {
+                console.log("Message received: " + evt.data);
+                const obj = JSON.parse(evt.data);
+
+                // sets title to hash when webpage opened
+                if("version" in obj) {
+                    console.log(obj.version);
+                    document.title = "Group 13 " + obj.version;   
+                }
+
+                // update userList when webpage opened
+                if ("userList" in obj) {
+                    var playersList = document.getElementById('playersList');
+                    playersList.innerHTML = ""; 
+
+                    for (var key in obj.userList) {
+                        if (obj.userList.hasOwnProperty(key)) {
+                            var userInList = document.createElement("div");
+                            userInList.textContent = obj.userList[key];
+                            playersList.appendChild(userInList);
+                        }
+                    }
+                    console.log("User List Here");
+                }
+            };
+
+            connection.onclose = function(evt) {
+                console.log("Connection closed");
+            };
+
+            // updates userList before connection is closed
+            window.onbeforeunload = function() {
+                if (username) {
+                    const message = JSON.stringify({ action: "userLeave", username: username });
+                    connection.send(message);
+                }
+            };
+        };
+
+        // username is entered
+        function enterUsername() {
             var usernameInput = document.getElementById('username');
-            var username = usernameInput.value.trim();
+            username = usernameInput.value.trim(); // Update the global username variable
 
             if (username === "") {
                 alert('Please enter a username.');
@@ -182,55 +229,10 @@
             document.getElementById('phase1').style.display = 'none';
             document.getElementById('phase2').style.display = 'grid';
 
-            var serverUrl;
-            serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
-            connection = new WebSocket(serverUrl);
-
-            connection.onopen = function (evt) {
-                console.log("open");
-                const message = JSON.stringify({ action: "userJoin", username: username });
-                connection.send(message);
-            }
-
-            window.onbeforeunload = function() {
-                const message = JSON.stringify({ action: "userLeave", username: username });
-                connection.send(message);
-            };
-
-            connection.onclose = function (evt) 
-            {
-                console.log("close");
-            }
-
-            connection.onmessage = function (evt) 
-            {
-                console.log("Message received: " + evt.data);
-                const obj = JSON.parse(evt.data);
-
-                if("version" in obj)
-                {
-                    console.log(obj.version);
-                    document.title = "Group 13 " + obj.version;   
-                }
-
-                if ("userList" in obj) 
-                {
-                    var playersList = document.getElementById('playersList');
-                    playersList.innerHTML = ""; 
-
-                    for (var key in obj.userList) 
-                    {
-                        if (obj.userList.hasOwnProperty(key)) 
-                        {
-                            var userInList = document.createElement("div");
-                            userInList.textContent = obj.userList[key];
-                            playersList.appendChild(userInList);
-                        }
-                    }
-                    console.log("User List Here");
-                }
-            }
+            const message = JSON.stringify({ action: "userJoin", username: username });
+            connection.send(message);
         }
+
 
         function handleKeyPress(event) 
         {
