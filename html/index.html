@@ -206,6 +206,12 @@
                 console.log("Message received: " + evt.data);
                 const obj = JSON.parse(evt.data);
 
+                if("version" in obj)
+                {
+                    console.log(obj.version);
+                    document.title = "Group 13 " + obj.version;   
+                }
+
                 if ("userList" in obj) 
                 {
                     var playersList = document.getElementById('playersList');
