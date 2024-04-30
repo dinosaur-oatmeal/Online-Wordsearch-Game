@@ -71,8 +71,9 @@ public class WholeGameTest extends TestCase
         //System.out.println(result);
 
         assertFalse(result.contains("\"gameOver\":true"));
+        assertTrue(result.contains("\"gameId\":0"));
 
-        // test selection of letters
+        // test selection of characters
         msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"Button\":1225,\"row\":24,\"column\":25,\"action\":\"selectCharacter\"}";
         result = update(game, msg);
 
