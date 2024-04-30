@@ -141,6 +141,7 @@ public class App extends WebSocketServer
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
     UserEvent U = gson.fromJson(message, UserEvent.class);
+    System.out.println(U.getAction());
 
     // user event for when client joins game
     if("joinGame".equals(U.getAction()))
@@ -353,9 +354,13 @@ public class App extends WebSocketServer
     if("userLeave".equals(U.getAction()))
     {
       users.remove(U.getUsername());
-      Map<String, Object> userList = new HashMap<>();
-      userList.put("userList", userList);
-      String jsonString = gson.toJson(userList);
+      for(int i = 0; i < users.size(); i++)
+      {
+        System.out.print(users.get(i) + " ");
+      }
+      Map<String, Object> updatedList = new HashMap<>();
+      updatedList.put("userList", users);
+      String jsonString = gson.toJson(updatedList);
       broadcast(jsonString);
       return;
     }
