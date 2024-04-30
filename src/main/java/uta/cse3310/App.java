@@ -85,6 +85,8 @@ public class App extends WebSocketServer
 
   ArrayList<String> users = new ArrayList<>();
 
+  public String version = System.getenv("VERSION") != null ? System.getenv("VERSION") : "1.0.0";
+
   public App(int port)
   {
     super(new InetSocketAddress(port));
@@ -107,6 +109,15 @@ public class App extends WebSocketServer
     // sent when client clicks button to enter lobby
     connectionId++;
     //System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+
+    GsonBuilder builder = new GsonBuilder();
+    Gson gson = builder.create();
+
+    Map<String, String> hashMessage = new HashMap<>();
+    hashMessage.put("version", version);
+    System.out.println(version);
+    String hashMessageString = gson.toJson(hashMessage);
+    conn.send(hashMessageString);
   }
 
   @Override
