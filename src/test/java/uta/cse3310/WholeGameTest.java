@@ -88,5 +88,12 @@ public class WholeGameTest extends TestCase
         assertTrue(result.contains("\"Player2Score\":0"));
         assertTrue(result.contains("\"Player3Score\":0"));
         assertTrue(result.contains("\"Player4Score\":0"));
+
+// Testing player joining
+//        msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"action\":\"joinMatch\"}";
+//        result = update(game, msg);
+
+//        assertTrue(result.contains("\"Player1\":true"));
+
     }
 }
