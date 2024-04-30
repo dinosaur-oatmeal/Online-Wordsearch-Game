@@ -539,14 +539,22 @@
         }
 
         function displayLeaderboard(leaderboardData) {
-            const leaderboardContainer = document.getElementById('leaderboardContainer');
-            leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
+            const leaderboardTable = document.getElementById('leaderboardContainer').getElementsByTagName('tbody')[0];
+            leaderboardTable.innerHTML = ''; // Clear previous leaderboard
 
             // Create and append leaderboard entries
             for (const [nickname, score] of Object.entries(leaderboardData)) {
-                const entry = document.createElement('div');
-                entry.textContent = `${nickname}: ${score}`;
-                leaderboardContainer.appendChild(entry);
+                const row = document.createElement('tr');
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = nickname;
+                row.appendChild(nameCell);
+
+                const scoreCell = document.createElement('td');
+                scoreCell.textContent = score;
+                row.appendChild(scoreCell);
+
+                leaderboardTable.appendChild(row);
             }
         }
 
