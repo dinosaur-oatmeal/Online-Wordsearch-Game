@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Leaderboard {
     private static final int MAX_ENTRIES = 5;
@@ -21,7 +23,20 @@ public class Leaderboard {
 
     public void displayLeaderboard() {
         System.out.println("Leaderboard (Top " + MAX_ENTRIES + "):");
-        for (Entry<String, Integer> entry : topScores) {
+
+        // Create a sorted list of entries from the topScores PriorityQueue
+        List<Entry<String, Integer>> sortedEntries = new ArrayList<>(topScores);
+        sortedEntries.sort((a, b) -> {
+            int scoreComparison = b.getValue().compareTo(a.getValue());
+            if (scoreComparison != 0) {
+                return scoreComparison;
+            } else {
+                return a.getKey().compareTo(b.getKey());
+            }
+        });
+
+        // Print the sorted entries
+        for (Entry<String, Integer> entry : sortedEntries) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
