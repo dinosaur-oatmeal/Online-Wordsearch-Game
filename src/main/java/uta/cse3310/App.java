@@ -166,11 +166,10 @@ public class App extends WebSocketServer
       }
 
       //changes subodh
-      Map<String, Integer> leaderboardScores = leaderboard.getScores();
       if ("getLeaderboard".equals(U.getAction())) {
-        // Send the leaderboard data to the client
-        String leaderboardData = gson.toJson(leaderboard.scores);
-        conn.send(leaderboardData);
+        List<Map<String, Object>> leaderboardData = leaderboard.getLeaderboardData();
+        String leaderboardDataJson = gson.toJson(leaderboardData);
+        conn.send(leaderboardDataJson);
       }
       //changes
 
