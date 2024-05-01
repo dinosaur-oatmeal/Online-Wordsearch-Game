@@ -339,8 +339,22 @@ public class App extends WebSocketServer
         return;
     }
 
-    if("userJoin".equals(U.getAction()))
+     if("userJoin".equals(U.getAction()))
     {
+      String username = U.getUsername();
+      boolean isUsernameTaken = users.contains(username);
+
+      // see if username already exists in ArrayList
+      if(isUsernameTaken)
+      {
+        Map<String, String> hashMessage = new HashMap<>();
+        hashMessage.put("usernameTaken", username);
+        String hashMessageString = gson.toJson(hashMessage);
+        System.out.println(hashMessageString);
+        conn.send(hashMessageString);
+        return;
+      }
+
       users.add(U.getUsername());
       Map<String, ArrayList> userList = new HashMap<>();
       userList.put("userList", users);
@@ -350,6 +364,7 @@ public class App extends WebSocketServer
       System.out.println(users);
       return;
     }
+
 
     if("userLeave".equals(U.getAction()))
     {
