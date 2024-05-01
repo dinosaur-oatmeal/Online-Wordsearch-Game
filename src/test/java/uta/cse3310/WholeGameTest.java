@@ -92,6 +92,8 @@ public class WholeGameTest extends TestCase
         msg = "{\"GameId\":0, \"PlayerIdx\":\"Player1\", \"action\":\"joinGame\"}";
         result = update(game, msg);
 
+        assertTrue(result.contains("\"Player1\"")); // check for player1
+
 // Testing player joining
 //        msg = "{\"GameId\":0,\"PlayerIdx\":\"Player1\",\"action\":\"joinMatch\"}";
 //        result = update(game, msg);
