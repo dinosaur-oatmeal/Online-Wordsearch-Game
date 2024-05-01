@@ -126,18 +126,20 @@
     <div id="phase2" style="display:none;">
         <div id="playersList">Players Online:</div>
         <div id="gameBoard" class="game-board"></div>
-        <div id="leaderboard">Leaderboard:</div>
-            <table id="leaderboardContainer">
-                <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-   
-                </tbody>
-            </table>
+        <div id="leaderboard-container" style="display: none;">
+        <h2>Leaderboard</h2>
+        <table id="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Leaderboard data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
         <div id="messageBoard">
             <div id="messageDiv">
                 <!-- Messages will be appended here -->
@@ -534,36 +536,29 @@
         //changes subodh
         //for leaderboard
         function getLeaderboard() {
-        const message = JSON.stringify({ action: "getLeaderboard" });
-        connection.send(message);
-        }
-
-        function getLeaderboard() {
-        const message = JSON.stringify({ action: "getLeaderboard" });
-        connection.send(message);
+            const message = JSON.stringify({ action: "getLeaderboard" });
+            connection.send(message);
         }
 
         function displayLeaderboard(leaderboardData) {
-            const leaderboardTableBody = document.getElementById('leaderboardContainer').getElementsByTagName('tbody')[0];
-            leaderboardTableBody.innerHTML = ''; // Clear previous leaderboard
+            const leaderboardBody = document.getElementById("leaderboard-body");
+            leaderboardBody.innerHTML = ''; // Clear previous leaderboard
 
-            // Create and append leaderboard entries
-            for (const entry of leaderboardData) {
-                const row = document.createElement('tr');
+            leaderboardData.forEach((player) => {
+                const row = leaderboardBody.insertRow();
+                const nameCell = row.insertCell(0);
+                const scoreCell = row.insertCell(1);
 
-                const nameCell = document.createElement('td');
-                nameCell.textContent = entry.nickname;
-                row.appendChild(nameCell);
+                nameCell.textContent = player.nickname; // Set name
+                scoreCell.textContent = player.score; // Set score
+            });
 
-                const scoreCell = document.createElement('td');
-                scoreCell.textContent = entry.score;
-                row.appendChild(scoreCell);
-
-                leaderboardTableBody.appendChild(row);
-            }
         }
 
+            getLeaderboard();
+
         //changes
+        
 
 
     </script>
