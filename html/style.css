@@ -106,7 +106,7 @@ button {
   border: none;
 }
 
-#leaderboard{
+#leaderboard-container{
   grid-column: span 3;
   grid-row: span 2;
   display: flex;

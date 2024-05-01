@@ -81,7 +81,7 @@ public class App extends WebSocketServer
 
   private int maxPlayers;
 
-  private Leaderboard lBoard = new Leaderboard();
+  private Leaderboard leaderboard = new Leaderboard();
 
   ArrayList<String> users = new ArrayList<>();
 
@@ -165,8 +165,13 @@ public class App extends WebSocketServer
 
       }
 
-      // add player to the leaderboard
-      lBoard.addPlayer(U.username);
+      //changes subodh
+      if ("getLeaderboard".equals(U.getAction())) {
+        List<Map<String, Object>> leaderboardData = leaderboard.getLeaderboardData();
+        String leaderboardDataJson = gson.toJson(leaderboardData);
+        conn.send(leaderboardDataJson);
+      }
+      //changes
 
       // new game initialization
       if(G == null)
@@ -291,7 +296,6 @@ public class App extends WebSocketServer
       // word found and should send all associated buttons to be highlighted
       if(wordPositions != null)
       {
-        lBoard.updateScore(U.username);
         sendHighlightPositions(conn, wordPositions, typeInt, gameId);
       }
 
@@ -373,21 +377,6 @@ public class App extends WebSocketServer
       updatedList.put("userList", users);
       String jsonString = gson.toJson(updatedList);
       broadcast(jsonString);
-      return;
-    }
-
-    if("requestLeaderboard".equals(U.getAction()))
-    {
-      Map<String, Object> messageToSend = new HashMap<>();
-      List<Map<String, Integer>> leaderboardData = lBoard.displayLeaderboard();
-      messageToSend.put("leaderboard", leaderboardData);
-
-      String jsonString = gson.toJson(messageToSend);
-
-      System.out.println("\n" + jsonString + "\n");
-
-      // send to everyone (client will decide if its' relevant)
-      conn.send(jsonString);
       return;
     }
 
@@ -485,14 +474,9 @@ public class App extends WebSocketServer
     message.put("Player2Score", G.Player2Score);
     message.put("Player3Score", G.Player3Score);
     message.put("Player4Score", G.Player4Score);
-
-    // send leaderboard update to everyone
-    List<Map<String, Integer>> leaderboardData = lBoard.displayLeaderboard();
-    message.put("leaderboard", leaderboardData);
-
     String jsonString = gson.toJson(message);
 
-    System.out.println("\n" + jsonString + "\n");
+    //System.out.println("\n" + jsonString + "\n");
 
     // send to everyone (client will decide if its' relevant)
     broadcast(jsonString);

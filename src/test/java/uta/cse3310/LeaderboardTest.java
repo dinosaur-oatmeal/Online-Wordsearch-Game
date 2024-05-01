@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.util.*;
 
-/*public class LeaderboardTest extends TestCase {
+public class LeaderboardTest extends TestCase {
     private Leaderboard leaderboard;
 
     public LeaderboardTest(String testName) {
@@ -69,4 +69,9 @@ import java.util.*;
 
         System.out.println("testSortedLeaderboard completed");
     }
-}*/
+}
+  
+    
+
+   
+
