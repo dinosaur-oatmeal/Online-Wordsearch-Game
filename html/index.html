@@ -177,7 +177,9 @@
         var gameid = -1;
         var gameStarted = 0;
         var username = "";
-
+        var usernameInput;
+        var usernameisTaken = false;
+        
         // start connection when webpage is opened
         window.onload = function() {
             var serverUrl = "ws://" + window.location.hostname + ":" + (parseInt(location.port) + 100);
@@ -196,7 +198,13 @@
                     console.log(obj.version);
                     document.title = "Group 13 " + obj.version;   
                 }
-
+                if ("usernameTaken" in obj) 
+                {
+                usernameInput.value = ""; // Clear the input field
+                usernameisTaken = true; // Set the flag to true
+                //alert('That username is taken. Please pick another username!');
+                return;
+                } 
                 // update userList when webpage opened
                 if ("userList" in obj) {
                     var playersList = document.getElementById('playersList');
@@ -232,21 +240,34 @@
         };
 
         // username is entered
-        function enterUsername() {
-            var usernameInput = document.getElementById('username');
-            username = usernameInput.value.trim(); // Update the global username variable
+        function enterUsername() 
+        {
+        usernameInput = document.getElementById('username');
+        username = usernameInput.value.trim(); // Get the username entered by the user
 
-            if (username === "") {
-                alert('Please enter a username.');
-                return;
-            }
+        if (username === "") {
+            alert('Please enter a username.');
+            return;
+        }
 
+        const message = JSON.stringify({ action: "userJoin", username: username });
+        connection.send(message);
+
+        setTimeout(function() 
+        {
+        if (usernameisTaken) {
+        alert('That username is taken. Please pick another!');
+        usernameisTaken = false;
+        } 
+        else 
+        {
+            // Send the username to the server for validation
             document.getElementById('phase1').style.display = 'none';
             document.getElementById('phase2').style.display = 'grid';
-
-            const message = JSON.stringify({ action: "userJoin", username: username });
-            connection.send(message);
         }
+    }, 50);
+}
+
 
 
         function handleKeyPress(event) 
