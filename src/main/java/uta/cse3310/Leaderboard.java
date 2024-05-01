@@ -8,6 +8,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Leaderboard {
     private static final int MAX_ENTRIES = 5;
     public Map<String, Integer> scores = new HashMap<>();
@@ -69,5 +70,5 @@ public class Leaderboard {
     }
 }
 
-}
+
 
