@@ -5,69 +5,109 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.util.*;
 
-public class LeaderboardTest extends TestCase {
-    private Leaderboard leaderboard;
-
-    public LeaderboardTest(String testName) {
+public class LeaderboardTest extends TestCase
+{
+    public LeaderboardTest(String testName)
+    {
         super(testName);
     }
 
-    public static Test suite() {
+    public static Test suite()
+    {
         return new TestSuite(LeaderboardTest.class);
     }
 
-    public void setUp() {
-        leaderboard = new Leaderboard();
+    // test that players can be added to the leaderboard
+    public void testAddPlayer()
+    {
+        Leaderboard leaderboard = new Leaderboard();
+
+        leaderboard.addPlayer("Player1");
+        leaderboard.addPlayer("Player2");
+
+        assertTrue(leaderboard.leaderboardList.get(0).containsKey("Player1"));
+        assertTrue(leaderboard.leaderboardList.get(1).containsKey("Player2"));
     }
 
-    public void testUpdateLeaderboard() {
-        leaderboard.updateLeaderboard("Player1", 1);
-        leaderboard.updateLeaderboard("Player2", 1);
-        leaderboard.updateLeaderboard("Player1", 2);
+    // test to see if there can be multiple of same player in leaderboard
+    public void testPlayerReuse()
+    {
+        Leaderboard leaderboard = new Leaderboard();
 
-        assertTrue(leaderboard.getScores().get("Player1") == 2);
-        assertTrue(leaderboard.getScores().get("Player2") == 1);
+        leaderboard.addPlayer("Player1");
+        leaderboard.addPlayer("Player2");
+        leaderboard.addPlayer("Player1");
+        leaderboard.addPlayer("Player1");
+        leaderboard.addPlayer("Player3");
+        leaderboard.addPlayer("Player1");
 
-        System.out.println("testUpdateLeaderboard completed");
+        assertTrue(leaderboard.leaderboardList.size() == 3);
     }
 
-    public void testDisplayLeaderboard() {
-        leaderboard.updateLeaderboard("Player1", 1);
-        leaderboard.updateLeaderboard("Player2", 2);
-        leaderboard.updateLeaderboard("Player3", 3);
-        leaderboard.updateLeaderboard("Player1", 4);
+    // test to see if scores are updated correctly
+    public void testUpdateScore()
+    {
+        Leaderboard leaderboard = new Leaderboard();
 
-        leaderboard.displayLeaderboard();
+        leaderboard.addPlayer("Player1");
+        leaderboard.addPlayer("Player2");
+        leaderboard.addPlayer("Player3");
 
-        assertTrue(leaderboard.getScores().size() == 3);
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player2");
+        leaderboard.updateScore("Player1");
 
-        System.out.println("testDisplayLeaderboard completed");
+        int Player1Score = leaderboard.leaderboardList.get(0).get("Player1");
+        int Player2Score = leaderboard.leaderboardList.get(1).get("Player2");
+        int Player3Score = leaderboard.leaderboardList.get(2).get("Player3");
+
+        assertTrue(Player1Score == 3);
+        assertTrue(Player2Score == 1);
+        assertTrue(Player3Score == 0);
     }
 
-    public void testSortedLeaderboard() {
-        leaderboard.updateLeaderboard("Player1", 1);
-        leaderboard.updateLeaderboard("Player2", 2);
-        leaderboard.updateLeaderboard("Player3", 3);
-        leaderboard.updateLeaderboard("Player1", 4);
-        leaderboard.updateLeaderboard("Player2", 5);
+    // test 5 values in descending order
+    public void testDisplayLeaderboard()
+    {
+        Leaderboard leaderboard = new Leaderboard();
 
-        leaderboard.displayLeaderboard();
+        leaderboard.addPlayer("Player1");
+        leaderboard.addPlayer("Player2");
+        leaderboard.addPlayer("Player3");
+        leaderboard.addPlayer("Player4");
+        leaderboard.addPlayer("Player5");
+        leaderboard.addPlayer("Player6");
 
-        Iterator<Map.Entry<String, Integer>> it = leaderboard.getScores().entrySet().iterator();
-        Integer prevScore = null;
+        leaderboard.updateScore("Player5");
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player2");
+        leaderboard.updateScore("Player3");
+        leaderboard.updateScore("Player4");
+        leaderboard.updateScore("Player5");
+        leaderboard.updateScore("Player3");
+        leaderboard.updateScore("Player2");
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player5");
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player3");
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player1");
+        leaderboard.updateScore("Player3");
 
-        while (it.hasNext()) {
-            Map.Entry<String, Integer> entry = it.next();
-            Integer currentScore = entry.getValue();
+        List<Map<String, Integer>> lBoard = leaderboard.displayLeaderboard();
 
-            if (prevScore != null) {
-                assertTrue(prevScore >= currentScore); // Check if previous score is greater than or equal to current
-            }
+        // check board size
+        assertTrue(lBoard.size() == 5);
 
-            prevScore = currentScore;
+        // check sorting
+        for(int i = 0; i < lBoard.size() - 1; i++)
+        {
+            int score1 = lBoard.get(i).values().iterator().next();
+            int score2 = lBoard.get(i + 1).values().iterator().next();
+            assertTrue(score1 >= score2);
         }
 
-        System.out.println("testSortedLeaderboard completed");
     }
 }
   
