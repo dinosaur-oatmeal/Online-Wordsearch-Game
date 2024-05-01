@@ -57,4 +57,17 @@ public class Leaderboard {
             }
         }
     }
+    public List<Map<String, Object>> getLeaderboardData() {
+        List<Map<String, Object>> leaderboardData = new ArrayList<>();
+        for (Entry<String, Integer> entry : topScores) {
+            Map<String, Object> playerData = new HashMap<>();
+            playerData.put("nickname", entry.getKey());
+            playerData.put("score", entry.getValue());
+            leaderboardData.add(playerData);
+        }
+        return leaderboardData;
+    }
 }
+
+}
+
